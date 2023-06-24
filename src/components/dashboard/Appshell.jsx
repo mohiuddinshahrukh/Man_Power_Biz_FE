@@ -27,7 +27,7 @@ const Appshell = () => {
             navbarOffsetBreakpoint="sm"
             asideOffsetBreakpoint="sm"
             navbar={
-                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
+                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 300, lg: 300 }}>
                     <SidebarComponent />
                 </Navbar>
             }

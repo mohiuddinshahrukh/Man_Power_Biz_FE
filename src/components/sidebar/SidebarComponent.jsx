@@ -196,7 +196,7 @@ const SidebarComponent = () => {
     ));
 
     return (
-        <Paper style={{ width: "", height: "80vh" }} withBorder>
+        <Paper style={{ width: "", height: "80vh" }}>
             <Box sx={{ width: "300px ", height: "100%" }}>{items}</Box>
         </Paper>
     );

@@ -18,8 +18,9 @@ import ViewComplaint from './components/complaint/ViewComplaint'
 import Policy from './components/policies/Policy'
 import Settings from './components/settings/Settings'
 import ReviewsAndFeebacks from './components/review_feedback/ReviewsAndFeebacks'
-import Faq from './components/FAQ/FAQ'
 import { BadRequest } from './components/errorpages/BadRequest'
+import FrequentlyAskedQuestions from './components/frequentlyAskedQuestions/FrequentlyAskedQuestions'
+
 
 function App() {
 
@@ -45,10 +46,9 @@ function App() {
         <Route path="/policies" element={<Policy />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
-        <Route path="/faq" element={<Faq />} />
+        <Route path="/faq" element={<FrequentlyAskedQuestions />} />
         <Route path='/*' element={<BadRequest />} />
       </Route>
-
     </Routes>
   )
 }
