@@ -9,7 +9,7 @@ const data = [
         icon: IconLayoutGrid,
         label: "Dashboard",
         // description: "Item with description",
-        path: "/dashboard",
+        path: "/",
     },
     {
         icon: IconNotebook,
@@ -20,12 +20,12 @@ const data = [
             {
                 icon: IconBuildingFortress,
                 label: "Add User",
-                path: "venueBookings",
+                path: "addUser",
             },
             {
                 icon: IconBuildingStore,
                 label: "View All Users",
-                path: "vendorBookings",
+                path: "viewUser",
             },
         ],
     },
@@ -38,12 +38,12 @@ const data = [
             {
                 icon: IconBuildingFortress,
                 label: "Add Category",
-                path: "venueBookings",
+                path: "addServiceCategory",
             },
             {
                 icon: IconBuildingStore,
                 label: "View Categories",
-                path: "vendorBookings",
+                path: "viewServiceCategories",
             },
         ],
     },
@@ -56,12 +56,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Service",
-                path: "addWeddingCards",
+                path: "addService",
             },
             {
                 icon: IconEye,
                 label: "View Services",
-                path: "viewWeddingCards",
+                path: "viewServices",
             },
         ],
     },
@@ -74,12 +74,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Package",
-                path: "addWeddingCards",
+                path: "addPackage",
             },
             {
                 icon: IconEye,
                 label: "View Packages",
-                path: "viewWeddingCards",
+                path: "viewPackages",
             },
         ],
     },
@@ -93,12 +93,12 @@ const data = [
             {
                 icon: IconBuildingFortress,
                 label: "Add Booking",
-                path: "venuePayments",
+                path: "addBooking",
             },
             {
                 icon: IconBuildingStore,
                 label: "View Bookings",
-                path: "vendorPayments",
+                path: "viewBookings",
             },
         ],
     },
@@ -112,12 +112,12 @@ const data = [
             {
                 icon: IconBuildingStore,
                 label: "Add Payment",
-                path: "venueFeedbacks",
+                path: "addPayment",
             },
             {
                 icon: IconBuildingFortress,
                 label: "View Payments",
-                path: "vendorFeedbacks",
+                path: "viewPayments",
             },
         ],
     },
@@ -132,19 +132,19 @@ const data = [
             {
                 icon: IconBuildingFortress,
                 label: "Add Compaint",
-                path: "venueComplaints",
+                path: "addComplaint",
             },
             {
                 icon: IconBuildingStore,
                 label: "View Complaints",
-                path: "vendorComplaints",
+                path: "viewComplaints",
             },
         ],
     },
-    { icon: IconSettings, label: "Policies", path: "profile" },
-    { icon: IconSettings, label: "Settings", path: "profile" },
-    { icon: IconSettings, label: "Reviews & Feedback", path: "profile" },
-    { icon: IconSettings, label: "FAQs", path: "profile" },
+    { icon: IconSettings, label: "Policies", path: "policies" },
+    { icon: IconSettings, label: "Settings", path: "settings" },
+    { icon: IconSettings, label: "Reviews & Feedback", path: "reviewsAndFeedbacks" },
+    { icon: IconSettings, label: "FAQs", path: "FAQ" },
 ];
 const SidebarComponent = () => {
 
@@ -165,6 +165,7 @@ const SidebarComponent = () => {
             component={Link}
             to={item.path}
             onClick={() => {
+                console.log("item", item)
                 setActive(index);
                 setSubActive(null);
                 if (!item.subNav) {
@@ -178,12 +179,13 @@ const SidebarComponent = () => {
                         color={"red"}
                         styles={{ label: { fontSize: "1rem" } }}
                         active={active === index && subActive === i}
-                        key={subItem.label}
+                        key={i}
                         label={index + 1 + "." + (i + 1) + " - " + subItem.label}
                         icon={<subItem.icon className="fgColorF" size={25} stroke={1.5} />}
                         component={Link}
-                        to={i}
+                        to={subItem.path}
                         onClick={() => {
+                            console.log("subItem", subItem)
                             setSubActive(i);
                             setActive(index);
                             // setOpened(false);
