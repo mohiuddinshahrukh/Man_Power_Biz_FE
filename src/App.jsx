@@ -24,6 +24,7 @@ import { useState } from 'react';
 import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
 import AddServices from './components/services/AddServices'
 import ViewServices from './components/services/ViewServices'
+import { LoginSignUp } from './components/login_signup/LoginSignUp'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -33,6 +34,7 @@ function App() {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <Routes>
+          <Route path='/auth' element={<LoginSignUp />} />
           <Route path='/' element={<Appshell />} >
             <Route path='/' element={<Dashboard />} />
             <Route path='/adduser' element={<AddUser />} />

@@ -42,7 +42,7 @@ import { cleanNotifications } from "@mantine/notifications";
 
 // COMPONENT
 const AddPackages = () => {
-    // setCurrentLocation("Add Vendor Package");
+    // setCurrentLocation("Add  Package");
     const [vendorBusiness, setVendorBusiness] = useState("");
     const [getVisible, setVisible] = useState(true);
     const [selectedVendorCategory, setSelectedVendorCategory] = useState("");
@@ -279,12 +279,12 @@ const AddPackages = () => {
         });
     };
 
-    const checkAvailibiltyOfServices = (vendor) => {
-        console.log("vendor", vendor);
+    const checkAvailibiltyOfServices = () => {
+        console.log("",);
         if (
             servicesData
                 .map((service) => service.vendorBusinessId._id)
-                .includes(vendor)
+                .includes()
         ) {
             setHideFields(false);
             return true;
@@ -393,7 +393,7 @@ const AddPackages = () => {
                     }}
                 >
                     <Title order={2} align="center" py="xl">
-                        Register Vendor Package
+                        Add Package
                     </Title>
 
                     <Text weight="bold" size="xl" py="md">
@@ -422,10 +422,17 @@ const AddPackages = () => {
                                         setCheckedServices([]);
                                         checkAvailibiltyOfServices(e);
                                     }}
-                                    label="Select Vendor Business"
-                                    placeholder="Select Vendor Business"
+                                    label="Select Service"
+                                    placeholder="Select Service"
                                     size="md"
-                                    data={data}
+                                    data={[{
+                                        label
+                                            :
+                                            "Service 1",
+                                        value
+                                            :
+                                            "63aaf4f47dd7aafe3a380e42"
+                                    }]}
                                 />
                             </Grid.Col>
 
@@ -807,7 +814,7 @@ const AddPackages = () => {
                     {/* <Grid justify="flex-end" hidden={!hideFields}>
                         <Grid.Col lg={12}>
                             <Text color="red">
-                                This Vendor Does Not Have Any Services Register. Please Click On{" "}
+                                This  Does Not Have Any Services Register. Please Click On{" "}
                                 <b>"ADD SERVICE"</b> Button Below To Add Service
                             </Text>
                         </Grid.Col>

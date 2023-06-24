@@ -583,7 +583,7 @@ const AddService = () => {
                     }}
                 >
                     <Title order={2} align="center" py="xl">
-                        Register Service
+                        Add Service
                     </Title>
 
                     <Modal
@@ -695,12 +695,12 @@ const AddService = () => {
                                                             })
                                                         }
                                                     >
-                                                        Add New Vendor?
+                                                        Add New Category?
                                                     </span>
                                                     )
                                                 </>
                                             }
-                                            placeholder="Select Vendor"
+                                            placeholder="Select Category"
                                             // limit={Infinity}
                                             searchable
                                             value={vendor}

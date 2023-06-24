@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     AppShell,
     Navbar,
@@ -9,14 +9,19 @@ import {
     Burger,
     useMantineTheme,
     Group,
+    Menu,
+    ActionIcon,
+    Avatar,
 } from '@mantine/core';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarComponent from '../sidebar/SidebarComponent';
 import { ToggleTheme } from './theme/ToggleTheme';
+import { IconLogout } from '@tabler/icons-react';
 
 
 
 const Appshell = () => {
+    const navigate = useNavigate()
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
     return (
@@ -56,6 +61,47 @@ const Appshell = () => {
                         <Group position='apart' w={"100%"}>
                             <Text>Urban Services Logo</Text>
                             <Group>
+                                <Menu shadow="md" withArrow>
+                                    <Menu.Target>
+                                        <ActionIcon>
+                                            <Avatar variant="gradient" size={"sm"} radius={"sm"} src={""} />
+                                        </ActionIcon>
+                                    </Menu.Target>
+
+                                    <Menu.Dropdown>
+                                        {[
+                                            {
+                                                label: "Profile",
+                                                items: [
+                                                    {
+                                                        icon: <IconLogout />,
+                                                        item: "Logout",
+                                                        onClick: () => {
+                                                            navigate("/auth");
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        ].map((element, index) => {
+                                            return (
+                                                <React.Fragment key={index}>
+                                                    <Menu.Label>{element.label}</Menu.Label>
+                                                    {element.items.map((item, index) => {
+                                                        return (
+                                                            <Menu.Item
+                                                                onClick={item.onClick}
+                                                                key={index}
+                                                                icon={item.icon}
+                                                            >
+                                                                {item.item}
+                                                            </Menu.Item>
+                                                        );
+                                                    })}
+                                                </React.Fragment>
+                                            );
+                                        })}
+                                    </Menu.Dropdown>
+                                </Menu>
                                 <ToggleTheme />
                             </Group>
                         </Group>
