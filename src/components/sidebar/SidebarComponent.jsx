@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Box, NavLink, Paper } from "@mantine/core";
+import { Box, NavLink, Paper, ScrollArea } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { IconBrandStripe, IconBuildingFortress, IconBuildingStore, IconCards, IconChevronRight, IconCornerUpLeftDouble, IconEye, IconLayoutGrid, IconMessage, IconNotebook, IconPlus, IconSettings, IconUserExclamation } from "@tabler/icons-react";
 
@@ -196,8 +196,9 @@ const SidebarComponent = () => {
     ));
 
     return (
-        <Paper style={{ width: "", height: "80vh" }}>
-            <Box sx={{ width: "300px ", height: "100%" }}>{items}</Box>
+        <Paper style={{ width: "", height: "80vh" }} component={ScrollArea} type="never" styles={{
+        }}>
+            <Box sx={{ width: "300px", height: "100%" }}>{items}</Box>
         </Paper>
     );
 };

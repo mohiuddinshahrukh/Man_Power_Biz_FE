@@ -20,36 +20,45 @@ import Settings from './components/settings/Settings'
 import ReviewsAndFeebacks from './components/review_feedback/ReviewsAndFeebacks'
 import { BadRequest } from './components/errorpages/BadRequest'
 import FrequentlyAskedQuestions from './components/frequentlyAskedQuestions/FrequentlyAskedQuestions'
-
+import { useState } from 'react';
+import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
+import AddServices from './components/services/AddServices'
+import ViewServices from './components/services/ViewServices'
 
 function App() {
-
+  const [colorScheme, setColorScheme] = useState('light');
+  const toggleColorScheme = (value) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
   return (
-    <Routes>
-      <Route path='/' element={<Appshell />} >
-        <Route path='/' element={<Dashboard />} />
-        <Route path='/adduser' element={<AddUser />} />
-        <Route path='/viewuser' element={<ViewUser />} />
-        <Route path='/addServiceCategory' element={<AddServiceCategory />} />
-        <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />
-        <Route path='/addService' element={<AddServiceCategory />} />
-        <Route path='/viewServices' element={<ViewServiceCategory />} />
-        <Route path='/addPackage' element={<AddPackages />} />
-        <Route path='/viewPackages' element={<ViewPackages />} />
-        <Route path='/addBooking' element={<AddBooking />} />
-        <Route path='/viewBookings' element={<ViewBooking />} />
-        <Route path='/addPayment' element={<AddPayment />} />
-        <Route path='/viewPayments' element={<ViewPayment />} />
-        <Route path="/chats" element={<ChatScreen />} />
-        <Route path='/addComplaint' element={<AddComplaint />} />
-        <Route path='/viewComplaints' element={<ViewComplaint />} />
-        <Route path="/policies" element={<Policy />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
-        <Route path="/faq" element={<FrequentlyAskedQuestions />} />
-        <Route path='/*' element={<BadRequest />} />
-      </Route>
-    </Routes>
+    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+      <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+        <Routes>
+          <Route path='/' element={<Appshell />} >
+            <Route path='/' element={<Dashboard />} />
+            <Route path='/adduser' element={<AddUser />} />
+            <Route path='/viewuser' element={<ViewUser />} />
+            <Route path='/addServiceCategory' element={<AddServiceCategory />} />
+            <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />
+            <Route path='/addService' element={<AddServices />} />
+            <Route path='/viewServices' element={<ViewServices />} />
+            <Route path='/addPackage' element={<AddPackages />} />
+            <Route path='/viewPackages' element={<ViewPackages />} />
+            <Route path='/addBooking' element={<AddBooking />} />
+            <Route path='/viewBookings' element={<ViewBooking />} />
+            <Route path='/addPayment' element={<AddPayment />} />
+            <Route path='/viewPayments' element={<ViewPayment />} />
+            <Route path="/chats" element={<ChatScreen />} />
+            <Route path='/addComplaint' element={<AddComplaint />} />
+            <Route path='/viewComplaints' element={<ViewComplaint />} />
+            <Route path="/policies" element={<Policy />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
+            <Route path="/faq" element={<FrequentlyAskedQuestions />} />
+            <Route path='/*' element={<BadRequest />} />
+          </Route>
+        </Routes>
+      </MantineProvider>
+    </ColorSchemeProvider>
   )
 }
 

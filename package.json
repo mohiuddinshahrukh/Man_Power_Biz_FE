@@ -23,7 +23,6 @@
     "@mantine/prism": "^6.0.14",
     "@mantine/spotlight": "^6.0.14",
     "@mantine/tiptap": "^6.0.14",
-    "@tabler/icons": "^2.22.0",
     "@tabler/icons-react": "^2.22.0",
     "@tiptap/extension-link": "^2.0.3",
     "@tiptap/react": "^2.0.3",
@@ -33,7 +32,8 @@
     "embla-carousel-react": "^7.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.13.0"
+    "react-router-dom": "^6.13.0",
+    "tabler-icons-react": "^1.56.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

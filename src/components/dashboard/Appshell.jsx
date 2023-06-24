@@ -8,9 +8,11 @@ import {
     MediaQuery,
     Burger,
     useMantineTheme,
+    Group,
 } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 import SidebarComponent from '../sidebar/SidebarComponent';
+import { ToggleTheme } from './theme/ToggleTheme';
 
 
 
@@ -21,20 +23,21 @@ const Appshell = () => {
         <AppShell
             styles={{
                 main: {
+
                     background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
             }}
             navbarOffsetBreakpoint="sm"
             asideOffsetBreakpoint="sm"
             navbar={
-                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 300, lg: 300 }}>
+                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ lg: 320 }} >
                     <SidebarComponent />
                 </Navbar>
             }
 
             footer={
                 <Footer height={60} p="md">
-                    footer
+                    Urban Services 	&copy; 2023
                 </Footer>
             }
             header={
@@ -50,7 +53,12 @@ const Appshell = () => {
                             />
                         </MediaQuery>
 
-                        <Text>Top navbar header</Text>
+                        <Group position='apart' w={"100%"}>
+                            <Text>Urban Services Logo</Text>
+                            <Group>
+                                <ToggleTheme />
+                            </Group>
+                        </Group>
                     </div>
                 </Header>
             }
