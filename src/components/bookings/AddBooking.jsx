@@ -844,7 +844,7 @@ const AddBooking = () => {
                                 </Group>
 
                                 <form
-                                    onSubmit={form1.onSubmit((values) => handleSubmit(values))}
+                                // onSubmit={form1.onSubmit((values) => handleSubmit(values))}
                                 >
                                     <Grid justify="space-around" py="md">
                                         <Grid.Col lg={6}>
@@ -1051,7 +1051,7 @@ const AddBooking = () => {
                                                 disabled={disabled}
                                                 // loading={loading}
                                                 rightIcon={<ArrowRight />}
-                                            // onClick={nextStep}
+                                                onClick={nextStep}
                                             >
                                                 NEXT
                                             </Button>
@@ -1070,7 +1070,7 @@ const AddBooking = () => {
                         >
                             <Paper py="xl">
                                 <form
-                                    onSubmit={form.onSubmit((values) => handleSubmit1(values))}
+                                // onSubmit={form.onSubmit((values) => handleSubmit1(values))}
                                 >
                                     <Group position="apart">
                                         <Text weight="bold" size="xl" py="md">
@@ -1200,7 +1200,7 @@ const AddBooking = () => {
                                                 // disabled={disabled}
                                                 // loading={loading}
                                                 rightIcon={<ArrowRight />}
-                                            // onClick={nextStep}
+                                                onClick={nextStep}
                                             >
                                                 NEXT
                                             </Button>
@@ -1219,7 +1219,7 @@ const AddBooking = () => {
                         >
                             <Paper py="xl">
                                 <form
-                                    onSubmit={form.onSubmit((values) => handleSubmit1(values))}
+                                // onSubmit={form.onSubmit((values) => handleSubmit1(values))}
                                 >
                                     <Group position="apart">
                                         <Group>
