@@ -1,6 +1,8 @@
+/* eslint-disable react/prop-types */
 import {
   ActionIcon,
   Avatar,
+  Button,
   Group,
   Paper,
   Table,
@@ -9,17 +11,19 @@ import {
 } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import SpecificViewModal from "../modals/SpecificViewModal";
+import { useDisclosure } from "@mantine/hooks";
 
 const TableComponent = ({
+  buttonObject,
   headCells,
   rowData,
-  setSingleInvoice,
-  setViewBookingModal,
 }) => {
-  console.log("Row Data", rowData);
   const [rowDatas, setRowDatas] = useState(rowData);
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
   const [searchPhrase, setSearchPhrase] = useState("");
+  const [data, setData] = useState({})
   const sortNumericValue = (label) => {
     setSorted({
       sorted: label,
@@ -49,11 +53,10 @@ const TableComponent = ({
 
   const search = (event) => {
     const matchedData = rowData?.filter((data) => {
-      console.log("Object.values(data)", Object.values(data).length);
+      // console.log("Object.values(data)", Object.values(data).length);
       for (let i = 0; i < Object.values(data).length; i++) {
         if (
-          Object.values(data)
-          [i].toString()
+          Object.values(data)[i].toString()
             .toLowerCase()
             .includes(event.target.value.toString().toLowerCase())
         ) {
@@ -66,10 +69,15 @@ const TableComponent = ({
     setSearchPhrase(event.target.value);
   };
   // useEffect(() => {}, [rowDatas]);
+
+  const [opened, { open, close }] = useDisclosure(false);
   return (
-    <Paper withBorder>
+    <Paper pos={"relative"}>
+      <SpecificViewModal opened={opened} open={open} close={close} title={"Authentication"} data={data} centered={"centered"} />
       <Paper p={"xs"} mb={"xs"}>
-        <Group position="right">
+        <Group position="apart">
+          <Button uppercase={buttonObject.uppercase} size={buttonObject.size} component={Link} to={buttonObject.path} leftIcon={buttonObject.iconPosition === "left" ? buttonObject.icon : null}
+            rightIcon={buttonObject.iconPosition === "right" ? buttonObject.icon : null} >{buttonObject?.title}</Button>
           <TextInput
             value={searchPhrase}
             onChange={search}
@@ -81,28 +89,29 @@ const TableComponent = ({
       </Paper>
       <Table striped withBorder withColumnBorders>
         <thead>
-          <tr>
+          <tr style={{ wordBreak: "keep-all" }}>
             {headCells?.map((head, index) => {
               return (
                 <th
                   key={index}
                   onClick={() => {
-                    console.log("I have been cilcked");
+                    // console.log("I have been cilcked");
                     head.numeric === true
                       ? sortNumericValue(head.id)
                       : sortStringValue(head.id);
                   }}
                 >
                   <Group
+                    noWrap
                     spacing={3}
                     align={"center"}
                     position={head.numeric === true ? "right" : "left"}
                   >
                     <Text>{head?.label}</Text>{" "}
                     {!sorted.reversed === true && sorted.sorted === head.id ? (
-                      <IconArrowDown />
+                      <IconArrowDown size={16} />
                     ) : (
-                      <IconArrowUp />
+                      <IconArrowUp size={16} />
                     )}
                   </Group>
                 </th>
@@ -119,10 +128,8 @@ const TableComponent = ({
                     <td key={index}>
                       <ActionIcon
                         onClick={() => {
-                          console.log("I have been clicked");
-                          console.log(row);
-                          setViewBookingModal(true);
-                          setSingleInvoice(row?.subVenueBookingObject);
+                          open()
+                          setData(row)
                         }}
                       >
                         {head.view}

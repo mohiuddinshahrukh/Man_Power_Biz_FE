@@ -38,7 +38,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function LoginSignUp() {
+export default function LoginSignUp() {
     const { classes } = useStyles();
     return (
         <div className={classes.wrapper}>

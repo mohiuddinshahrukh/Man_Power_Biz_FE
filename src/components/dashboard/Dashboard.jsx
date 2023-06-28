@@ -1,4 +1,4 @@
-import { createStyles, Group, Paper, SimpleGrid, Text, rem } from '@mantine/core';
+import { createStyles, Group, Paper, SimpleGrid, Text, rem, Title } from '@mantine/core';
 import {
     IconUserPlus,
     IconDiscount2,
@@ -7,10 +7,19 @@ import {
     IconArrowUpRight,
     IconArrowDownRight,
 } from '@tabler/icons-react';
+import LineChart from './charts/LineChart';
+import { SimpleRadialBarChart } from './charts/SimpleRadialBarChart';
+
 
 const useStyles = createStyles((theme) => ({
+    titles: {
+        fontSize: "25px",
+        margin: "20px 0px",
+        padding: 0
+    },
     root: {
-        padding: `calc(${theme.spacing.xl} * 1.5)`,
+        height: "100%",
+        width: "100%",
     },
 
     value: {
@@ -44,30 +53,40 @@ const icons = {
 
 
 
+
+
+
+// fill: "#a4de6c"
+// fill: "#d0ed57"
+// fill: "#ffc658"
 const data = [
     {
-        "title": "Revenue",
-        "icon": "receipt",
-        "value": "13,456",
-        "diff": 34
+        title: "Revenue",
+        icon: "receipt",
+        value: 13456,
+        diff: 34,
+        fill: "#8884d8"
     },
     {
-        "title": "Profit",
-        "icon": "coin",
-        "value": "4,145",
-        "diff": -13
+        title: "Profit",
+        icon: "coin",
+        value: 4145,
+        diff: -13,
+        fill: "#83a6ed"
     },
     {
-        "title": "Coupons usage",
-        "icon": "discount",
-        "value": "745",
-        "diff": 18
+        title: "Coupons usage",
+        icon: "discount",
+        value: 745,
+        diff: 18,
+        fill: "#8dd1e1"
     },
     {
-        "title": "New customers",
-        "icon": "user",
-        "value": "188",
-        "diff": -30
+        title: "New customers",
+        icon: "user",
+        value: 188,
+        diff: -30,
+        fill: "#82ca9d"
     }
 ]
 
@@ -79,7 +98,7 @@ export function Dashboard() {
         const DiffIcon = stat.diff > 0 ? IconArrowUpRight : IconArrowDownRight;
 
         return (
-            <Paper withBorder p="md" radius="md" key={stat.title}>
+            <Paper withBorder p={"md"} radius="md" key={stat.title}>
                 <Group position="apart">
                     <Text size="xs" color="dimmed" className={classes.title}>
                         {stat.title}
@@ -88,7 +107,7 @@ export function Dashboard() {
                 </Group>
 
                 <Group align="flex-end" spacing="xs" mt={25}>
-                    <Text className={classes.value}>{stat.value}</Text>
+                    <Text className={classes.value}>{stat.value.toLocaleString()}</Text>
                     <Text color={stat.diff > 0 ? 'teal' : 'red'} fz="sm" fw={500} className={classes.diff}>
                         <span>{stat.diff}%</span>
                         <DiffIcon size="1rem" stroke={1.5} />
@@ -102,7 +121,8 @@ export function Dashboard() {
         );
     });
     return (
-        <div className={classes.root}>
+        <Paper p={"md"} className={classes.root}>
+            <Title className={classes.titles} >Cards</Title>
             <SimpleGrid
                 cols={4}
                 breakpoints={[
@@ -112,6 +132,13 @@ export function Dashboard() {
             >
                 {stats}
             </SimpleGrid>
-        </div>
+            <Title className={classes.titles}>Charts</Title>
+            <SimpleGrid
+                cols={2}
+                style={{ height: "50vh", width: "100%" }}>
+                <div style={{ height: "50vh", width: "100%" }}><LineChart data={data} /></div>
+                <div style={{ height: "50vh", width: "100%" }}><SimpleRadialBarChart data={data} /></div>
+            </SimpleGrid>
+        </Paper>
     );
 }

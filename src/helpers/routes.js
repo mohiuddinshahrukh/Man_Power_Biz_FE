@@ -1,7 +1,12 @@
+
+
 export const routes = {
-  appshell: { path: "", element: "" },
-  dashboard: { path: "", element: "" },
-  user: { path: "", element: "" },
+  // auth: { path: "/auth", element: <LoginSignUp /> },
+  // appshell: { path: "/", element: <Appshell /> },
+  // dashboard: { path: "/", element: <Dashboard /> },
+  // addUser: { path: "/adduser", element: <AddUser /> },
+  // editUser: { path: "/edituser", element: <AddUser /> },
+  // viewUser: { path: "/viewuser", element: <ViewUser /> },
 };
 
 {

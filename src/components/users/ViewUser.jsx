@@ -1,6 +1,7 @@
-import { IconEye } from "@tabler/icons-react";
+import { IconEye, IconUserPlus } from "@tabler/icons-react";
 import TableComponent from "../tableComponenet/TableComponent"
 import { rowData } from "./mockdata"
+
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
     {
@@ -69,7 +70,18 @@ let headCells = [
 const ViewUser = () => {
     return (
         <div>
-            <TableComponent headCells={headCells} rowData={rowData} />
+            <TableComponent
+                modalObject={{
+
+                }}
+                buttonObject={{
+                    uppercase: true,
+                    size: "sm",
+                    title: "Add User",
+                    path: "/addUser",
+                    icon: <IconUserPlus size={20} />,
+                    iconPosition: "right"
+                }} headCells={headCells} rowData={rowData} />
         </div>
     )
 }

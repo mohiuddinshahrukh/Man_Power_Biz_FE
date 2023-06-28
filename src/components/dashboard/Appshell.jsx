@@ -12,6 +12,8 @@ import {
     Menu,
     ActionIcon,
     Avatar,
+    Title,
+    Paper,
 } from '@mantine/core';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarComponent from '../sidebar/SidebarComponent';
@@ -26,14 +28,19 @@ const Appshell = () => {
     const [opened, setOpened] = useState(false);
     return (
         <AppShell
+            p={"md"}
+            m={0}
+            padding={0}
+
             styles={{
                 main: {
-
                     background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
+                root: {
+                    background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+                }
+
             }}
-            navbarOffsetBreakpoint="sm"
-            asideOffsetBreakpoint="sm"
             navbar={
                 <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ lg: 320 }} >
                     <SidebarComponent />
@@ -60,6 +67,7 @@ const Appshell = () => {
 
                         <Group position='apart' w={"100%"}>
                             <Text>Urban Services Logo</Text>
+                            <Title>Admin Panel</Title>
                             <Group>
                                 <Menu shadow="md" withArrow>
                                     <Menu.Target>
@@ -109,7 +117,9 @@ const Appshell = () => {
                 </Header>
             }
         >
-            <Outlet />
+            <Paper withBorder>
+                <Outlet />
+            </Paper>
         </AppShell>
     );
 }

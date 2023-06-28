@@ -24,7 +24,7 @@ import { useState } from 'react';
 import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
 import AddServices from './components/services/AddServices'
 import ViewServices from './components/services/ViewServices'
-import { LoginSignUp } from './components/login_signup/LoginSignUp'
+import LoginSignUp from './components/login_signup/LoginSignUp'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');

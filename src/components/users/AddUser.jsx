@@ -266,7 +266,7 @@ const AddUser = () => {
 
     return (
         <Paper
-            withBorder
+
             style={{
                 width: "100%",
                 height: "100%",
