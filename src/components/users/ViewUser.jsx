@@ -69,20 +69,20 @@ let headCells = [
 
 const ViewUser = () => {
     return (
-        <div>
-            <TableComponent
-                modalObject={{
 
-                }}
-                buttonObject={{
-                    uppercase: true,
-                    size: "sm",
-                    title: "Add User",
-                    path: "/addUser",
-                    icon: <IconUserPlus size={20} />,
-                    iconPosition: "right"
-                }} headCells={headCells} rowData={rowData} />
-        </div>
+        <TableComponent
+            modalObject={{
+                title: "User Details"
+            }}
+            buttonObject={{
+                uppercase: true,
+                size: "sm",
+                title: "Add User",
+                path: "/addUser",
+                icon: <IconUserPlus size={20} />,
+                iconPosition: "right"
+            }} headCells={headCells} rowData={rowData} />
+
     )
 }
 
