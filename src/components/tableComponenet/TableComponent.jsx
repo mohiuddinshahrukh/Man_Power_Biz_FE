@@ -77,7 +77,9 @@ const TableComponent = ({
       <SpecificViewModal opened={opened} open={open} close={close} title={modalObject.title} data={data} centered={"centered"} />
       <Paper p={"xs"} mb={"xs"}>
         <Group position="apart">
-          <Button uppercase={buttonObject.uppercase} size={buttonObject.size} component={Link} to={buttonObject.path} leftIcon={buttonObject.iconPosition === "left" ? buttonObject.icon : null}
+          <Button
+            disabled={buttonObject.hidden}
+            uppercase={buttonObject.uppercase} size={buttonObject.size} component={Link} to={buttonObject.path} leftIcon={buttonObject.iconPosition === "left" ? buttonObject.icon : null}
             rightIcon={buttonObject.iconPosition === "right" ? buttonObject.icon : null} >{buttonObject?.title}</Button>
           <TextInput
             value={searchPhrase}

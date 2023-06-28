@@ -2,46 +2,46 @@ import { useState } from "react";
 
 import { Box, NavLink, Paper, ScrollArea } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { IconBrandStripe, IconBuildingFortress, IconBuildingStore, IconCards, IconChevronRight, IconCornerUpLeftDouble, IconEye, IconLayoutGrid, IconMessage, IconNotebook, IconPlus, IconSettings, IconUserExclamation } from "@tabler/icons-react";
+import { IconBrandFeedly, IconBuildingFortress, IconBuildingStore, IconCards, IconCategory2, IconChevronRight, IconCurrencyRupee, IconEye, IconFileInfo, IconHome, IconMessage, IconNotebook, IconPackages, IconPlus, IconSettings, IconUserExclamation, IconUserQuestion, IconUsers } from "@tabler/icons-react";
 
 const data = [
     {
-        icon: IconLayoutGrid,
+        icon: IconHome,
         label: "Dashboard",
         // description: "Item with description",
         path: "/",
     },
     {
-        icon: IconNotebook,
+        icon: IconUsers,
         label: "Users",
         rightSection: <IconChevronRight size={14} stroke={1.5} />,
         path: "#",
         subNav: [
             {
-                icon: IconBuildingFortress,
+                icon: IconPlus,
                 label: "Add User",
                 path: "addUser",
             },
             {
-                icon: IconBuildingStore,
+                icon: IconEye,
                 label: "View All Users",
                 path: "viewUser",
             },
         ],
     },
     {
-        icon: IconNotebook,
+        icon: IconCategory2,
         label: "Service Categories",
         rightSection: <IconChevronRight size={14} stroke={1.5} />,
         path: "#",
         subNav: [
             {
-                icon: IconBuildingFortress,
+                icon: IconPlus,
                 label: "Add Category",
                 path: "addServiceCategory",
             },
             {
-                icon: IconBuildingStore,
+                icon: IconEye,
                 label: "View Categories",
                 path: "viewServiceCategories",
             },
@@ -66,7 +66,7 @@ const data = [
         ],
     },
     {
-        icon: IconCards,
+        icon: IconPackages,
         label: "Packages",
         path: "#",
 
@@ -84,38 +84,38 @@ const data = [
         ],
     },
     {
-        icon: IconBrandStripe,
+        icon: IconNotebook,
         label: "Bookings",
         rightSection: <IconChevronRight size={14} stroke={1.5} />,
         path: "#",
 
         subNav: [
             {
-                icon: IconBuildingFortress,
+                icon: IconPlus,
                 label: "Add Booking",
                 path: "addBooking",
             },
             {
-                icon: IconBuildingStore,
+                icon: IconEye,
                 label: "View Bookings",
                 path: "viewBookings",
             },
         ],
     },
     {
-        icon: IconCornerUpLeftDouble,
+        icon: IconCurrencyRupee,
         label: "Payments",
         rightSection: <IconChevronRight size={14} stroke={1.5} />,
         path: "#",
 
         subNav: [
             {
-                icon: IconBuildingStore,
+                icon: IconPlus,
                 label: "Add Payment",
                 path: "addPayment",
             },
             {
-                icon: IconBuildingFortress,
+                icon: IconEye,
                 label: "View Payments",
                 path: "viewPayments",
             },
@@ -130,21 +130,21 @@ const data = [
 
         subNav: [
             {
-                icon: IconBuildingFortress,
+                icon: IconPlus,
                 label: "Add Compaint",
                 path: "addComplaint",
             },
             {
-                icon: IconBuildingStore,
+                icon: IconEye,
                 label: "View Complaints",
                 path: "viewComplaints",
             },
         ],
     },
-    { icon: IconSettings, label: "Policies", path: "policies" },
+    { icon: IconFileInfo, label: "Policies", path: "policies" },
     { icon: IconSettings, label: "Settings", path: "settings" },
-    { icon: IconSettings, label: "Reviews & Feedback", path: "reviewsAndFeedbacks" },
-    { icon: IconSettings, label: "FAQs", path: "FAQ" },
+    { icon: IconBrandFeedly, label: "Reviews & Feedback", path: "reviewsAndFeedbacks" },
+    { icon: IconUserQuestion, label: "FAQs", path: "FAQ" },
 ];
 const SidebarComponent = () => {
 
