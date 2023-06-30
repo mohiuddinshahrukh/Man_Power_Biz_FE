@@ -2,6 +2,7 @@
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Button,
   Group,
   Paper,
@@ -21,6 +22,7 @@ const TableComponent = ({
   headCells,
   rowData,
 }) => {
+  console.log("This is the row data", rowData)
   const [rowDatas, setRowDatas] = useState(rowData);
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
   const [searchPhrase, setSearchPhrase] = useState("");
@@ -123,12 +125,12 @@ const TableComponent = ({
           </tr>
         </thead>
         <tbody>
-          {rowDatas?.map((row, index) => {
+          {rowDatas?.map((row, outerIndex) => {
             return (
-              <tr key={index}>
-                {headCells?.map((head, index) => {
+              <tr key={outerIndex}>
+                {headCells?.map((head, innerIndex) => {
                   return head.id === "actions" ? (
-                    <td key={index}>
+                    <td key={innerIndex}>
                       <ActionIcon
                         onClick={() => {
                           open()
@@ -138,28 +140,29 @@ const TableComponent = ({
                         {head.view}
                       </ActionIcon>
                     </td>
-                  ) : head.id === "profileImage" ? (<td><Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar></td>) : head.id === "image" ? <td><Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar></td> : head.id === "coverImage" ? <td><Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar></td> :
+                  ) : <td
+                    align={head?.numeric === true ? "right" : "left"}
+                  >
 
-                    (
-                      <td
-                        align={
-                          typeof row[head?.id] === "number" ? "right" : "left"
-                        }
-                      >
-                        <Text ta={"justify"} lineClamp={2}>{head.date
-                          ? row[head?.id]?.split("T")[0] +
-                          " " +
-                          row[head?.id]?.split("T")[1]?.split(".")[0]
-                          : row[head?.id]?.toLocaleString()}</Text>
-                      </td>
-                    );
+                    {
+                      head.id === "profileImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "image" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "coverImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> :
+                        head.id === "status" ? <Badge variant="filled" color={row[head.id] === true ? "green" : "red"}>{row[head.id] === true ? "Active" : "Blocked"}</Badge> :
+                          <Text lineClamp={2}>{head.date
+                            ? row[head?.id]?.split("T")[0] +
+                            " " +
+                            row[head?.id]?.split("T")[1]?.split(".")[0]
+                            : row[head?.id]?.toLocaleString()}</Text>
+
+
+                    }
+                  </td>
                 })}
               </tr>
             );
           })}
         </tbody>
       </Table>
-    </Paper>
+    </Paper >
   );
 };
 

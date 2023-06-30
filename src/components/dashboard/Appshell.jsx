@@ -14,7 +14,6 @@ import {
     Avatar,
     Title,
     Paper,
-    ScrollArea,
 } from '@mantine/core';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarComponent from '../sidebar/SidebarComponent';
@@ -87,6 +86,7 @@ const Appshell = () => {
                                                         item: "Logout",
                                                         onClick: () => {
                                                             navigate("/auth");
+                                                            localStorage.clear()
                                                         },
                                                     },
                                                 ],

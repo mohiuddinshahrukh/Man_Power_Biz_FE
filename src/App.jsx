@@ -25,6 +25,7 @@ import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
 import AddServices from './components/services/AddServices'
 import ViewServices from './components/services/ViewServices'
 import LoginSignUp from './components/login_signup/LoginSignUp'
+import PrivateRoutes from './helpers/PrivateRoute'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -35,28 +36,30 @@ function App() {
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <Routes>
           <Route path='/auth' element={<LoginSignUp />} />
-          <Route path='/' element={<Appshell />} >
-            <Route path='/' element={<Dashboard />} />
-            <Route path='/adduser' element={<AddUser />} />
-            <Route path='/viewuser' element={<ViewUser />} />
-            <Route path='/addServiceCategory' element={<AddServiceCategory />} />
-            <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />
-            <Route path='/addService' element={<AddServices />} />
-            <Route path='/viewServices' element={<ViewServices />} />
-            <Route path='/addPackage' element={<AddPackages />} />
-            <Route path='/viewPackages' element={<ViewPackages />} />
-            <Route path='/addBooking' element={<AddBooking />} />
-            <Route path='/viewBookings' element={<ViewBooking />} />
-            <Route path='/addPayment' element={<AddPayment />} />
-            <Route path='/viewPayments' element={<ViewPayment />} />
-            <Route path="/chats" element={<ChatScreen />} />
-            <Route path='/addComplaint' element={<AddComplaint />} />
-            <Route path='/viewComplaints' element={<ViewComplaint />} />
-            <Route path="/policies" element={<Policy />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
-            <Route path="/faq" element={<FrequentlyAskedQuestions />} />
-            <Route path='/*' element={<BadRequest />} />
+          <Route element={<PrivateRoutes />}>
+            <Route path='/' element={<Appshell />} >
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/adduser' element={<AddUser />} />
+              <Route path='/viewuser' element={<ViewUser />} />
+              <Route path='/addServiceCategory' element={<AddServiceCategory />} />
+              <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />
+              <Route path='/addService' element={<AddServices />} />
+              <Route path='/viewServices' element={<ViewServices />} />
+              <Route path='/addPackage' element={<AddPackages />} />
+              <Route path='/viewPackages' element={<ViewPackages />} />
+              <Route path='/addBooking' element={<AddBooking />} />
+              <Route path='/viewBookings' element={<ViewBooking />} />
+              <Route path='/addPayment' element={<AddPayment />} />
+              <Route path='/viewPayments' element={<ViewPayment />} />
+              <Route path="/chats" element={<ChatScreen />} />
+              <Route path='/addComplaint' element={<AddComplaint />} />
+              <Route path='/viewComplaints' element={<ViewComplaint />} />
+              <Route path="/policies" element={<Policy />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
+              <Route path="/faq" element={<FrequentlyAskedQuestions />} />
+              <Route path='/*' element={<BadRequest />} />
+            </Route>
           </Route>
         </Routes>
       </MantineProvider>

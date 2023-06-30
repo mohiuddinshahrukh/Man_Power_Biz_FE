@@ -17,33 +17,42 @@ import {
     Select,
 } from "@mantine/core";
 import { Modal } from "@mantine/core";
-
-import { useLocation } from "react-router-dom";
-
 import { Progress } from "@mantine/core";
 // import storage from "../FB";
 // import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 // import UploadCoverImage from "../UploadCoverImage/UploadCoverImage";
 
-import { ArrowRight, Trash, TrashOff, Upload, X } from "tabler-icons-react";
+import { ArrowRight, Trash, TrashOff, X } from "tabler-icons-react";
 
 import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
+import { postCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { failureNotification, successNotification } from "../../helpers/notificationHelper";
 // import { IconX } from "@tabler/icons";
 
 
 const AddUser = () => {
-    let { state } = useLocation();
-    console.log("STATE", state);
-    const { UserType } = state ?? "";
+
+    const AddUserFunction = async (values) => {
+        try {
+            let res = await postCallWithHeaders("users/addUser", values)
+            if (!res.error) {
+                successNotification(res.msg)
+                navigate("/viewUser")
+            }
+            else {
+                failureNotification(res.msg)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     // setCurrentLocation("Add User");
     // HOOKS
     const [errorMessages, setErrorMessages] = useState({});
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [type, setType] = useState(UserType ? UserType : "");
-    const [CNIC, setCNIC] = useState("");
+    const [type, setType] = useState("");
     const [password, setPassword] = useState("");
     const [cpassword, setCPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -85,8 +94,6 @@ const AddUser = () => {
     });
 
     const [visible, setVisible] = useState(false);
-
-    console.log(type);
     let navigate = useNavigate();
     // const handleUpload = (images) => {
     //     setError("");
@@ -138,16 +145,14 @@ const AddUser = () => {
     const form = useForm({
         validateInputOnChange: true,
         initialValues: {
-            name: "",
+            fullName: "",
             email: "",
             password: "",
             cpassword: "",
-            phone: "",
+            contactNumber: "",
             whatsappNumber: "",
-            CNIC: "",
-            userType: type,
-            isEnabled: true,
-            terms: true,
+            userType: "",
+            status: true,
         },
 
         validate: {
@@ -164,11 +169,11 @@ const AddUser = () => {
                     : "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
             cpassword: (value, values) =>
                 value === values.password ? null : "Passwords do not match",
-            name: (value) =>
+            fullName: (value) =>
                 value.trim().length > 1 && /^[a-zA-Z\s]*$/.test(value.trim())
                     ? null
                     : "Alphabetic Name with 2 or more characters",
-            phone: (value) =>
+            contactNumber: (value) =>
                 /^(03)(\d{9})$/.test(value)
                     ? null
                     : "11 digits Phone Number must start with 03",
@@ -176,8 +181,7 @@ const AddUser = () => {
                 /^(03)(\d{9})$/.test(value)
                     ? null
                     : "11 digits WhatsApp Number must start with 03",
-            CNIC: (value) =>
-                /^(\d{13})$/.test(value) ? null : "Please Enter 13 Digit CNIC Number",
+
         },
     });
     // const handleSubmit = async (event) => {
@@ -301,9 +305,9 @@ const AddUser = () => {
                         }}
                         opened={opened}
                         transition="rotate-left"
-                        transitionDuration={600}
+                        transitionduration={600}
                         size={600}
-                        transitionTimingFunction="ease"
+                        transitiontimingfunction="ease"
                         onClose={() => setOpened(false)}
                     >
                         <Title align="center" order={3}>
@@ -317,7 +321,7 @@ const AddUser = () => {
                                     leftIcon={<TrashOff size={14} />}
                                     onClick={() => setOpened(false)}
                                 >
-                                    No, Don't Cancel
+                                    {"No, Don't Cancel"}
                                 </Button>
                             </Grid.Col>
                             <Grid.Col align="center" xs={5} sm={4} md={4} lg={4}>
@@ -332,27 +336,26 @@ const AddUser = () => {
                             </Grid.Col>
                         </Grid>
                     </Modal>
-                    <Title order={1} p="md" align="center">
-                        Enter User's Details
-                    </Title>
+                    <Title order={1} p="md" align="center">{"Add User"}</Title>
                     <form
-                    // onSubmit={form.onSubmit((values) => handleSubmit(values))}
+                        // onSubmit={form.onSubmit((values) => handleSubmit(values))}
+                        onSubmit={form.onSubmit((values) => {
+                            AddUserFunction(values)
+                        })}
                     >
                         <Grid justify="space-around">
                             <Grid.Col md={12} lg={6} p="md">
                                 <Select
-                                    label="User Type"
+                                    label="Type"
                                     required
                                     size="md"
                                     placeholder="Select User Type"
-                                    value={type}
                                     data={[
                                         { value: "customer", label: "Customer" },
-                                        { value: "venueOwner", label: "Venue Owner" },
-                                        { value: "vendor", label: "Vendor" },
-                                        { value: "superAdmin", label: "Super Admin" },
+                                        { value: "admin", label: "Admin" },
                                     ]}
-                                    onChange={(event) => setType(event)}
+                                    // onChange={(event) => setType(event)}
+                                    {...form.getInputProps("userType")}
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
@@ -375,27 +378,25 @@ const AddUser = () => {
                                     required
                                     label="Full Name"
                                     placeholder="Enter User's Full Name"
-                                    value={name}
                                     // disabled={disabled}
                                     onChange={(e) => setName(e.target.value)}
-                                    {...form.getInputProps("name")}
+                                    {...form.getInputProps("fullName")}
                                 />
                             </Grid.Col>
 
                             <Grid.Col md={12} lg={6} p="md">
-                                <TextInput
-                                    error={renderErrorMessage("CNIC")}
-                                    size="md"
+                                <Select
+                                    label="Status"
                                     required
-                                    type="number"
-                                    label="CNIC"
-                                    min="0"
-                                    onScroll={() => { }}
-                                    // disabled={disabled}
-                                    placeholder="Enter 13 Digit CNIC"
-                                    value={phone}
-                                    onChange={(e) => setCNIC(e.target.value)}
-                                    {...form.getInputProps("CNIC")}
+                                    size="md"
+                                    placeholder="Select User Status"
+                                    // value={}
+                                    defaultValue={true}
+                                    data={[
+                                        { value: false, label: "Blocked" },
+                                        { value: true, label: "Active" },
+                                    ]}
+                                    {...form.getInputProps("status")}
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
@@ -407,19 +408,18 @@ const AddUser = () => {
                                     label="Contact Number"
                                     placeholder="Enter 11 Digit Phone Number"
                                     // disabled={disabled}
-                                    value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    {...form.getInputProps("phone")}
+                                    {...form.getInputProps("contactNumber")}
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
                                 <TextInput
-                                    error={renderErrorMessage("phone")}
+                                    error={renderErrorMessage("contactNumber")}
                                     size="md"
                                     required
                                     type="number"
                                     label={
-                                        form.getInputProps("phone").value.length === 11 ? (
+                                        form.getInputProps("contactNumber").value.length === 11 ? (
                                             <>
                                                 <span>WhatsApp Number</span> (
                                                 <span
@@ -430,7 +430,7 @@ const AddUser = () => {
                                                     onClick={() =>
                                                         form.setFieldValue(
                                                             "whatsappNumber",
-                                                            form.getInputProps("phone").value
+                                                            form.getInputProps("contactNumber").value
                                                         )
                                                     }
                                                 >
@@ -444,7 +444,6 @@ const AddUser = () => {
                                     }
                                     placeholder="Enter 11 Digit WhatsApp Number"
                                     // disabled={disabled}
-                                    value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     {...form.getInputProps("whatsappNumber")}
                                 />

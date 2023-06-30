@@ -1,11 +1,14 @@
 import { IconEye, IconUserPlus } from "@tabler/icons-react";
 import TableComponent from "../tableComponenet/TableComponent"
-import { rowData } from "./mockdata"
+// import { rowData } from "./mockdata"
+import { useEffect, useState } from "react";
+import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
+
 
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
     {
-        id: "profileImage",
+        id: "image",
         numeric: false,
         disablePadding: true,
         label: "Image",
@@ -17,7 +20,7 @@ let headCells = [
         label: "Type",
     },
     {
-        id: "name",
+        id: "fullName",
         numeric: false,
         disablePadding: true,
         label: "Name",
@@ -29,21 +32,21 @@ let headCells = [
         label: "Email",
     },
     {
-        id: "phone",
+        id: "contactNumber",
         date: false,
         numeric: false,
         disablePadding: true,
         label: "Phone",
     },
     {
-        id: "CNIC",
+        id: "whatsappNumber",
         date: false,
         numeric: false,
         disablePadding: true,
-        label: "NIC",
+        label: "WhatsApp",
     },
     {
-        id: "STATUS",
+        id: "status",
         date: false,
         numeric: false,
         disablePadding: true,
@@ -57,6 +60,13 @@ let headCells = [
         label: "Created At",
     },
     {
+        id: "updatedAt",
+        date: true,
+        numeric: false,
+        disablePadding: true,
+        label: "Updated At",
+    },
+    {
         id: "actions",
         view: <IconEye />,
         numeric: false,
@@ -68,9 +78,14 @@ let headCells = [
 
 
 const ViewUser = () => {
-    return (
+    const [usersList, setUserList] = useState([])
 
-        <TableComponent
+    useEffect(() => {
+        getCallWithHeaders("admin/getAllUsers").then(setUserList);
+
+    }, [])
+    return (
+        usersList.length > 0 && <TableComponent
             modalObject={{
                 title: "User Details"
             }}
@@ -81,7 +96,7 @@ const ViewUser = () => {
                 path: "/addUser",
                 icon: <IconUserPlus size={20} />,
                 iconPosition: "right"
-            }} headCells={headCells} rowData={rowData} />
+            }} headCells={headCells} rowData={usersList} />
 
     )
 }
