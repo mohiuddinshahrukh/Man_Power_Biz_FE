@@ -49,12 +49,12 @@ const AddUser = () => {
 
         validate: {
             email: (value) =>
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.trim())
+                /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(value.trim())
                     ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
                     null
                     : "Invalid Email",
             password: location.pathname.includes("edit") ? null : (value) =>
-                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+                /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/.test(
                     value
                 )
                     ? null
@@ -66,11 +66,11 @@ const AddUser = () => {
                     ? null
                     : "Alphabetic Name with 2 or more characters",
             contactNumber: (value) =>
-                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                /^\+91[1-9]\d{9}$/.test(value)
                     ? null
                     : "10 digits Phone Number must start with +91",
             whatsappNumber: (value) =>
-                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                /^\+91[1-9]\d{9}$/.test(value)
                     ? null
                     : "10 digits WhatsApp Number must start with +91",
 

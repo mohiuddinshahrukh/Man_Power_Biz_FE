@@ -48,16 +48,10 @@ export default function LoginSignUp() {
 
     }
     const [password, setPassword] = useState("");
-    const [cpassword, setCPassword] = useState("");
     const [loading, setLoading] = useState(false)
-    const [errorMessages] = useState({});
     const navigate = useNavigate();
-    const renderErrorMessage = (name) => {
-        if (errorMessages[name]) {
-            return errorMessages[name];
-        }
-    };
     const signUpForm = useForm({
+        validateInputOnChange: true,
         initialValues: {
             fullName: "",
             email: "",
@@ -71,13 +65,13 @@ export default function LoginSignUp() {
 
         validate: {
             email: (value) =>
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.trim())
+                /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(value.trim())
                     ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
                     null
                     : "Invalid Email",
             password: (value) =>
-                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
-                    value
+                /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/.test(
+                    value.trim()
                 )
                     ? null
                     : "Password Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
@@ -88,11 +82,11 @@ export default function LoginSignUp() {
                     ? null
                     : "Alphabetic Name with 2 or more characters",
             contactNumber: (value) =>
-                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                /^\+91[1-9]\d{9}$/.test(value.trim())
                     ? null
                     : "10 digits Phone Number must start with +91",
             whatsappNumber: (value) =>
-                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                /^\+91[1-9]\d{9}$/.test(value.trim())
                     ? null
                     : "10 digits WhatsApp Number must start with +91",
 
@@ -102,9 +96,8 @@ export default function LoginSignUp() {
     //     let res = await axios.get("http://localhost:8080/api/v1/urbanservices");
     //     console.log("res", res)
     // }
-    const loginFunction = async (credentials) => {
-        setLoading(true);
-        console.log("User creds: ", credentials);
+    const loginApiCall = async (credentials) => {
+        console.log("Flow here")
         try {
             let apiResponse = await axios({
                 method: "post",
@@ -135,9 +128,15 @@ export default function LoginSignUp() {
         }
         finally {
             setLoading(false);
+            console.log("Flow here 1")
         }
     }
+    const loginFunction = (credentials) => {
+        setLoading(true);
+        loginApiCall(credentials)
+    }
     const form = useForm({
+        validateInputOnChange: true,
         initialValues: {
             email: "",
             password: "",
@@ -145,12 +144,12 @@ export default function LoginSignUp() {
 
         validate: {
             email: (value) =>
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)
+                /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(value.trim())
                     ? null
                     : "Invalid email",
             password: (value) =>
-                /^(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(
-                    value
+                /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/.test(
+                    value.trim()
                 )
                     ? null
                     : "Password must contain 1 upper case letter, 1 special & 1 digit",
@@ -162,6 +161,8 @@ export default function LoginSignUp() {
     return (
 
         <Center component={BackgroundImage}
+
+
             src="https://images.unsplash.com/photo-1613375920388-f1f70f341f8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" h={"100vh"} >
             <Paper radius="md" p="2rem" withBorder pos={"relative"}>
                 <LoadingOverlay
@@ -175,8 +176,8 @@ export default function LoginSignUp() {
                         Welcome to Urban Services, {type}
                     </Title>
                     {type === "login" ? <form onSubmit={form.onSubmit((values) => { loginFunction(values) })}>
-                        <TextInput label="Email address" placeholder="hello@gmail.com" size="md" name='email'  {...form.getInputProps('email')} />
-                        <PasswordInput label="Password" placeholder="Your password" mt="md" size="md" name='password'  {...form.getInputProps('password')} />
+                        <TextInput label="Email address" placeholder="hello@gmail.com" size="md"   {...form.getInputProps('email')} />
+                        <PasswordInput label="Password" placeholder="Your password" mt="md" size="md"   {...form.getInputProps('password')} />
                         <Checkbox label="Keep me logged in" mt="xl" size="md" />
                         <Button type='submit' fullWidth mt="xl" size="md"
                             loading={loading}
@@ -199,7 +200,7 @@ export default function LoginSignUp() {
 
                                 <Grid.Col md={12} lg={6} p="md">
                                     <TextInput
-                                        error={renderErrorMessage("email")}
+                                        // error={renderErrorMessage("email")}
                                         size="md"
                                         placeholder="Enter User's Email"
                                         required
@@ -209,7 +210,7 @@ export default function LoginSignUp() {
                                 </Grid.Col>
                                 <Grid.Col md={12} lg={6} p="md">
                                     <TextInput
-                                        error={renderErrorMessage("fullName")}
+                                        // error={renderErrorMessage("fullName")}
                                         size="md"
                                         required
                                         label="Full Name"
@@ -220,7 +221,7 @@ export default function LoginSignUp() {
 
                                 <Grid.Col md={12} lg={6} p="md">
                                     <TextInput
-                                        error={renderErrorMessage("contactNumber")}
+                                        // error={renderErrorMessage("contactNumber")}
                                         size="md"
                                         required
                                         label="Contact Number"
@@ -265,7 +266,7 @@ export default function LoginSignUp() {
                                 </Grid.Col>
                                 <Grid.Col md={12} lg={6} p="md">
                                     <PasswordInput
-                                        error={renderErrorMessage("password")}
+                                        //error={renderErrorMessage("password")}
                                         size="md"
 
                                         placeholder="Enter Password"
@@ -287,15 +288,14 @@ export default function LoginSignUp() {
                                     <PasswordInput
                                         // error={renderErrorMessage("cpassword")}
                                         size="md"
-
                                         label="Confirm Password"
                                         // disabled={disabled}
                                         placeholder="Re-Enter Password"
-                                        value={cpassword}
+                                        // value={cpassword}
                                         errorProps={(v) => {
                                             return v !== password;
                                         }}
-                                        onChange={(e) => setCPassword(e.target.value)}
+                                        //onChange={(e) => setCPassword(e.target.value)}
                                         {...signUpForm.getInputProps("cpassword")}
                                     />
                                 </Grid.Col>
