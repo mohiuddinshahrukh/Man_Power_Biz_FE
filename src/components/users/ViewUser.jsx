@@ -1,9 +1,5 @@
-import { IconEye, IconUserPlus } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconTrash, IconUserPlus } from "@tabler/icons-react";
 import TableComponent from "../tableComponenet/TableComponent"
-// import { rowData } from "./mockdata"
-import { useEffect, useState } from "react";
-import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
-
 
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
@@ -68,24 +64,20 @@ let headCells = [
     },
     {
         id: "actions",
-        view: <IconEye />,
+        view: { icon: <IconEye /> },
+        edit: { icon: <IconEdit />, editRoute: "/edituser/" },
+        delete: { icon: <IconTrash />, deleteURI: "admin/deleteUser" },
         numeric: false,
         label: "Actions",
     },
-    // { id: "action", numeric: false, disablePadding: true, label: "Action" },
+    // {id: "action", numeric: false, disablePadding: true, label: "Action" },
 ];
 
 
 
 const ViewUser = () => {
-    const [usersList, setUserList] = useState([])
-
-    useEffect(() => {
-        getCallWithHeaders("admin/getAllUsers").then(setUserList);
-
-    }, [])
     return (
-        usersList.length > 0 && <TableComponent
+        <TableComponent
             modalObject={{
                 title: "User Details"
             }}
@@ -96,8 +88,9 @@ const ViewUser = () => {
                 path: "/addUser",
                 icon: <IconUserPlus size={20} />,
                 iconPosition: "right"
-            }} headCells={headCells} rowData={usersList} />
-
+            }} headCells={headCells}
+            getDataApiURI={"admin/getAllUsers"}
+        />
     )
 }
 

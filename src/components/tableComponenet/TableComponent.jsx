@@ -9,55 +9,71 @@ import {
   Table,
   Text,
   TextInput,
+  Title,
 } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SpecificViewModal from "../modals/SpecificViewModal";
 import { useDisclosure } from "@mantine/hooks";
+import { deleteCallWithHeaders, getCallWithHeaders } from "../../helpers/apiCallHelpers";
 
 const TableComponent = ({
   modalObject,
   buttonObject,
   headCells,
-  rowData,
+  getDataApiURI,
+
 }) => {
-  console.log("This is the row data", rowData)
-  const [rowDatas, setRowDatas] = useState(rowData);
+  const [rows, setTableRows] = useState([]);
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
   const [searchPhrase, setSearchPhrase] = useState("");
-  const [data, setData] = useState({})
+  const [data, setData] = useState({});
+
+  const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getCallWithHeaders(`${getDataApiURI}`).then(setTableRows).then(setLoading(false));
+  }, [refresh])
+
+
+
+  const deleteFunction = async (uri, id) => {
+    await deleteCallWithHeaders(uri, id, refresh, setRefresh);
+
+  }
   const sortNumericValue = (label) => {
     setSorted({
       sorted: label,
       reversed: !sorted.reversed,
     });
 
-    const rowDataCopy = [...rowDatas];
+    const rowDataCopy = [...rows];
     rowDataCopy.sort((dataA, dataB) => {
       if (sorted.reversed === true) {
         return dataB[label] - dataA[label];
       }
       return dataA[label] - dataB[label];
     });
-    setRowDatas(rowDataCopy);
+    setTableRows(rowDataCopy);
   };
   const sortStringValue = (label) => {
     setSorted({ sorted: label, reversed: !sorted.reversed });
-    const rowDataCopy = [...rowDatas];
+    const rowDataCopy = [...rows];
     rowDataCopy.sort((dataA, dataB) => {
       if (sorted.reversed === true) {
         return dataA[label].localeCompare(dataB[label]);
       }
       return dataB[label].localeCompare(dataA[label]);
     });
-    setRowDatas(rowDataCopy);
+    setTableRows(rowDataCopy);
   };
 
   const search = (event) => {
-    const matchedData = rowData?.filter((data) => {
-      // console.log("Object.values(data)", Object.values(data).length);
-      for (let i = 0; i < Object.values(data).length; i++) {
+    const matchedData = rows?.filter((data) => {
+      // console.log("Object.values(data)", Object.values(data)?.length);
+      for (let i = 0; i < Object.values(data)?.length; i++) {
         if (
           Object.values(data)[i].toString()
             .toLowerCase()
@@ -68,10 +84,9 @@ const TableComponent = ({
       }
     });
     setSorted({ sorted: "", reversed: false });
-    setRowDatas(matchedData);
+    setTableRows(matchedData);
     setSearchPhrase(event.target.value);
   };
-  // useEffect(() => {}, [rowDatas]);
 
   const [opened, { open, close }] = useDisclosure(false);
   return (
@@ -92,12 +107,12 @@ const TableComponent = ({
           />
         </Group>
       </Paper>
-      <Table striped withBorder withColumnBorders>
+      {rows?.length > 0 && !loading ? <Table striped withBorder withColumnBorders>
         <thead>
           <tr style={{ wordBreak: "keep-all" }}>
             {headCells?.map((head, index) => {
               return (
-                <th
+                head.id !== "actions" ? <th
                   key={index}
                   onClick={() => {
                     // console.log("I have been cilcked");
@@ -119,26 +134,56 @@ const TableComponent = ({
                       <IconArrowUp size={16} />
                     )}
                   </Group>
+                </th> : <th
+                  key={index}
+
+                >
+                  <Group
+                    noWrap
+                    spacing={3}
+                    align={"center"}
+                    position={head.numeric === true ? "right" : "left"}
+                  >
+                    <Text style={{}}>{head?.label}</Text>
+                  </Group>
                 </th>
               );
             })}
           </tr>
         </thead>
         <tbody>
-          {rowDatas?.map((row, outerIndex) => {
+          {rows?.map((row, outerIndex) => {
             return (
               <tr key={outerIndex}>
                 {headCells?.map((head, innerIndex) => {
                   return head.id === "actions" ? (
                     <td key={innerIndex}>
-                      <ActionIcon
-                        onClick={() => {
-                          open()
-                          setData(row)
-                        }}
-                      >
-                        {head.view}
-                      </ActionIcon>
+                      <Group noWrap spacing={0}>
+                        {head.view && <ActionIcon
+                          onClick={() => {
+                            open()
+                            setData(row)
+                          }}
+                        >
+                          {head.view.icon}
+                        </ActionIcon>}
+                        {head.edit &&
+                          head.edit ? <ActionIcon component={Link} to={`${head.edit.editRoute}${row._id}`}
+
+                          >
+                          {head.edit.icon}
+                        </ActionIcon> : null
+                        }
+                        {head.delete &&
+                          head.delete ? <ActionIcon
+                            onClick={() => {
+                              deleteFunction(head.delete.deleteURI, row._id)
+                            }}
+                          >
+                          {head.delete.icon}
+                        </ActionIcon> : null
+                        }
+                      </Group>
                     </td>
                   ) : <td
                     align={head?.numeric === true ? "right" : "left"}
@@ -161,7 +206,7 @@ const TableComponent = ({
             );
           })}
         </tbody>
-      </Table>
+      </Table> : <Title align="center" p={"xl"}>{!loading ? "No data to display" : "Loading"}</Title>}
     </Paper >
   );
 };

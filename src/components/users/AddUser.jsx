@@ -1,6 +1,6 @@
 // import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import DefaultAvatar from "../../Images/DefaultAvatar.png";
 import {
     Grid,
@@ -16,23 +16,94 @@ import {
     Input,
     Select,
 } from "@mantine/core";
-import { Modal } from "@mantine/core";
 import { Progress } from "@mantine/core";
 // import storage from "../FB";
 // import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 // import UploadCoverImage from "../UploadCoverImage/UploadCoverImage";
 
-import { ArrowRight, Trash, TrashOff, X } from "tabler-icons-react";
+import { X } from "tabler-icons-react";
 
 import { useForm } from "@mantine/form";
-import { postCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { editCallWithHeaders, getCallSpecificWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
 import { failureNotification, successNotification } from "../../helpers/notificationHelper";
+import CancelScreenModal from "../modals/CancelScreenModal";
+import { IconEdit, IconPlus } from "@tabler/icons-react";
 // import { IconX } from "@tabler/icons";
 
 
 const AddUser = () => {
+    const params = useParams();
+    const location = useLocation();
+    const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const form = useForm({
+        validateInputOnChange: true,
+        initialValues: {
+            fullName: "",
+            email: "",
+            password: "",
+            cpassword: "",
+            contactNumber: "",
+            whatsappNumber: "",
+            userType: "",
+            status: "",
+        },
+
+        validate: {
+            email: (value) =>
+                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.trim())
+                    ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
+                    null
+                    : "Invalid Email",
+            password: location.pathname.includes("edit") ? null : (value) =>
+                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+                    value
+                )
+                    ? null
+                    : "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+            cpassword: location.pathname.includes("edit") ? null : (value, values) =>
+                value === values.password ? null : "Passwords do not match",
+            fullName: (value) =>
+                value.trim().length > 1 && /^[a-zA-Z\s]*$/.test(value.trim())
+                    ? null
+                    : "Alphabetic Name with 2 or more characters",
+            contactNumber: (value) =>
+                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                    ? null
+                    : "10 digits Phone Number must start with +91",
+            whatsappNumber: (value) =>
+                /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[789]\d{9}$/.test(value)
+                    ? null
+                    : "10 digits WhatsApp Number must start with +91",
+
+        },
+    });
+    const getUserDetails = async () => {
+        setLoading(true)
+
+        const apiResponse = await getCallSpecificWithHeaders("admin/getAUser", params.id)
+        setLoading(false)
+        return apiResponse.data
+
+    }
+
+    useEffect(() => {
+        try {
+            if (location.pathname.includes("edit")) {
+                getUserDetails().then(form.setValues)
+            }
+            else {
+                form.reset()
+            }
+        } catch (error) {
+            failureNotification(error)
+        }
+
+
+    }, [location.pathname])
+
 
     const AddUserFunction = async (values) => {
+        setLoading(true)
         try {
             let res = await postCallWithHeaders("users/addUser", values)
             if (!res.error) {
@@ -45,17 +116,35 @@ const AddUser = () => {
         } catch (error) {
             console.log(error)
         }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    const EditUserFunction = async (values) => {
+        setLoading(true)
+        try {
+            let res = await editCallWithHeaders(`admin/updateUser`, params.id, values)
+            if (!res.error) {
+                successNotification(res.msg)
+                navigate("/viewUser")
+            }
+            else {
+                failureNotification(res.msg)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        finally {
+            setLoading(false)
+        }
     }
     // setCurrentLocation("Add User");
     // HOOKS
     const [errorMessages, setErrorMessages] = useState({});
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [type, setType] = useState("");
     const [password, setPassword] = useState("");
     const [cpassword, setCPassword] = useState("");
-    const [loading, setLoading] = useState(false);
+
     const [disabled, setDisabled] = useState(false);
     const [disabled2, setDisabled2] = useState(true);
     const [disabled3, setDisabled3] = useState(false);
@@ -65,7 +154,7 @@ const AddUser = () => {
 
     const [images, setImages] = useState([]);
     const [percentages, setPercentages] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+
     const [urls, setUrls] = useState("");
     const previews = images?.map((file, index) => {
         const imageUrl = URL.createObjectURL(file);
@@ -93,7 +182,6 @@ const AddUser = () => {
         );
     });
 
-    const [visible, setVisible] = useState(false);
     let navigate = useNavigate();
     // const handleUpload = (images) => {
     //     setError("");
@@ -142,48 +230,6 @@ const AddUser = () => {
     //     // alert("OUT");
     // };
 
-    const form = useForm({
-        validateInputOnChange: true,
-        initialValues: {
-            fullName: "",
-            email: "",
-            password: "",
-            cpassword: "",
-            contactNumber: "",
-            whatsappNumber: "",
-            userType: "",
-            status: true,
-        },
-
-        validate: {
-            email: (value) =>
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.trim())
-                    ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
-                    null
-                    : "Invalid Email",
-            password: (value) =>
-                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
-                    value
-                )
-                    ? null
-                    : "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
-            cpassword: (value, values) =>
-                value === values.password ? null : "Passwords do not match",
-            fullName: (value) =>
-                value.trim().length > 1 && /^[a-zA-Z\s]*$/.test(value.trim())
-                    ? null
-                    : "Alphabetic Name with 2 or more characters",
-            contactNumber: (value) =>
-                /^(03)(\d{9})$/.test(value)
-                    ? null
-                    : "11 digits Phone Number must start with 03",
-            whatsappNumber: (value) =>
-                /^(03)(\d{9})$/.test(value)
-                    ? null
-                    : "11 digits WhatsApp Number must start with 03",
-
-        },
-    });
     // const handleSubmit = async (event) => {
     //     // handleUpload();
 
@@ -270,82 +316,40 @@ const AddUser = () => {
 
     return (
         <Paper
-
+            pos={"relative"}
             style={{
                 width: "100%",
                 height: "100%",
             }}
         >
+            <LoadingOverlay
+                visible={loading}
+                loaderProps={{ size: "xl", color: "pink", variant: "bars" }}
+                overlayOpacity={0.5}
+                overlayColor="#c5c5c5"
+            />
             <Center>
                 <Paper
                     style={{
                         width: "80%",
                         height: "100%",
                     }}
+
                 >
-                    <LoadingOverlay
-                        visible={visible}
-                        loaderProps={{ size: "xl", color: "pink", variant: "bars" }}
-                        overlayOpacity={0.5}
-                        overlayColor="#c5c5c5"
-                        zIndex={1}
-                    />
-                    <Modal
-                        styles={{
-                            close: {
-                                color: "black",
-                                backgroundColor: "#EAEAEA",
-                                borderRadius: "50%",
-                                "&:hover": {
-                                    transition: "50ms",
-                                    color: "white",
-                                    backgroundColor: "red",
-                                },
-                            },
-                        }}
-                        opened={opened}
-                        transition="rotate-left"
-                        transitionduration={600}
-                        size={600}
-                        transitiontimingfunction="ease"
-                        onClose={() => setOpened(false)}
-                    >
-                        <Title align="center" order={3}>
-                            Are You Sure Yo Want To Cancel?
-                        </Title>
-                        <Grid align="center" justify="space-around" p="md">
-                            <Grid.Col align="center" xs={3} sm={3} md={4} lg={4}>
-                                <Button
-                                    align="center"
-                                    color="light"
-                                    leftIcon={<TrashOff size={14} />}
-                                    onClick={() => setOpened(false)}
-                                >
-                                    {"No, Don't Cancel"}
-                                </Button>
-                            </Grid.Col>
-                            <Grid.Col align="center" xs={5} sm={4} md={4} lg={4}>
-                                <Button
-                                    align="center"
-                                    color="red"
-                                    leftIcon={<Trash size={14} />}
-                                    onClick={() => navigate("/users")}
-                                >
-                                    Yes, Cancel
-                                </Button>
-                            </Grid.Col>
-                        </Grid>
-                    </Modal>
-                    <Title order={1} p="md" align="center">{"Add User"}</Title>
+
+                    <CancelScreenModal opened={opened} setOpened={setOpened} path={"/viewuser"} />
+                    <Title order={1} p="md" align="center">{location.pathname.includes("edit") ? "Edit User" : "Add User"}</Title>
                     <form
                         // onSubmit={form.onSubmit((values) => handleSubmit(values))}
                         onSubmit={form.onSubmit((values) => {
-                            AddUserFunction(values)
+                            !location.pathname.includes("edit") ? AddUserFunction(values) : EditUserFunction(values)
                         })}
                     >
-                        <Grid justify="space-around">
+                        <Grid justify="space-around" >
+
                             <Grid.Col md={12} lg={6} p="md">
                                 <Select
+                                    value={form.get}
                                     label="Type"
                                     required
                                     size="md"
@@ -354,32 +358,26 @@ const AddUser = () => {
                                         { value: "customer", label: "Customer" },
                                         { value: "admin", label: "Admin" },
                                     ]}
-                                    // onChange={(event) => setType(event)}
+
                                     {...form.getInputProps("userType")}
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
                                 <TextInput
-                                    error={renderErrorMessage("email")}
                                     size="md"
                                     placeholder="Enter User's Email"
-                                    value={email}
                                     required
-                                    // disabled={disabled}
+
                                     label="Email Address"
-                                    onChange={(e) => setEmail(e.target.value)}
                                     {...form.getInputProps("email")}
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
                                 <TextInput
-                                    error={renderErrorMessage("name")}
                                     size="md"
                                     required
                                     label="Full Name"
                                     placeholder="Enter User's Full Name"
-                                    // disabled={disabled}
-                                    onChange={(e) => setName(e.target.value)}
                                     {...form.getInputProps("fullName")}
                                 />
                             </Grid.Col>
@@ -401,23 +399,19 @@ const AddUser = () => {
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
                                 <TextInput
-                                    error={renderErrorMessage("phone")}
                                     size="md"
                                     required
-                                    type="number"
                                     label="Contact Number"
                                     placeholder="Enter 11 Digit Phone Number"
                                     // disabled={disabled}
-                                    onChange={(e) => setPhone(e.target.value)}
                                     {...form.getInputProps("contactNumber")}
+
                                 />
                             </Grid.Col>
                             <Grid.Col md={12} lg={6} p="md">
                                 <TextInput
-                                    error={renderErrorMessage("contactNumber")}
                                     size="md"
                                     required
-                                    type="number"
                                     label={
                                         form.getInputProps("contactNumber").value.length === 11 ? (
                                             <>
@@ -444,7 +438,6 @@ const AddUser = () => {
                                     }
                                     placeholder="Enter 11 Digit WhatsApp Number"
                                     // disabled={disabled}
-                                    onChange={(e) => setPhone(e.target.value)}
                                     {...form.getInputProps("whatsappNumber")}
                                 />
                             </Grid.Col>
@@ -452,7 +445,7 @@ const AddUser = () => {
                                 <PasswordInput
                                     error={renderErrorMessage("password")}
                                     size="md"
-                                    required
+
                                     placeholder="Enter Password"
                                     label="Password"
                                     // disabled={disabled}
@@ -472,7 +465,7 @@ const AddUser = () => {
                                 <PasswordInput
                                     // error={renderErrorMessage("cpassword")}
                                     size="md"
-                                    required
+
                                     label="Confirm Password"
                                     // disabled={disabled}
                                     placeholder="Re-Enter Password"
@@ -524,6 +517,7 @@ const AddUser = () => {
                             </Grid.Col>
                             <Grid.Col sm={6} xs={6} md={6} lg={3} p="md">
                                 <Button
+                                    uppercase
                                     type="submit"
                                     size="md"
                                     fullWidth
@@ -531,9 +525,9 @@ const AddUser = () => {
                                     color="dark"
                                     disabled={disabled}
                                     loading={loading}
-                                    rightIcon={<ArrowRight />}
+                                    rightIcon={location.pathname.includes("edit") ? <IconEdit /> : <IconPlus />}
                                 >
-                                    REGISTER
+                                    {location.pathname.includes("edit") ? "Edit" : "Add"}
                                 </Button>
                             </Grid.Col>
                         </Grid>

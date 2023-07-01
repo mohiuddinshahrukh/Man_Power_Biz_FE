@@ -40,6 +40,7 @@ function App() {
             <Route path='/' element={<Appshell />} >
               <Route path='/' element={<Dashboard />} />
               <Route path='/adduser' element={<AddUser />} />
+              <Route path='/edituser/:id' element={<AddUser />} />
               <Route path='/viewuser' element={<ViewUser />} />
               <Route path='/addServiceCategory' element={<AddServiceCategory />} />
               <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />

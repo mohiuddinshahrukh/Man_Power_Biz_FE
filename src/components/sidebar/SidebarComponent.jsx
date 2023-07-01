@@ -19,7 +19,7 @@ const data = [
         subNav: [
             {
                 icon: IconPlus,
-                label: "Add User", 
+                label: "Add User",
                 path: "addUser",
             },
             {
@@ -165,7 +165,6 @@ const SidebarComponent = () => {
             component={Link}
             to={item.path}
             onClick={() => {
-                console.log("item", item)
                 setActive(index);
                 setSubActive(null);
                 if (!item.subNav) {
@@ -185,7 +184,6 @@ const SidebarComponent = () => {
                         component={Link}
                         to={subItem.path}
                         onClick={() => {
-                            console.log("subItem", subItem)
                             setSubActive(i);
                             setActive(index);
                             // setOpened(false);
