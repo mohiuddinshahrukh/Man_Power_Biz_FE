@@ -58,7 +58,6 @@ export default function LoginSignUp() {
         }
     };
     const signUpForm = useForm({
-        validateInputOnChange: true,
         initialValues: {
             fullName: "",
             email: "",
@@ -204,7 +203,6 @@ export default function LoginSignUp() {
                                         size="md"
                                         placeholder="Enter User's Email"
                                         required
-
                                         label="Email Address"
                                         {...signUpForm.getInputProps("email")}
                                     />

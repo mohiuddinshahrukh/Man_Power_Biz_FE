@@ -36,7 +36,6 @@ const AddUser = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
     const form = useForm({
-        validateInputOnChange: true,
         initialValues: {
             fullName: "",
             email: "",

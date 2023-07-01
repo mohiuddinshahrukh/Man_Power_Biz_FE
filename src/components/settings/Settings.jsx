@@ -160,7 +160,7 @@ const Settings = () => {
 
     // FORM
     const form = useForm({
-        validateInputOnChange: true,
+
         initialValues: {
             name: name,
             email: email,
@@ -194,7 +194,7 @@ const Settings = () => {
     });
     // EDIT PASSWORD FORM
     const form1 = useForm({
-        validateInputOnChange: true,
+
         initialValues: {
             currentPassword: "",
             newPassword: "",

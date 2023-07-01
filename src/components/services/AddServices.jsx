@@ -311,7 +311,7 @@ const AddService = () => {
     console.log("getVendorsData", getVendorsData);
     const [getVendorCategories, setVendorsCategories] = useState([]);
     const form2 = useForm({
-        validateInputOnChange: true,
+
         initialValues: {
             contactPhone: "",
             contactWhatsApp: "",
@@ -361,13 +361,7 @@ const AddService = () => {
         }
     };
     const form1 = useForm({
-        validateInputOnChange: [
-            "vendorCategoryId",
-            "vendorId",
-            "address",
-            "vendorServiceTitle",
-            "city",
-        ],
+
         initialValues: {
             vendorCategoryId: "",
             vendorId: "",

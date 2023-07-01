@@ -295,13 +295,7 @@ const AddPackages = () => {
 
     // FORM
     const form = useForm({
-        validateInputOnChange: [
-            "vendorBusinessId",
-            "vendorPackageTitle",
-            "price",
-            "packageDuration",
-            "coverImage",
-        ],
+
         initialValues: {
             vendorBusinessId: "",
             vendorPackageTitle: "",

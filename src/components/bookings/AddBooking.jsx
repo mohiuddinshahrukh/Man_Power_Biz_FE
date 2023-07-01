@@ -278,7 +278,7 @@ const AddBooking = () => {
     };
 
     const form1 = useForm({
-        validateInputOnChange: true,
+
         initialValues: {
             // category: "",
             // vendor: "",
@@ -293,7 +293,7 @@ const AddBooking = () => {
         },
     });
     const form = useForm({
-        validateInputOnChange: ["customer", "phone", "email"],
+
         initialValues: { customer: "", phone: "", email: "", description: "" },
 
         validate: {

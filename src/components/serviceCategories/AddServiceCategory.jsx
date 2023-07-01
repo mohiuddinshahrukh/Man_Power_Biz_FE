@@ -46,7 +46,7 @@ const AddServiceCategory = () => {
     let navigate = useNavigate();
     // FORM
     const form = useForm({
-        validateInputOnChange: ["categoryTitle"],
+
         initialValues: {
             categoryTitle: "",
             image: "",
