@@ -15,6 +15,7 @@ import {
     ScrollArea,
     rem,
     Title,
+    Anchor,
 } from '@mantine/core';
 // import { MantineLogo } from '@mantine/ds';
 import { useDisclosure } from '@mantine/hooks';
@@ -27,6 +28,7 @@ import {
     IconCoin,
     IconChevronDown,
 } from '@tabler/icons-react';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -150,9 +152,9 @@ export function MainNavbarComponent() {
                     {/* <MantineLogo size={30} /> */}
                     <Title>Logo</Title>
                     <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
-                        <a href="#" className={classes.link}>
+                        <Anchor underline={false} component={Link} to={"/"} className={classes.link}>
                             Home
-                        </a>
+                        </Anchor>
                         {/* <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                             <HoverCard.Target>
                                 <a href="#" className={classes.link}>
@@ -207,7 +209,7 @@ export function MainNavbarComponent() {
 
 
                         <Group className={classes.hiddenMobile}>
-                            <Button variant="default">Log in</Button>
+                            <Button variant="default" component={Link} to={"/auth"}>Log in</Button>
                             <Button>Sign up</Button>
                         </Group>
                     </Group>
@@ -249,7 +251,9 @@ export function MainNavbarComponent() {
                     <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
                     <Group position="center" grow pb="xl" px="md">
-                        <Button variant="default">Log in</Button>
+                        <Anchor
+                            component={Link} to={"/auth"}
+                        ><Button variant="default" >Log in</Button></Anchor>
                         <Button>Sign up</Button>
                     </Group>
                 </ScrollArea>
