@@ -26,7 +26,7 @@ import AddServices from './components/services/AddServices'
 import ViewServices from './components/services/ViewServices'
 import LoginSignUp from './components/login_signup/LoginSignUp'
 import PrivateRoutes from './helpers/PrivateRoute'
-import { MainNavbarComponent } from './components/navbar/MainNavbarComponent'
+import LandingPage from './components/landingPage/LandingPage'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -35,7 +35,7 @@ function App() {
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
-        <MainNavbarComponent />
+
         <Routes>
           <Route path='/auth' element={<LoginSignUp />} />
           <Route element={<PrivateRoutes />}>
@@ -65,7 +65,11 @@ function App() {
             </Route>
           </Route>
           {/* Customer side */}
-          <Route path='/' element={<h1>Landing page</h1>}></Route>
+
+          <Route path='/' element={<LandingPage />}>
+
+          </Route>
+
         </Routes>
       </MantineProvider>
     </ColorSchemeProvider>
