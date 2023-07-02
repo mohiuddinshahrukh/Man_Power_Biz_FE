@@ -66,13 +66,13 @@ const AddUser = () => {
                     ? null
                     : "Alphabetic Name with 2 or more characters",
             contactNumber: (value) =>
-                /^\+91[1-9]\d{9}$/.test(value)
+                /^[1-9]\d{9}$/.test(value)
                     ? null
-                    : "10 digits Phone Number must start with +91",
+                    : "10 digit Phone Number",
             whatsappNumber: (value) =>
-                /^\+91[1-9]\d{9}$/.test(value)
+                /^[1-9]\d{9}$/.test(value)
                     ? null
-                    : "10 digits WhatsApp Number must start with +91",
+                    : "10 digit WhatsApp Number",
 
         },
     });

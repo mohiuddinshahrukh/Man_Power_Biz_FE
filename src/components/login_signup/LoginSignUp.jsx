@@ -83,13 +83,13 @@ export default function LoginSignUp() {
                     ? null
                     : "Alphabetic Name with 2 or more characters",
             contactNumber: (value) =>
-                /^\+91[1-9]\d{9}$/.test(value.trim())
+                /^[1-9]\d{9}$/.test(value.trim())
                     ? null
-                    : "10 digits Phone Number must start with +91",
+                    : "10 digit Phone Number",
             whatsappNumber: (value) =>
-                /^\+91[1-9]\d{9}$/.test(value.trim())
+                /^[1-9]\d{9}$/.test(value.trim())
                     ? null
-                    : "10 digits WhatsApp Number must start with +91",
+                    : "10 digit WhatsApp Number",
 
         },
     });
@@ -226,7 +226,7 @@ export default function LoginSignUp() {
                                         size="md"
                                         required
                                         label="Contact Number"
-                                        placeholder="Enter 11 Digit Phone Number"
+                                        placeholder="Enter 10 Digit Phone Number"
                                         // disabled={disabled}
                                         {...signUpForm.getInputProps("contactNumber")}
 
@@ -260,7 +260,7 @@ export default function LoginSignUp() {
                                                 "WhatsApp Number"
                                             )
                                         }
-                                        placeholder="Enter 11 Digit WhatsApp Number"
+                                        placeholder="Enter 10 Digit WhatsApp Number"
                                         // disabled={disabled}
                                         {...signUpForm.getInputProps("whatsappNumber")}
                                     />
@@ -317,7 +317,7 @@ export default function LoginSignUp() {
                         </form>}
 
 
-                    <Group noWrap><Text>{type === "login" ? "Don't " : "Already "}have an account? </Text><Text onClick={() => { toggle() }} color='blue'>Click here</Text></Group>
+                    <Group noWrap><Text>{type === "login" ? "Don't " : "Already "}have an account? </Text><Text style={{ cursor: "pointer" }} onClick={() => { toggle() }} color='blue'>Click here</Text></Group>
                 </Stack>
             </Paper>
         </Center >
