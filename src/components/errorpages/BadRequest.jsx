@@ -51,7 +51,7 @@ export function BadRequest() {
                 been moved to another URL.
             </Text>
             <Group position="center">
-                <Button component={Link} variant="subtle" size="md" to={"/"}>
+                <Button component={Link} variant="subtle" size="md" to={"/adminDashboard"}>
                     Take me back to home page
                 </Button>
             </Group>

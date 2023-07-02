@@ -9,7 +9,7 @@ const data = [
         icon: IconHome,
         label: "Dashboard",
         // description: "Item with description",
-        path: "/",
+        path: "/adminDashboard",
     },
     {
         icon: IconUsers,

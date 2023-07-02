@@ -26,6 +26,7 @@ import AddServices from './components/services/AddServices'
 import ViewServices from './components/services/ViewServices'
 import LoginSignUp from './components/login_signup/LoginSignUp'
 import PrivateRoutes from './helpers/PrivateRoute'
+import { MainNavbarComponent } from './components/navbar/MainNavbarComponent'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -34,34 +35,37 @@ function App() {
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+        <MainNavbarComponent />
         <Routes>
           <Route path='/auth' element={<LoginSignUp />} />
           <Route element={<PrivateRoutes />}>
-            <Route path='/' element={<Appshell />} >
-              <Route path='/' element={<Dashboard />} />
-              <Route path='/adduser' element={<AddUser />} />
-              <Route path='/edituser/:id' element={<AddUser />} />
-              <Route path='/viewuser' element={<ViewUser />} />
-              <Route path='/addServiceCategory' element={<AddServiceCategory />} />
-              <Route path='/viewServiceCategories' element={<ViewServiceCategory />} />
-              <Route path='/addService' element={<AddServices />} />
-              <Route path='/viewServices' element={<ViewServices />} />
-              <Route path='/addPackage' element={<AddPackages />} />
-              <Route path='/viewPackages' element={<ViewPackages />} />
-              <Route path='/addBooking' element={<AddBooking />} />
-              <Route path='/viewBookings' element={<ViewBooking />} />
-              <Route path='/addPayment' element={<AddPayment />} />
-              <Route path='/viewPayments' element={<ViewPayment />} />
-              <Route path="/chats" element={<ChatScreen />} />
-              <Route path='/addComplaint' element={<AddComplaint />} />
-              <Route path='/viewComplaints' element={<ViewComplaint />} />
-              <Route path="/policies" element={<Policy />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
-              <Route path="/faq" element={<FrequentlyAskedQuestions />} />
-              <Route path='/*' element={<BadRequest />} />
+            <Route path='/adminDashboard' element={<Appshell />} >
+              <Route path='/adminDashboard' element={<Dashboard />} />
+              <Route path='adduser' element={<AddUser />} />
+              <Route path='edituser/:id' element={<AddUser />} />
+              <Route path='viewuser' element={<ViewUser />} />
+              <Route path='addServiceCategory' element={<AddServiceCategory />} />
+              <Route path='viewServiceCategories' element={<ViewServiceCategory />} />
+              <Route path='addService' element={<AddServices />} />
+              <Route path='viewServices' element={<ViewServices />} />
+              <Route path='addPackage' element={<AddPackages />} />
+              <Route path='viewPackages' element={<ViewPackages />} />
+              <Route path='addBooking' element={<AddBooking />} />
+              <Route path='viewBookings' element={<ViewBooking />} />
+              <Route path='addPayment' element={<AddPayment />} />
+              <Route path='viewPayments' element={<ViewPayment />} />
+              <Route path="chats" element={<ChatScreen />} />
+              <Route path='addComplaint' element={<AddComplaint />} />
+              <Route path='viewComplaints' element={<ViewComplaint />} />
+              <Route path="policies" element={<Policy />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
+              <Route path="faq" element={<FrequentlyAskedQuestions />} />
+              <Route path='*' element={<BadRequest />} />
             </Route>
           </Route>
+          {/* Customer side */}
+          <Route path='/' element={<h1>Landing page</h1>}></Route>
         </Routes>
       </MantineProvider>
     </ColorSchemeProvider>

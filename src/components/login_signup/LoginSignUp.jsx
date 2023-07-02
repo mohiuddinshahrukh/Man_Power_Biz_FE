@@ -25,7 +25,8 @@ import { IconLogin, IconUserPlus } from '@tabler/icons-react';
 import { postCallWithoutHeaders } from '../../helpers/apiCallHelpers';
 // import { useEffect } from 'react';
 // import { Link } from 'react-router-dom';
-const backendURI = import.meta.env.REACT_APP_BACKEND_URI || "http://localhost:8080/api/v1";
+// const backendURI = import.meta.env.REACT_APP_BACKEND_URI || "http://localhost:8080/api/v1";
+const backendURI = import.meta.env.REACT_APP_BACKEND_URI || "https://usprojbe-production.up.railway.app/api/v1";
 
 export default function LoginSignUp() {
     const registerNewUserFunction = async (values) => {
@@ -110,7 +111,7 @@ export default function LoginSignUp() {
                     successNotification(apiResponse.data.msg)
                     localStorage.setItem("adminData", JSON.stringify(apiResponse.data.data))
                     localStorage.setItem("adminDataToken", apiResponse.data.token);
-                    navigate("/")
+                    navigate("/adminDashboard")
 
                 }
                 else {
