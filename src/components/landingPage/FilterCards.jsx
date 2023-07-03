@@ -10,14 +10,14 @@ import {
     Image,
 } from '@mantine/core';
 
-import cooking from "../../../public/assets/map_cooking.svg"
-import dry_cleaning from "../../../public/assets/map_dry_cleaning.svg"
-import electrician from "../../../public/assets/map_electrician.svg"
-import electronics from "../../../public/assets/map_electronics.svg"
-import mechanic from "../../../public/assets/map_mechanic.svg"
-import men_therapy from "../../../public/assets/map_men_therapy.svg"
-import plumber from "../../../public/assets/map_plumber.svg"
-import plus from "../../../public/assets/map_plus.svg"
+import cooking from "../../assets/map_cooking.svg"
+import dry_cleaning from "../../assets/map_dry_cleaning.svg"
+import electrician from "../../assets/map_electrician.svg"
+import electronics from "../../assets/map_electronics.svg"
+import mechanic from "../../assets/map_mechanic.svg"
+import men_therapy from "../../assets/map_men_therapy.svg"
+import plumber from "../../assets/map_plumber.svg"
+import plus from "../../assets/map_plus.svg"
 const mockdata = [
     { title: 'Electricians', icon: electrician, color: 'violet' },
     { title: 'Plumbers', icon: plumber, color: 'indigo' },
@@ -62,7 +62,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function FilterCards() {
+const FilterCards = () => {
     const { classes } = useStyles();
 
     const items = mockdata.map((item) => (
@@ -88,3 +88,5 @@ export function FilterCards() {
         </Card></div>
     );
 }
+
+export default FilterCards
