@@ -5,7 +5,6 @@ import { failureNotification, successNotification } from "./notificationHelper";
 // const baseURI = "http://localhost:8080/api/v1";
 const baseURI = "https://usprojbe-production.up.railway.app/api/v1";
 
-
 export const getCallWithHeaders = async (endpoint) => {
   try {
     let apiResponse = await axios({

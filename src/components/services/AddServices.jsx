@@ -651,24 +651,18 @@ const AddService = () => {
                             >
                                 <Grid grow>
                                     <Grid.Col lg={6}>
-                                        <Select
+                                        <TextInput
                                             required
+                                            label="Service Title"
+                                            placeholder="Service Title"
+                                            maxLength={100}
+                                            // mt="sm"
                                             size="md"
-                                            label="Select City"
-                                            placeholder="Select City"
-                                            value={venueCity}
-                                            onChange={(e) => setVenueCity(e)}
-                                            data={[
-                                                {
-                                                    value: "kolkata",
-                                                    label: "Kolkata",
-                                                },
-
-                                            ]}
-                                            rightSection={<ChevronDown size={14} />}
-                                            rightSectionWidth={40}
+                                            error={renderErrorMessage("vendorServiceTitle")}
+                                            {...form1.getInputProps("vendorServiceTitle")}
                                         />
                                     </Grid.Col>
+
                                     <Grid.Col lg={6}>
                                         <Select
                                             size="md"
@@ -704,16 +698,63 @@ const AddService = () => {
                                             {...form1.getInputProps("vendorId")}
                                         />
                                     </Grid.Col>
-                                    <Grid.Col lg={12}>
-                                        <TextInput
+                                    <Grid.Col lg={6}>
+
+                                        <Select
                                             required
-                                            label="Service Title"
-                                            placeholder="Service Title"
-                                            maxLength={100}
-                                            // mt="sm"
                                             size="md"
-                                            error={renderErrorMessage("vendorServiceTitle")}
-                                            {...form1.getInputProps("vendorServiceTitle")}
+                                            label="Select City"
+                                            placeholder="Select City"
+                                            value={venueCity}
+                                            onChange={(e) => setVenueCity(e)}
+                                            data={[
+                                                {
+                                                    value: "kolkata",
+                                                    label: "Kolkata",
+                                                },
+
+                                            ]}
+                                            rightSection={<ChevronDown size={14} />}
+                                            rightSectionWidth={40}
+                                        />
+                                    </Grid.Col>
+                                    <Grid.Col lg={6}>
+                                        <Select
+                                            required
+                                            size="md"
+                                            label="Select Pin"
+                                            placeholder="Select Pin"
+                                            // value={venueCity}
+                                            // onChange={(e) => setVenueCity(e)}
+                                            data={[
+                                                {
+                                                    value: "pin1",
+                                                    label: "Pin 1",
+                                                },
+                                                {
+                                                    value: "pin2",
+                                                    label: "Pin 2",
+                                                },
+                                                {
+                                                    value: "pin3",
+                                                    label: "Pin 3",
+                                                },
+                                                {
+                                                    value: "pin4",
+                                                    label: "Pin 4",
+                                                },
+                                                {
+                                                    value: "pin5",
+                                                    label: "Pin 5",
+                                                },
+                                                {
+                                                    value: "pin6",
+                                                    label: "Pin 6",
+                                                },
+
+                                            ]}
+                                            rightSection={<ChevronDown size={14} />}
+                                            rightSectionWidth={40}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={12}>
