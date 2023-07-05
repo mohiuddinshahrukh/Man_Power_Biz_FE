@@ -45,6 +45,7 @@ function App() {
               <Route path='edituser/:id' element={<AddUser />} />
               <Route path='viewuser' element={<ViewUser />} />
               <Route path='addServiceCategory' element={<AddServiceCategory />} />
+              <Route path='editServiceCategory/:id' element={<AddServiceCategory />} />
               <Route path='viewServiceCategories' element={<ViewServiceCategory />} />
               <Route path='addService' element={<AddServices />} />
               <Route path='viewServices' element={<ViewServices />} />

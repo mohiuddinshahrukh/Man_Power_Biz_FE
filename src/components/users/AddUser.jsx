@@ -34,6 +34,7 @@ import { IconEdit, IconPlus } from "@tabler/icons-react";
 const AddUser = () => {
     const params = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
     const form = useForm({
         initialValues: {
@@ -180,132 +181,6 @@ const AddUser = () => {
             </div>
         );
     });
-
-    let navigate = useNavigate();
-    // const handleUpload = (images) => {
-    //     setError("");
-    //     setPercentages([]);
-    //     setDisabled(true);
-    //     setDisabled2(true);
-    //     if (images.length <= 0) {
-    //         alert("Please choose a file first!");
-    //     }
-    //     var percent = 0;
-    //     for (let i = 0; i < images.length; i++) {
-    //         const image = images[i];
-    //         // alert("IN2");
-    //         const storageRef = ref(
-    //             storage,
-    //             `/defaultAvatar/${image.name}+${Math.random(999999)}`
-    //         );
-    //         const uploadTask = uploadBytesResumable(storageRef, image);
-    //         uploadTask.on(
-    //             "state_changed",
-    //             (snapshot) => {
-    //                 console.log(snapshot);
-    //                 percent = Math.round(
-    //                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-    //                 );
-    //             },
-    //             (err) => console.log(err),
-    //             () => {
-    //                 // download url
-    //                 let Percentages = percentages;
-    //                 Percentages[i] = percent;
-    //                 // alert(i);
-    //                 console.log(Percentages);
-    //                 //   alert(Percentages)
-    //                 setPercentages(Percentages);
-    //                 getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-    //                     setUrls(url);
-    //                     setRefresh(!refresh);
-    //                     setDisabled(false);
-    //                     setDisabled2(false);
-    //                     setError("");
-    //                 });
-    //             }
-    //         );
-    //     }
-    //     // alert("OUT");
-    // };
-
-    // const handleSubmit = async (event) => {
-    //     // handleUpload();
-
-    //     setVisible(true);
-    //     setLoading(true);
-    //     // if (images.length <= 0) {
-    //     //   setError("Profile Picture is Required");
-    //     //   setDisabled(false);
-    //     //   setVisible(false);
-    //     //   setLoading(false);
-    //     // } else {
-    //     console.log("inside body");
-    //     var { email, password, name, phone, whatsappNumber, CNIC } = event;
-    //     const body = {
-    //         email,
-    //         password,
-    //         name,
-    //         phone,
-    //         whatsappNumber,
-    //         CNIC,
-    //         profileImage: urls ? urls : DefaultAvatar,
-    //         userType: type,
-    //     };
-
-    //     for (let key in body) {
-    //         if (typeof body[key] == "string") {
-    //             body[key] = body[key].trim();
-    //         }
-    //     }
-    //     console.log(event);
-    //     const headers = {
-    //         "Content-Type": "application/json",
-    //     };
-    //     try {
-    //         const response = await axios({
-    //             method: "post",
-    //             url: "https://a-wep.herokuapp.com/superAdmin/addUser",
-    //             data: body,
-    //             headers: headers,
-    //         });
-    //         setLoading(false);
-    //         console.log(response.data);
-
-    //         if (response.data.status === "error") {
-    //             if (response.data.error.email) {
-    //                 showNotification({
-    //                     title: `ERROR`,
-    //                     color: "red",
-
-    //                     icon: <IconX size={18} />,
-    //                     message: `${response.data.error.email.toUpperCase()} !! PLEASE ENTER ANOTHER EMAIL`,
-    //                 });
-    //                 setVisible(false);
-    //             } else {
-    //                 showNotification({
-    //                     title: `ERROR`,
-    //                     color: "red",
-
-    //                     icon: <IconX size={18} />,
-    //                     message: `${response.data.error.message}`,
-    //                 });
-    //                 setVisible(false);
-    //             }
-    //         } else {
-    //             showNotification({
-    //                 title: `SUCCESS`,
-    //                 color: "green",
-
-    //                 message: `${type.toUpperCase()} REGISTERED SUCCESSFULLY!!`,
-    //             });
-    //             setVisible(false);
-    //             navigate("/users");
-    //         }
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // };
 
     const renderErrorMessage = (name) => {
         if (errorMessages[name]) {

@@ -1,6 +1,6 @@
-import { IconEye, IconPlus } from "@tabler/icons-react"
+import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
-import { data } from "./mockData";
+
 
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
@@ -24,7 +24,7 @@ let headCells = [
     },
 
     {
-        id: "STATUS",
+        id: "status",
         date: false,
         numeric: false,
         disablePadding: true,
@@ -39,7 +39,9 @@ let headCells = [
     },
     {
         id: "actions",
-        view: <IconEye />,
+        view: { icon: <IconEye /> },
+        edit: { icon: <IconEdit />, editRoute: "/adminDashboard/editServiceCategory/" },
+        delete: { icon: <IconTrash />, deleteURI: "admin/deleteServiceCategory" },
         numeric: false,
         label: "Actions",
     },
@@ -55,10 +57,10 @@ const ViewServiceCategory = () => {
                 uppercase: true,
                 size: "sm",
                 title: "Add Category",
-                path: "/addServiceCategory",
+                path: "/adminDashboard/addServiceCategory",
                 icon: <IconPlus size={20} />,
                 iconPosition: "right"
-            }} headCells={headCells} rowData={data} />
+            }} headCells={headCells} getDataApiURI={"admin/getAllServicesCategories"} />
 
     )
 }
