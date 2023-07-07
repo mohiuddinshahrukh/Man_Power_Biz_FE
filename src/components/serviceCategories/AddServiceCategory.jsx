@@ -181,8 +181,9 @@ const AddServiceCategory = () => {
                                     color="red"
                                     onClick={() => setOpened(true)}
                                     size="md"
+                                    uppercase
                                 >
-                                    CANCEL
+                                    cancel
                                 </Button>
                             </Grid.Col>
                             <Grid.Col lg={3}>
@@ -193,6 +194,7 @@ const AddServiceCategory = () => {
                                     size="md"
                                     color="dark"
                                     rightIcon={location.pathname.includes("edit") ? <IconEdit /> : <IconPlus />}
+                                    uppercase
                                 >
                                     {location.pathname.includes("edit") ? "Edit" : "Add"} Category
                                 </Button>

@@ -1,9 +1,9 @@
 import axios from "axios";
 import appendSerialNumber from "./apiCallAppenders";
 import { failureNotification, successNotification } from "./notificationHelper";
+import { backendURL } from "./config";
 
-// const baseURI = "http://localhost:8080/api/v1";
-const baseURI = "https://usprojbe-production.up.railway.app/api/v1";
+const baseURI = backendURL();
 
 export const getCallWithHeaders = async (endpoint) => {
   try {
@@ -14,10 +14,16 @@ export const getCallWithHeaders = async (endpoint) => {
       method: "get",
       url: `${baseURI}/${endpoint}`,
     });
+    if (!apiResponse.data.error) {
+      successNotification(`${apiResponse.data.msg}`);
+    } else {
+      failureNotification(`${apiResponse.data.msg}`);
+    }
     console.log(apiResponse);
     return appendSerialNumber(apiResponse.data.data);
   } catch (error) {
     console.log(error);
+    failureNotification(`${error}`);
   }
 };
 export const getCallSpecificWithHeaders = async (endpoint, id) => {

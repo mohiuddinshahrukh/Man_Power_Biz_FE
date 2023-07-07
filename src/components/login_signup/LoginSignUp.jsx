@@ -23,11 +23,11 @@ import axios from 'axios';
 import { failureNotification, successNotification } from '../../helpers/notificationHelper';
 import { IconLogin, IconUserPlus } from '@tabler/icons-react';
 import { postCallWithoutHeaders } from '../../helpers/apiCallHelpers';
+import { backendURL } from '../../helpers/config';
 // import { useEffect } from 'react';
 // import { Link } from 'react-router-dom';
-// const backendURI = import.meta.env.REACT_APP_BACKEND_URI || "http://localhost:8080/api/v1";
-const backendURI = import.meta.env.REACT_APP_BACKEND_URI || "https://usprojbe-production.up.railway.app/api/v1";
 
+const backendURI = backendURL();
 export default function LoginSignUp() {
     const registerNewUserFunction = async (values) => {
         setLoading(true)
