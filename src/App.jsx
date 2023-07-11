@@ -28,6 +28,7 @@ import LoginSignUp from './components/login_signup/LoginSignUp'
 import PrivateRoutes from './helpers/PrivateRoute'
 import LandingPage from './components/landingPage/LandingPage'
 import UploadFiles from './components/uploadFiles/UploadFiles'
+import { routes } from './helpers/routesHelper'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -39,36 +40,37 @@ function App() {
 
         <Routes>
           <Route path='/uploadFile' element={<UploadFiles />} />
-          <Route path='/auth' element={<LoginSignUp />} />
+          <Route path={routes.auth} element={<LoginSignUp />} />
           <Route element={<PrivateRoutes />}>
-            <Route path='/adminDashboard' element={<Appshell />} >
-              <Route path='/adminDashboard' element={<Dashboard />} />
-              <Route path='adduser' element={<AddUser />} />
-              <Route path='edituser/:id' element={<AddUser />} />
-              <Route path='viewuser' element={<ViewUser />} />
-              <Route path='addServiceCategory' element={<AddServiceCategory />} />
-              <Route path='editServiceCategory/:id' element={<AddServiceCategory />} />
-              <Route path='viewServiceCategories' element={<ViewServiceCategory />} />
-              <Route path='addService' element={<AddServices />} />
-              <Route path='viewServices' element={<ViewServices />} />
-              <Route path='addPackage' element={<AddPackages />} />
-              <Route path='viewPackages' element={<ViewPackages />} />
-              <Route path='addBooking' element={<AddBooking />} />
-              <Route path='viewBookings' element={<ViewBooking />} />
-              <Route path='addPayment' element={<AddPayment />} />
-              <Route path='viewPayments' element={<ViewPayment />} />
-              <Route path="chats" element={<ChatScreen />} />
-              <Route path='addComplaint' element={<AddComplaint />} />
-              <Route path='viewComplaints' element={<ViewComplaint />} />
-              <Route path="policies" element={<Policy />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="reviewsAndFeedbacks" element={<ReviewsAndFeebacks />} />
-              <Route path="faq" element={<FrequentlyAskedQuestions />} />
+            <Route path={routes.adminDashboard} element={<Appshell />} >
+              <Route path={routes.adminDashboard} element={<Dashboard />} />
+              <Route path={routes.addUser} element={<AddUser />} />
+              <Route path={routes.editUser} element={<AddUser />} />
+              <Route path={routes.viewUser} element={<ViewUser />} />
+              <Route path={routes.addservicecategory} element={<AddServiceCategory />} />
+              <Route path={routes.editservicecategory} element={<AddServiceCategory />} />
+              <Route path={routes.viewServiceCategories} element={<ViewServiceCategory />} />
+              <Route path={routes.addService} element={<AddServices />} />
+              <Route path={routes.viewServices} element={<ViewServices />} />
+              <Route path={routes.addPackage} element={<AddPackages />} />
+              <Route path={routes.viewPackages} element={<ViewPackages />} />
+              <Route path={routes.addBooking} element={<AddBooking />} />
+              <Route path={routes.viewBookings} element={<ViewBooking />} />
+              <Route path={routes.addPayment} element={<AddPayment />} />
+              <Route path={routes.viewPayments} element={<ViewPayment />} />
+              <Route path={routes.chats} element={<ChatScreen />} />
+              <Route path={routes.addComplaint} element={<AddComplaint />} />
+              <Route path={routes.viewComplaints} element={<ViewComplaint />} />
+              <Route path={routes.policies} element={<Policy />} />
+              <Route path={routes.settings} element={<Settings />} />
+              <Route path={routes.reviewsAndFeedbacks} element={<ReviewsAndFeebacks />} />
+              <Route path={routes.faq} element={<FrequentlyAskedQuestions />} />
               <Route path='*' element={<BadRequest />} />
             </Route>
           </Route>
           {/* Customer side */}
 
+          <Route path='*' element={<BadRequest />} />
           <Route path='/' element={<LandingPage />}>
 
           </Route>
