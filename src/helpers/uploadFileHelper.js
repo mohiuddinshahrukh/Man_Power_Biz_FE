@@ -11,22 +11,16 @@ export const uploadFile = async (files, setLoading) => {
       console.log("No images uploaded yet");
     } else {
       setLoading(true);
-      let res = await Object.values(files).forEach((element) => {
+      for (const element of Object.values(files)) {
         const imageRef = ref(storage, `fileUpload/${element.name + v4()}`);
-        uploadBytes(imageRef, element).then((res) => {
-          getDownloadURL(res.ref)
-            .then((url) => {
-              // setFiles((prev) => [...prev, url]);
-              successNotification(`Image uploaded successfully`);
-              setLoading(false);
-              console.log("ref: ", res);
-              console.log("url: ", url);
-              return url;
-            })
-            .catch((err) => failureNotification(`${err}`));
-        });
-      });
-      console.log("This is res: ", res);
+        const res = await uploadBytes(imageRef, element);
+        const url = await getDownloadURL(res.ref);
+        successNotification(`Image uploaded successfully`);
+        setLoading(false);
+        console.log("ref: ", res);
+        console.log("url: ", url);
+        return url;
+      }
     }
   } catch (error) {
     console.log(error);

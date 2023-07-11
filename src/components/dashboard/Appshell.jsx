@@ -14,6 +14,7 @@ import {
     Avatar,
     Title,
     Paper,
+    ScrollArea,
 } from '@mantine/core';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SidebarComponent from '../sidebar/SidebarComponent';
@@ -49,7 +50,7 @@ const Appshell = () => {
 
             footer={
                 <Footer height={60} p="md">
-                    Urban Services 	&copy; 2023
+                    Neha Services 	&copy; 2023
                 </Footer>
             }
             header={
@@ -66,7 +67,7 @@ const Appshell = () => {
                         </MediaQuery>
 
                         <Group position='apart' w={"100%"}>
-                            <Text>Urban Services Logo</Text>
+                            <Text>Neha Services Logo</Text>
                             <Title>Admin Panel</Title>
                             <Group>
                                 <Menu shadow="md" withArrow>
@@ -118,7 +119,7 @@ const Appshell = () => {
                 </Header>
             }
         >
-            <Paper withBorder>
+            <Paper withBorder component={ScrollArea}>
                 <Outlet />
             </Paper>
         </AppShell>

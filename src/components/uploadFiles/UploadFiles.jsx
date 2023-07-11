@@ -1,76 +1,68 @@
 /* eslint-disable react/prop-types */
-import { Group, Text, rem, useMantineTheme } from "@mantine/core"
-import { listAll, ref, getDownloadURL } from "firebase/storage"
-import { useEffect, useState } from "react"
-import { storage } from "../../firebase/firebaseConfiguration"
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
-import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react"
+import { Button, Group, Image, SimpleGrid, Text, rem, useMantineTheme } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
-const UploadFiles = ({ multiple, loading, setFileUpload }) => {
+const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
     const theme = useMantineTheme();
-    const fileListRef = ref(storage, `fileUpload/`)
-    // const [fileUpload, setFileUpload] = useState([]);
-    const [files, setFiles] = useState([])
+    const [files, setFiles] = useState([]);
+
     useEffect(() => {
-        listAll(fileListRef).then((res) => {
-            console.log(res);
-            res.items.forEach((item) => {
-                getDownloadURL(item).then((url) => {
-                    setFiles((prev) => [...prev, url])
-                })
-            })
-        })
-    }, [])
+        if (Array.isArray(fileUpload)) {
+            setFiles(fileUpload);
+        }
+    }, [fileUpload]);
+
+    const handleRemove = (index) => {
+        const updatedFileUpload = files.filter((_, i) => i !== index);
+        setFileUpload(updatedFileUpload);
+    };
+
+    const previews = files.map((file, index) => {
+        const imageUrl = URL.createObjectURL(file);
+
+        return (
+            <div key={index} style={{ width: "200px" }}>
+                <Image
+                    styles={{ imageWrapper: { border: "1px solid #eaeaea" } }}
+                    withPlaceholder
+                    p={0}
+                    m={0}
+                    height={200}
+                    width={200}
+                    fit="contain"
+                    src={imageUrl}
+                    imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+                />
+                <Button compact fullWidth onClick={() => handleRemove(index)}>
+                    Remove
+                </Button>
+            </div>
+        );
+    });
+
     return (
         <div>
-
-            {/* <Button onClick={() => { uploadFile(fileUpload) }}>Upload File</Button> */}
-
-            {/* {files.length > 0 && files.map((file, index) => <Image key={index} src={file} height={200} width={200} fit="contain" />)} */}
-
             <Dropzone
-                loading={loading}
-                onDrop={(files) => {
-                    //console.log(...files);
-                    setFileUpload(files)
-                }}
-                onReject={(files) => console.log('rejected files', files)}
-                maxSize={3 * 1024 ** 2}
-                accept={IMAGE_MIME_TYPE}
                 multiple={multiple}
-
+                accept={IMAGE_MIME_TYPE}
+                onDrop={(files) => {
+                    setFileUpload([...files]);
+                }}
             >
-                <Group position="center" spacing="xl" style={{ minHeight: rem(220), pointerEvents: 'none' }}>
-                    <Dropzone.Accept>
-                        <IconUpload
-                            size="3.2rem"
-                            stroke={1.5}
-                            color={theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 6]}
-                        />
-                    </Dropzone.Accept>
-                    <Dropzone.Reject>
-                        <IconX
-                            size="3.2rem"
-                            stroke={1.5}
-                            color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]}
-                        />
-                    </Dropzone.Reject>
-                    <Dropzone.Idle>
-                        <IconPhoto size="3.2rem" stroke={1.5} />
-                    </Dropzone.Idle>
-
-                    <div>
-                        <Text size="xl" inline>
-                            Drag {multiple ? "images" : "an image"} here or click to select {multiple ? "files" : "file"}
-                        </Text>
-                        <Text size="sm" color="dimmed" inline mt={7}>
-                            File should not exceed <b>5mb</b>
-                        </Text>
-                    </div>
-                </Group>
+                <Text align="center">Drop images here</Text>
             </Dropzone>
-        </div>
-    )
-}
 
-export default UploadFiles
+            <SimpleGrid
+                cols={4}
+                breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+                mt={previews.length > 0 ? "xl" : 0}
+            >
+                {previews}
+            </SimpleGrid>
+        </div>
+    );
+};
+
+export default UploadFiles;

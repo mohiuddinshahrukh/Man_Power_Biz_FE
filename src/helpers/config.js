@@ -1,4 +1,4 @@
-const flag = "dev";
+const flag = "prod";
 
 export const backendURL = () => {
   if (flag === "dev") {

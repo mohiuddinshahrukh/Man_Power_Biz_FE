@@ -174,7 +174,7 @@ export default function LoginSignUp() {
                 />
                 <Stack miw={"30vw"} maw={"50vw"}>
                     <Title order={2} align='center' >
-                        Welcome to Urban Services, {type}
+                        Welcome to Neha Services, {type}
                     </Title>
                     {type === "login" ? <form onSubmit={form.onSubmit((values) => { loginFunction(values) })}>
                         <TextInput label="Email address" placeholder="hello@gmail.com" size="md"   {...form.getInputProps('email')} />

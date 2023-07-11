@@ -3,8 +3,10 @@ import {
     Button,
     Center,
     Grid,
+    Input,
     LoadingOverlay,
     Paper,
+    ScrollArea,
     Text,
     Textarea,
     TextInput,
@@ -19,50 +21,85 @@ import CancelScreenModal from "../modals/CancelScreenModal";
 import { editCallWithHeaders, getCallSpecificWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
 import { failureNotification, successNotification } from "../../helpers/notificationHelper";
 import { IconEdit, IconPlus } from "@tabler/icons-react";
+import UploadFiles from "../uploadFiles/UploadFiles";
+import { uploadFile } from "../../helpers/uploadFileHelper";
 
 const AddServiceCategory = () => {
     const [opened, setOpened] = useState(false);
     const location = useLocation();
     const params = useParams();
     const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [fileUpload, setFileUpload] = useState([])
     let navigate = useNavigate();
-
     const addCategory = async (values) => {
-        setLoading(true)
+        setLoading(true);
         try {
-            let res = await postCallWithHeaders("admin/addServicesCategory", values)
-            if (!res.error) {
-                successNotification(res.msg)
-                navigate("/adminDashboard/viewServiceCategories")
+            let uploadFileResult;
+            if (fileUpload.length > 0) {
+                uploadFileResult = await uploadFile(fileUpload, setFileUpload);
+                if (!uploadFileResult) {
+                    failureNotification("Failed to upload file");
+                    setLoading(false);
+                    return;
+                }
             }
-            else {
-                failureNotification(res.msg)
+
+            let res;
+            if (uploadFileResult) {
+                values.image = uploadFileResult
+                res = await postCallWithHeaders("admin/addServicesCategory", values);
+            }
+
+            if (uploadFileResult && !res.error) {
+                successNotification(res.msg);
+                navigate("/adminDashboard/viewServiceCategories");
+            } else if (uploadFileResult && res.error) {
+                failureNotification(res.msg);
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
-        finally {
-            setLoading(false)
-        }
-    }
+    };
 
     const editCategory = async (values) => {
         setLoading(true)
+
         try {
-            let res = await editCallWithHeaders(`admin/updateServiceCategory`, params.id, values)
-            if (!res.error) {
-                successNotification(res.msg)
-                navigate("/adminDashboard/viewServiceCategories")
+            let uploadFileResult;
+            if (fileUpload.length > 0) {
+
+                uploadFileResult = await uploadFile(fileUpload, setFileUpload);
+                if (!uploadFileResult) {
+                    failureNotification("Failed to upload file");
+                    setLoading(false);
+                    return;
+                }
             }
-            else {
-                failureNotification(res.msg)
+
+            let res;
+            if (uploadFileResult) {
+                values.image = uploadFileResult
+                res = await editCallWithHeaders(
+                    "admin/updateServiceCategory",
+                    params.id,
+                    values
+                );
+            }
+
+            if (uploadFileResult && !res.error) {
+                successNotification(res.msg);
+                navigate("/adminDashboard/viewServiceCategories");
+            } else if (uploadFileResult && res.error) {
+                failureNotification(res.msg);
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
-        finally {
-            setLoading(false)
-        }
+
     }
 
 
@@ -90,8 +127,9 @@ const AddServiceCategory = () => {
 
     }, [location.pathname])
     const form = useForm({
-
+        validateInputOnChange: true,
         initialValues: {
+
             categoryTitle: "",
             image: "",
             categoryDescription: "",
@@ -107,6 +145,7 @@ const AddServiceCategory = () => {
                 value.trim().length > 20
                     ? null
                     : "Alphabetic Name with 20 or more characters",
+            // image: (value) => /^blob:.+$/.test(value.trim()) ? null : "Invalid image URL"
         },
     });
 
@@ -117,6 +156,7 @@ const AddServiceCategory = () => {
                 height: "100%",
                 position: "relative",
             }}
+            component={ScrollArea}
         >
 
             <CancelScreenModal opened={opened} setOpened={setOpened} path={"/adminDashboard/viewServiceCategories"} />
@@ -170,6 +210,24 @@ const AddServiceCategory = () => {
                                     minRows={5}
                                     {...form.getInputProps("categoryDescription")}
                                 />
+                            </Grid.Col>
+                            <Grid.Col lg={12}>
+                                <Input.Wrapper
+                                    label="Category image"
+                                    size="md"
+                                    required
+                                    withAsterisk
+                                    name="image" // Add the name attribute here
+                                    value={fileUpload}
+                                    {...form.getInputProps("image")}
+                                >
+                                    <UploadFiles
+                                        multiple={false}
+                                        loading={loading}
+                                        fileUpload={fileUpload}
+                                        setFileUpload={setFileUpload}
+                                    />
+                                </Input.Wrapper>
                             </Grid.Col>
 
                         </Grid>
