@@ -27,6 +27,7 @@ import ViewServices from './components/services/ViewServices'
 import LoginSignUp from './components/login_signup/LoginSignUp'
 import PrivateRoutes from './helpers/PrivateRoute'
 import LandingPage from './components/landingPage/LandingPage'
+import UploadFiles from './components/uploadFiles/UploadFiles'
 
 function App() {
   const [colorScheme, setColorScheme] = useState('light');
@@ -37,6 +38,7 @@ function App() {
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
 
         <Routes>
+          <Route path='/uploadFile' element={<UploadFiles />} />
           <Route path='/auth' element={<LoginSignUp />} />
           <Route element={<PrivateRoutes />}>
             <Route path='/adminDashboard' element={<Appshell />} >

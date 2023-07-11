@@ -1,7 +1,5 @@
-// import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-// import DefaultAvatar from "../../Images/DefaultAvatar.png";
 import {
     Grid,
     Paper,
@@ -12,14 +10,8 @@ import {
 
     LoadingOverlay,
     Center,
-    Avatar,
-    Input,
     Select,
 } from "@mantine/core";
-import { Progress } from "@mantine/core";
-// import storage from "../FB";
-// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// import UploadCoverImage from "../UploadCoverImage/UploadCoverImage";
 
 import { X } from "tabler-icons-react";
 
@@ -104,15 +96,19 @@ const AddUser = () => {
 
     const AddUserFunction = async (values) => {
         setLoading(true)
+
         try {
+            console.log("values after file uplaod:", values)
             let res = await postCallWithHeaders("users/addUser", values)
             if (!res.error) {
+
                 successNotification(res.msg)
-                navigate("/viewUser")
+                navigate("/adminDashboard/viewUser")
             }
             else {
                 failureNotification(res.msg)
             }
+
         } catch (error) {
             console.log(error)
         }
@@ -146,42 +142,8 @@ const AddUser = () => {
     const [cpassword, setCPassword] = useState("");
 
     const [disabled, setDisabled] = useState(false);
-    const [disabled2, setDisabled2] = useState(true);
-    const [disabled3, setDisabled3] = useState(false);
 
     const [opened, setOpened] = useState(false);
-    const [error, setError] = useState("");
-
-    const [images, setImages] = useState([]);
-    const [percentages, setPercentages] = useState([]);
-
-    const [urls, setUrls] = useState("");
-    const previews = images?.map((file, index) => {
-        const imageUrl = URL.createObjectURL(file);
-        return (
-            <div key={index}>
-                <Avatar
-
-                    src={imageUrl}
-                    size={140}
-                    radius={120}
-                    mx="auto"
-                    imageProps={{
-                        onLoad: () => URL.revokeObjectURL(imageUrl),
-                    }}
-                />
-                <Progress
-                    animate={percentages[index] === 100 ? false : true}
-                    value={percentages[index] === 100 ? 100 : 100}
-                    label={percentages[index] === 100 && "100% Completed"}
-                    size="xl"
-                    radius="xl"
-                    color={percentages[index] === 100 ? "green" : "gray"}
-                />
-            </div>
-        );
-    });
-
     const renderErrorMessage = (name) => {
         if (errorMessages[name]) {
             return errorMessages[name];
@@ -352,29 +314,7 @@ const AddUser = () => {
                                 />
                             </Grid.Col>
                         </Grid>
-                        <Grid justify="flex-start">
-                            <Grid.Col lg={12} p="md">
-                                <Input.Wrapper size="md" label="Profile Image" error={error}>
-                                    {/* <UploadCoverImage
-                                        error={error}
-                                        setError={setError}
-                                        disabled={disabled}
-                                        setDisabled={setDisabled}
-                                        disabled3={disabled3}
-                                        setDisabled3={setDisabled3}
-                                        disabled2={disabled2}
-                                        setDisabled2={setDisabled2}
-                                        images={images}
-                                        setImages={setImages}
-                                        percentages={percentages}
-                                        setPercentages={setPercentages}
-                                        urls={urls}
-                                        setUrls={setUrls}
-                                        folderName="venueService"
-                                    /> */}
-                                </Input.Wrapper>
-                            </Grid.Col>
-                        </Grid>
+
                         <Grid justify="flex-end">
                             <Grid.Col sm={6} xs={6} md={6} lg={3} p="md">
                                 <Button
