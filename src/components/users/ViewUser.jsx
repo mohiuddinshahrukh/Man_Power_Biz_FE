@@ -3,12 +3,12 @@ import TableComponent from "../tableComponenet/TableComponent"
 
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
-    {
-        id: "image",
-        numeric: false,
-        disablePadding: true,
-        label: "Image",
-    },
+    // {
+    //     id: "image",
+    //     numeric: false,
+    //     disablePadding: true,
+    //     label: "Image",
+    // },
     {
         id: "userType",
         numeric: false,

@@ -1,13 +1,10 @@
 /* eslint-disable react/prop-types */
-import { Button, Divider, Group, Image, Input, Text, rem, useMantineTheme } from "@mantine/core"
-import { listAll, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { Group, Text, rem, useMantineTheme } from "@mantine/core"
+import { listAll, ref, getDownloadURL } from "firebase/storage"
 import { useEffect, useState } from "react"
 import { storage } from "../../firebase/firebaseConfiguration"
-import { v4 } from "uuid"
-import { failureNotification, successNotification } from "../../helpers/notificationHelper"
-import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone"
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react"
-import { uploadFile } from "../../helpers/uploadFileHelper"
 
 const UploadFiles = ({ multiple, loading, setFileUpload }) => {
     const theme = useMantineTheme();
