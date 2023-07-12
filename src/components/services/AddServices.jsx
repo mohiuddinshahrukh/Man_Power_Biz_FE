@@ -25,7 +25,6 @@ import {
     Select,
     Card,
     LoadingOverlay,
-    Input,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { X } from "tabler-icons-react";
@@ -38,8 +37,6 @@ import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
 const AddService = () => {
     const [generalDetails, setGeneralDetails] = useState({})
     console.log("These are the general details: ", generalDetails)
-    const [serviceMedia, setServiceMedia] = useState({})
-    const [contactInformation, setContactInformation] = useState({})
 
     const [serviceCategories, setServiceCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -75,7 +72,7 @@ const AddService = () => {
             serviceCity: "",
             serviceZipCode: "",
             serviceDescription: "",
-            serviceAddress: ""
+            // serviceAddress: ""
         },
         validate: {
             serviceTitle: (value) => (/^[\w\s.,!?'-]{1,100}$/.test(value.trim()) ? null : "Invalid title"),
@@ -83,7 +80,7 @@ const AddService = () => {
             serviceCity: (value) => (/^[A-Za-z\s.-]{2,100}$/.test(value.trim()) ? null : "Select a city"),
             serviceZipCode: (value) => (/^700\d{2}$/.test(value.trim()) ? null : "Select a pin"),
             serviceDescription: (value) => (/^[\s\S]{1,500}$/.test(value.trim()) ? null : "Description can't exceed 500 characters"),
-            serviceAddress: (value) => (/^[\w\s.,#-]{1,100}$/.test(value.trim()) ? null : "Address can only contain alphabets and #"),
+            // serviceAddress: (value) => (/^[\w\s.,#-]{1,100}$/.test(value.trim()) ? null : "Address can only contain alphabets and #"),
 
         }
     })
@@ -239,7 +236,7 @@ const AddService = () => {
                                             {...addServiceStep1Form.getInputProps("serviceDescription")}
                                         />
                                     </Grid.Col>
-                                    <Grid.Col lg={12}>
+                                    {/* <Grid.Col lg={12}>
                                         <Textarea
                                             required
                                             label="Address "
@@ -249,7 +246,7 @@ const AddService = () => {
                                             size="md"
                                             {...addServiceStep1Form.getInputProps("serviceAddress")}
                                         />
-                                    </Grid.Col>
+                                    </Grid.Col> */}
 
                                 </Grid>
                                 <Grid justify="flex-end" pt="xl">

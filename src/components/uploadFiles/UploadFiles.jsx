@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Button, Group, Image, SimpleGrid, Text, rem, useMantineTheme } from "@mantine/core";
+import { Button, Image, SimpleGrid, Text, rem, useMantineTheme } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
@@ -15,12 +14,19 @@ const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
     }, [fileUpload]);
 
     const handleRemove = (index) => {
-        const updatedFileUpload = files.filter((_, i) => i !== index);
+        const updatedFileUpload = files?.filter((_, i) => i !== index);
         setFileUpload(updatedFileUpload);
     };
 
-    const previews = files.map((file, index) => {
-        const imageUrl = URL.createObjectURL(file);
+    const previews = files?.map((file, index) => {
+        console.log("file type: ", typeof file)
+        let imageUrl;
+        if (typeof file === "string") {
+            imageUrl = file
+        } else {
+
+            imageUrl = URL.createObjectURL(file);
+        }
 
         return (
             <div key={index} style={{ width: "200px" }}>
@@ -45,6 +51,7 @@ const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
     return (
         <div>
             <Dropzone
+                // loading={loading}
                 multiple={multiple}
                 accept={IMAGE_MIME_TYPE}
                 onDrop={(files) => {
@@ -59,7 +66,7 @@ const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
                 breakpoints={[{ maxWidth: "sm", cols: 1 }]}
                 mt={previews.length > 0 ? "xl" : 0}
             >
-                {previews}
+                {previews.length > 0 && previews}
             </SimpleGrid>
         </div>
     );

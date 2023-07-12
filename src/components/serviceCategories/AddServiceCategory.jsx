@@ -29,6 +29,8 @@ const AddServiceCategory = () => {
     const location = useLocation();
     const params = useParams();
     const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [fileLoading, setFileLoading] = useState(location.pathname.includes("edit") ? true : false);
+
     const [fileUpload, setFileUpload] = useState([])
     let navigate = useNavigate();
     const addCategory = async (values) => {
@@ -36,7 +38,7 @@ const AddServiceCategory = () => {
         try {
             let uploadFileResult;
             if (fileUpload.length > 0) {
-                uploadFileResult = await uploadFile(fileUpload, setFileUpload);
+                uploadFileResult = await uploadFile(fileUpload, setFileLoading);
                 if (!uploadFileResult) {
                     failureNotification("Failed to upload file");
                     setLoading(false);
@@ -108,6 +110,9 @@ const AddServiceCategory = () => {
         setLoading(true)
 
         const apiResponse = await getCallSpecificWithHeaders("admin/getAServicesCategory", params.id)
+        console.log("API RES: ", apiResponse.data)
+        form.setValues(apiResponse.data)
+        setFileUpload(apiResponse.data.image)
         setLoading(false)
         return apiResponse.data
 
@@ -115,7 +120,7 @@ const AddServiceCategory = () => {
     useEffect(() => {
         try {
             if (location.pathname.includes("edit")) {
-                getUserDetails().then(form.setValues)
+                getUserDetails()
             }
             else {
                 form.reset()
@@ -223,11 +228,12 @@ const AddServiceCategory = () => {
                                 >
                                     <UploadFiles
                                         multiple={false}
-                                        loading={loading}
+                                        loading={fileLoading}
                                         fileUpload={fileUpload}
                                         setFileUpload={setFileUpload}
                                     />
                                 </Input.Wrapper>
+
                             </Grid.Col>
 
                         </Grid>
