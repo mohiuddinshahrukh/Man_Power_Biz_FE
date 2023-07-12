@@ -3,7 +3,7 @@ import { Button, Image, SimpleGrid, Text, rem, useMantineTheme } from "@mantine/
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
 
-const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
+const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload, mimeType }) => {
     const theme = useMantineTheme();
     const [files, setFiles] = useState([]);
 
@@ -53,12 +53,12 @@ const UploadFiles = ({ fileUpload, multiple, loading, setFileUpload }) => {
             <Dropzone
                 // loading={loading}
                 multiple={multiple}
-                accept={IMAGE_MIME_TYPE}
+                accept={mimeType}
                 onDrop={(files) => {
                     setFileUpload([...files]);
                 }}
             >
-                <Text align="center">Drop images here</Text>
+                <Text align="center">Drop files here</Text>
             </Dropzone>
 
             <SimpleGrid

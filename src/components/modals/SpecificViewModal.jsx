@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Badge, Button, Divider, Grid, Group, Image, Modal, Stack, Text, Title } from "@mantine/core"
+import { Badge, Grid, Image, Modal, Stack, Text, Title } from "@mantine/core"
 
 const SpecificViewModal = ({ opened, close, title, open, data }
 ) => {

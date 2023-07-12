@@ -1,9 +1,12 @@
 import {
     ArrowLeft,
     ArrowRight,
+    BrandFacebook,
+    BrandInstagram,
     BrandWhatsapp,
     Check,
     ChevronDown,
+    Globe,
     Mail,
     Mailbox,
     Map2,
@@ -25,21 +28,40 @@ import {
     Select,
     Card,
     LoadingOverlay,
+    Input,
+    Image,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { X } from "tabler-icons-react";
 import { Carousel } from "@mantine/carousel";
 import CancelScreenModal from "../modals/CancelScreenModal";
-import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { getCallWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
+import UploadFiles from "../uploadFiles/UploadFiles";
+import { IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
+import { failureNotification, successNotification } from "../../helpers/notificationHelper";
+import { uploadFile } from "../../helpers/uploadFileHelper";
+import ViewUploadedFileModal from "../modals/ViewUploadedFileModal";
 
 
 
 const AddService = () => {
+    // const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [imageLoading, setImageLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [imageUpload, setImageUpload] = useState([])
+    const [videoLoading, setVideoLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [videoUpload, setVideoUpload] = useState([])
+
+
+    // Images & Videos Modal states
+    const [mediaModal, setMediaModal] = useState(false);
+    const [dataType, setDataType] = useState("");
+    const [modalData, setModalData] = useState({})
+
     const [generalDetails, setGeneralDetails] = useState({})
-    console.log("These are the general details: ", generalDetails)
+    const [contactInformation, setContactInformation] = useState({})
 
     const [serviceCategories, setServiceCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
     const getAllCategories = async () => {
         const apiResponse = await getCallWithHeaders(`admin/getAllServicesCategories`)
         console.log("apiResponse: ", apiResponse)
@@ -85,10 +107,106 @@ const AddService = () => {
         }
     })
 
+    const addServiceStep3Form = useForm({
+        validateInputOnChange: true,
+        initialValues: {
+            serviceContactPhone: "",
+            serviceWhatsAppPhone: "",
+            serviceInfoEmail: "",
+            serviceFeedbackEmail: "",
+            serviceWebsiteLink: "",
+            serviceFacebookLink: "",
+            serviceInstagramLink: "",
+
+        },
+        validate: {
+            serviceInfoEmail: (value) =>
+                /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(value.trim())
+                    ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
+                    null
+                    : "Invalid Email",
+            serviceFeedbackEmail: (value) =>
+                /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(value.trim())
+                    ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
+                    null
+                    : "Invalid Email",
+            serviceContactPhone: (value) =>
+                /^[1-9]\d{9}$/.test(value)
+                    ? null
+                    : "10 digit Phone Number",
+            serviceWhatsAppPhone: (value) =>
+                /^[1-9]\d{9}$/.test(value)
+                    ? null
+                    : "10 digit WhatsApp Number",
+            serviceWebsiteLink: (value) => value.length == 0 ? null : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(value.trim()) ? null : "Invalid Website link",
+            serviceFacebookLink: (value) => value.length == 0 ? null : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(value.trim()) ? null : "Invalid Facebook link",
+            serviceInstagramLink: (value) => value.length == 0 ? null : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(value.trim()) ? null : "Invalid Instagram link",
+        }
+    })
+
     const addServiceStep1Function = (values) => {
         setGeneralDetails(values);
+        nextStep()
     }
 
+    const addServiceStep3Function = (values) => {
+        setContactInformation(values);
+        nextStep()
+    }
+
+    const addServiceFunction = async () => {
+        let values = { ...generalDetails, ...contactInformation }
+        console.log(values)
+        try {
+            let imageUploadResult;
+            if (imageUpload.length > 0) {
+                imageUploadResult = await uploadFile(imageUpload, setImageLoading);
+                if (!imageUploadResult) {
+                    failureNotification("Failed to upload file");
+                    setLoading(false);
+                    return;
+                }
+                else {
+                    successNotification(`Images uploaded successfully`);
+                }
+            }
+
+            let videoUploadResult;
+            if (videoUpload.length > 0) {
+                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
+                if (!videoUploadResult) {
+                    failureNotification("Failed to upload file");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification(`Videos uploaded successfully`);
+                }
+            }
+
+            let res;
+            if (imageUploadResult && videoUploadResult) {
+                values.serviceImages = imageUploadResult
+                values.serviceVideos = videoUploadResult
+                res = await postCallWithHeaders("admin/addService", values);
+                console.log("This is res of the post call with headers", res)
+            }
+            else {
+                console.log("here cos both false")
+            }
+
+            if (imageUploadResult && videoUploadResult && !res.error) {
+                successNotification(res.msg);
+                // navigate("/adminDashboard/viewServiceCategories");
+            } else if (imageUploadResult && videoUploadResult && res.error) {
+                failureNotification(res.msg);
+            }
+            else {
+                console.log("here cos all 3 failed")
+            }
+        } catch (error) {
+            failureNotification(`${error}`)
+        }
+    }
 
     return (
         <Paper
@@ -117,6 +235,7 @@ const AddService = () => {
                     </Title>
 
                     <CancelScreenModal opened={opened} setOpened={setOpened} />
+                    <ViewUploadedFileModal opened={mediaModal} data={modalData} setOpened={setMediaModal} dataType={dataType} />
                     <Stepper
                         color="grape"
                         active={active}
@@ -289,6 +408,24 @@ const AddService = () => {
                                 Describe Service With Images
                             </Text>
 
+                            <Input.Wrapper label={"Upload Images"} >
+                                <UploadFiles
+                                    multiple={true}
+                                    loading={imageLoading}
+                                    fileUpload={imageUpload}
+                                    setFileUpload={setImageUpload}
+                                    mimeType={IMAGE_MIME_TYPE}
+                                />
+                            </Input.Wrapper>
+
+                            <Input.Wrapper label={"Upload Videos"}>
+                                <UploadFiles multiple={true}
+                                    loading={videoLoading}
+                                    fileUpload={videoUpload}
+                                    setFileUpload={setVideoUpload}
+                                    mimeType={MIME_TYPES.mp4} />
+                            </Input.Wrapper>
+
 
                             <Grid justify="flex-end" py="md">
                                 <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
@@ -310,10 +447,9 @@ const AddService = () => {
                                     <Button
                                         fullWidth
                                         rightIcon={<ArrowRight />}
-                                        type="submit"
                                         size="md"
                                         color="dark"
-
+                                        onClick={() => { nextStep() }}
                                     >
                                         NEXT
                                     </Button>
@@ -331,9 +467,10 @@ const AddService = () => {
                             </Text>
                             <form
                                 style={{ padding: "0px", margin: "auto" }}
-                                onSubmit={(values) => { console.log(values) }
-
-                                }
+                                onSubmit={addServiceStep3Form.onSubmit((values) => {
+                                    console.log(values);
+                                    addServiceStep3Function(values)
+                                })}
                             >
                                 <Grid grow>
                                     <Grid.Col lg={6}>
@@ -347,7 +484,7 @@ const AddService = () => {
                                             }}
                                             // mt="sm"
                                             size="md"
-
+                                            {...addServiceStep3Form.getInputProps("serviceInfoEmail")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
@@ -375,7 +512,7 @@ const AddService = () => {
                                             placeholder="Enter Feedback Email"
                                             // mt="sm"
                                             size="md"
-
+                                            {...addServiceStep3Form.getInputProps("serviceFeedbackEmail")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
@@ -386,12 +523,18 @@ const AddService = () => {
                                             placeholder="Enter Contact Number"
                                             // mt="sm"
                                             size="md"
-
+                                            {...addServiceStep3Form.getInputProps("serviceContactPhone")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
                                         <TextInput
+                                            type="number"
                                             required
+                                            label="WhatAapp Number"
+                                            placeholder="Enter WhatsApp Number"
+                                            // mt="sm"
+                                            size="md"
+                                            {...addServiceStep3Form.getInputProps("serviceWhatsAppPhone")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
@@ -405,7 +548,7 @@ const AddService = () => {
                                             }}
                                             // mt="sm"
                                             size="md"
-
+                                            {...addServiceStep3Form.getInputProps("serviceWebsiteLink")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
@@ -419,7 +562,7 @@ const AddService = () => {
                                                 wordBreak: "break-word",
                                                 whiteSpace: "normal",
                                             }}
-
+                                            {...addServiceStep3Form.getInputProps("serviceFacebookLink")}
                                         />
                                     </Grid.Col>
                                     <Grid.Col lg={6}>
@@ -433,7 +576,7 @@ const AddService = () => {
                                             }}
                                             // mt="sm"
                                             size="md"
-
+                                            {...addServiceStep3Form.getInputProps("serviceInstagramLink")}
                                         />
                                     </Grid.Col>
                                 </Grid>
@@ -495,41 +638,37 @@ const AddService = () => {
                                             ]}
                                             align="start"
                                         >
-
+                                            {imageUpload?.map((image, index) => {
+                                                console.log("Image upload: ", image)
+                                                return <Carousel.Slide key={index}><Image onClick={() => {
+                                                    setMediaModal(true)
+                                                    setModalData(image)
+                                                    setDataType("image")
+                                                }} fit="contain" src={URL.createObjectURL(image)} /></Carousel.Slide>
+                                            })}
                                         </Carousel>
                                     </Card.Section>
                                     <Grid>
-                                        <Grid.Col lg={12}>
-                                            <Group positon="left">
-                                                <Text weight="bold" size="xl">
-
+                                        <Grid.Col lg={6}>
+                                            <Group>
+                                                <Text size="xl" weight="bold">
+                                                    Service Details
                                                 </Text>
                                             </Group>
-
-                                        </Grid.Col>
-
-                                        <Grid>
-                                            <Grid.Col>
-                                                <Group postion="apart" align="center">
-                                                    <Map2 size={20} />
-
-                                                </Group>
-                                                <Group align="center">
-                                                    <MapPin size={20} />
-
-                                                </Group>
-                                            </Grid.Col>
-                                        </Grid>
-                                        <Grid.Col>
-                                            {/* <MapComponentView
-                                                pinLocation={pinLocation}
-                                                pinGeoLocation={pinGeoLocation}
-                                                pinAddress={pinAddress}
-                                            /> */}
-                                        </Grid.Col>
-                                        <Grid.Col>
-                                            <Text size="xl" weight="bold">
-                                                Description:
+                                            <Text>
+                                                <b>Title:</b> {generalDetails.serviceTitle}
+                                            </Text>
+                                            <Text >
+                                                <b>Category:</b> {generalDetails.serviceCategory}
+                                            </Text>
+                                            <Text >
+                                                <b>City:</b> {generalDetails.serviceCity}
+                                            </Text>
+                                            <Text >
+                                                <b>Zip Code:</b> {generalDetails.serviceZipCode}
+                                            </Text>
+                                            <Text >
+                                                <b>Description:</b> {generalDetails.serviceDescription}
                                             </Text>
                                             <Text
                                                 align="justify"
@@ -541,33 +680,45 @@ const AddService = () => {
 
                                             </Text>
                                         </Grid.Col>
-                                        <Grid.Col lg={6}>
 
-                                        </Grid.Col>
                                         <Grid.Col lg={6}>
                                             <Group>
                                                 <Text size="xl" weight="bold">
                                                     Get in touch
                                                 </Text>
                                             </Group>
-                                            <Group align="center">
+                                            {contactInformation.serviceContactPhone !== "" && <Group align="center">
                                                 <Phone size={20} />
+                                                {contactInformation.serviceContactPhone}
+                                            </Group>}
 
-                                            </Group>
-
-                                            <Group align="center">
+                                            {contactInformation.serviceInfoEmail !== "" && <Group align="center">
                                                 <Mail size={20} />
+                                                {contactInformation.serviceInfoEmail}
 
-                                            </Group>
-                                            <Group align="center">
+                                            </Group>}
+                                            {contactInformation.serviceWhatsAppPhone !== "" && <Group align="center">
                                                 <BrandWhatsapp size={20} />
+                                                {contactInformation.serviceWhatsAppPhone}
 
-                                            </Group>
+                                            </Group>}
 
                                             <Group>
-                                                <Mailbox />
-
+                                                <Mail size={20} />
+                                                {contactInformation.serviceFeedbackEmail}
                                             </Group>
+                                            {contactInformation.serviceWebsiteLink !== "" && <Group>
+                                                <Globe size={20} />
+                                                {contactInformation.serviceWebsiteLink}
+                                            </Group>}
+                                            {contactInformation.serviceFacebookLink !== "" && <Group>
+                                                <BrandFacebook size={20} />
+                                                {contactInformation.serviceFacebookLink}
+                                            </Group>}
+                                            {contactInformation.serviceInstagramLink !== "" && <Group>
+                                                <BrandInstagram size={20} />
+                                                {contactInformation.serviceInstagramLink}
+                                            </Group>}
 
                                         </Grid.Col>
                                     </Grid>
@@ -591,7 +742,12 @@ const AddService = () => {
                                         fullWidth
                                         rightIcon={<Check />}
                                         size="md"
-                                        color="dark"
+                                        color="green"
+                                        uppercase
+                                        onClick={() => {
+                                            console.log("Do the api call final one to reg service");
+                                            addServiceFunction()
+                                        }}
                                     >
                                         Confirm
                                     </Button>

@@ -23,6 +23,7 @@ import { failureNotification, successNotification } from "../../helpers/notifica
 import { IconEdit, IconPlus } from "@tabler/icons-react";
 import UploadFiles from "../uploadFiles/UploadFiles";
 import { uploadFile } from "../../helpers/uploadFileHelper";
+import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 const AddServiceCategory = () => {
     const [opened, setOpened] = useState(false);
@@ -231,6 +232,7 @@ const AddServiceCategory = () => {
                                         loading={fileLoading}
                                         fileUpload={fileUpload}
                                         setFileUpload={setFileUpload}
+                                        mimeType={IMAGE_MIME_TYPE}
                                     />
                                 </Input.Wrapper>
 
