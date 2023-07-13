@@ -1,5 +1,3 @@
-
-
 export const routes = {
   // auth: { path: "/auth", element: <LoginSignUp /> },
   // appshell: { path: "/", element: <Appshell /> },

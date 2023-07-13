@@ -41,12 +41,14 @@ import { IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import { failureNotification, successNotification } from "../../helpers/notificationHelper";
 import { uploadFile } from "../../helpers/uploadFileHelper";
 import ViewUploadedFileModal from "../modals/ViewUploadedFileModal";
+import { useNavigate } from "react-router-dom";
 
 
 
 const AddService = () => {
+    const navigate = useNavigate()
     // const [loading, setLoading] = useState(true);
-    const [loading, setLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [loading, setLoading] = useState(true);
     const [imageLoading, setImageLoading] = useState(location.pathname.includes("edit") ? true : false);
     const [imageUpload, setImageUpload] = useState([])
     const [videoLoading, setVideoLoading] = useState(location.pathname.includes("edit") ? true : false);
@@ -69,11 +71,12 @@ const AddService = () => {
             element.value = element._id
             element.label = element.categoryTitle
         });
+        setLoading(false)
         return apiResponse
     }
     useEffect(() => {
         try {
-            getAllCategories().then(setServiceCategories).then(setLoading(false))
+            getAllCategories().then(setServiceCategories)
         } catch (error) {
             console.log(error)
         }
@@ -155,58 +158,79 @@ const AddService = () => {
     }
 
     const addServiceFunction = async () => {
-        let values = { ...generalDetails, ...contactInformation }
-        console.log(values)
+        setLoading(true)
+        let values = { ...generalDetails, ...contactInformation };
+        console.log(values);
         try {
-            let imageUploadResult;
+            let imageUploadResult = [];
             if (imageUpload.length > 0) {
                 imageUploadResult = await uploadFile(imageUpload, setImageLoading);
-                if (!imageUploadResult) {
-                    failureNotification("Failed to upload file");
-                    setLoading(false);
-                    return;
-                }
-                else {
-                    successNotification(`Images uploaded successfully`);
-                }
-            }
-
-            let videoUploadResult;
-            if (videoUpload.length > 0) {
-                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
-                if (!videoUploadResult) {
-                    failureNotification("Failed to upload file");
+                if (imageUploadResult.length === 0) {
+                    failureNotification("Failed to upload images");
                     setLoading(false);
                     return;
                 } else {
-                    successNotification(`Videos uploaded successfully`);
+                    successNotification("Images uploaded successfully");
+                }
+            }
+
+            let videoUploadResult = [];
+            if (videoUpload.length > 0) {
+                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
+                if (videoUploadResult.length === 0) {
+                    failureNotification("Failed to upload videos");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("Videos uploaded successfully");
                 }
             }
 
             let res;
-            if (imageUploadResult && videoUploadResult) {
-                values.serviceImages = imageUploadResult
-                values.serviceVideos = videoUploadResult
-                res = await postCallWithHeaders("admin/addService", values);
-                console.log("This is res of the post call with headers", res)
-            }
-            else {
-                console.log("here cos both false")
+            if (videoUpload.length > 0) {
+                // Only evaluate the condition if videos are uploaded
+                if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
+                    values.serviceImages = imageUploadResult;
+                    values.serviceVideos = videoUploadResult;
+                    res = await postCallWithHeaders("admin/addService", values);
+                    console.log("This is res of the post call with headers", res);
+                } else {
+                    console.log("here cos both false");
+                }
+            } else {
+                // Upload images or other files when no videos are selected
+                if (imageUploadResult.length > 0) {
+                    values.serviceImages = imageUploadResult;
+                    res = await postCallWithHeaders("admin/addService", values);
+                    console.log("This is res of the post call with headers", res);
+                }
             }
 
-            if (imageUploadResult && videoUploadResult && !res.error) {
+            if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
+            ) {
                 successNotification(res.msg);
-                // navigate("/adminDashboard/viewServiceCategories");
-            } else if (imageUploadResult && videoUploadResult && res.error) {
+                navigate("/adminDashboard/viewServices");
+            } else if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
+            ) {
                 failureNotification(res.msg);
-            }
-            else {
-                console.log("here cos all 3 failed")
+            } else {
+                console.log("here cos all 3 failed");
             }
         } catch (error) {
-            failureNotification(`${error}`)
+            failureNotification(`${error}`);
         }
-    }
+        finally {
+
+            setLoading(false)
+        }
+        setLoading(false)
+    };
+
+
 
     return (
         <Paper
@@ -234,7 +258,7 @@ const AddService = () => {
                         Add Service
                     </Title>
 
-                    <CancelScreenModal opened={opened} setOpened={setOpened} />
+                    <CancelScreenModal opened={opened} setOpened={setOpened} path={"/adminDashboard/viewServices"}/>
                     <ViewUploadedFileModal opened={mediaModal} data={modalData} setOpened={setMediaModal} dataType={dataType} />
                     <Stepper
                         color="grape"
@@ -258,18 +282,6 @@ const AddService = () => {
                             >
                                 <Grid grow>
                                     <Grid.Col lg={6}>
-                                        <TextInput
-                                            required
-                                            label="Title"
-                                            placeholder="Enter Service Title"
-                                            maxLength={100}
-                                            // mt="sm"
-                                            size="md"
-                                            {...addServiceStep1Form.getInputProps("serviceTitle")}
-                                        />
-                                    </Grid.Col>
-
-                                    <Grid.Col lg={6}>
                                         <Select
                                             searchable
                                             required
@@ -283,6 +295,19 @@ const AddService = () => {
                                         />
 
                                     </Grid.Col>
+                                    <Grid.Col lg={6}>
+                                        <TextInput
+                                            required
+                                            label="Title"
+                                            placeholder="Enter Service Title"
+                                            maxLength={100}
+                                            // mt="sm"
+                                            size="md"
+                                            {...addServiceStep1Form.getInputProps("serviceTitle")}
+                                        />
+                                    </Grid.Col>
+
+
                                     <Grid.Col lg={6}>
 
                                         <Select
@@ -639,7 +664,7 @@ const AddService = () => {
                                             align="start"
                                         >
                                             {imageUpload?.map((image, index) => {
-                                                console.log("Image upload: ", image)
+
                                                 return <Carousel.Slide key={index}><Image onClick={() => {
                                                     setMediaModal(true)
                                                     setModalData(image)

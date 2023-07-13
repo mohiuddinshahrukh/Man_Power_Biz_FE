@@ -1,4 +1,4 @@
-import { IconEye, IconPlus } from "@tabler/icons-react"
+import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
 import { data } from "./mockData"
 // import { headCells } from "./headcells"
@@ -17,19 +17,53 @@ let headCells = [
         disablePadding: true,
         label: "Title",
     },
+
     {
         id: "serviceDescription",
         numeric: false,
         disablePadding: true,
         label: "Desc",
     },
+    {
+        id: "serviceCity",
+        numeric: false,
+        disablePadding: true,
+        label: "City",
+    },
+    {
+        id: "serviceZipCode",
+        numeric: false,
+        disablePadding: true,
+        label: "Zip",
+    },
 
     {
-        id: "servicePrice",
+        id: "serviceStatus",
         date: false,
-        numeric: true,
+        numeric: false,
         disablePadding: true,
-        label: "Price",
+        label: "Status",
+    },
+    {
+        id: "serviceContactPhone",
+        date: false,
+        numeric: false,
+        disablePadding: true,
+        label: "Phone",
+    },
+    {
+        id: "serviceWhatsAppPhone",
+        date: false,
+        numeric: false,
+        disablePadding: true,
+        label: "WhatsApp",
+    },
+    {
+        id: "serviceInfoEmail",
+        date: false,
+        numeric: false,
+        disablePadding: true,
+        label: "Info Mail",
     },
     {
         id: "createdAt",
@@ -40,7 +74,9 @@ let headCells = [
     },
     {
         id: "actions",
-        view: <IconEye />,
+        view: { icon: <IconEye /> },
+        edit: { icon: <IconEdit />, editRoute: "/admin/updateService/" },
+        delete: { icon: <IconTrash />, deleteURI: "admin/deleteService" },
         numeric: false,
         label: "Actions",
     },
@@ -56,10 +92,12 @@ const ViewServices = () => {
                 uppercase: true,
                 size: "sm",
                 title: "Add Service",
-                path: "/addService",
+                path: "/adminDashboard/addService",
                 icon: <IconPlus size={20} />,
                 iconPosition: "right"
-            }} headCells={headCells} rowData={data} />
+            }} headCells={headCells} getDataApiURI={"admin/getAllServices"} />
+
+
     )
 }
 
