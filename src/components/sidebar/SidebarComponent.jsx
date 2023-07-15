@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Box, NavLink, Paper, ScrollArea } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { IconBrandFeedly, IconCards, IconCategory2, IconChevronRight, IconCurrencyRupee, IconEye, IconFileInfo, IconHome, IconMessage, IconNotebook, IconPackages, IconPlus, IconSettings, IconUserExclamation, IconUserQuestion, IconUsers } from "@tabler/icons-react";
+import { routes } from "../../helpers/routesHelper";
 
 const data = [
     {
         icon: IconHome,
         label: "Dashboard",
         // description: "Item with description",
-        path: "/adminDashboard",
+        path: routes.adminDashboard,
     },
     {
         icon: IconUsers,
@@ -20,12 +21,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add User",
-                path: "addUser",
+                path: routes.addUser,
             },
             {
                 icon: IconEye,
                 label: "View All Users",
-                path: "viewUser",
+                path: routes.viewUser,
             },
         ],
     },
@@ -38,12 +39,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Category",
-                path: "addServiceCategory",
+                path: routes.addservicecategory,
             },
             {
                 icon: IconEye,
                 label: "View Categories",
-                path: "viewServiceCategories",
+                path: routes.viewServiceCategories,
             },
         ],
     },
@@ -56,12 +57,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Service",
-                path: "addService",
+                path: routes.addService,
             },
             {
                 icon: IconEye,
                 label: "View Services",
-                path: "viewServices",
+                path: routes.viewServices,
             },
         ],
     },
@@ -74,12 +75,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Package",
-                path: "addPackage",
+                path: routes.addPackage,
             },
             {
                 icon: IconEye,
                 label: "View Packages",
-                path: "viewPackages",
+                path: routes.viewPackages,
             },
         ],
     },
@@ -93,12 +94,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Booking",
-                path: "addBooking",
+                path: routes.addBooking,
             },
             {
                 icon: IconEye,
                 label: "View Bookings",
-                path: "viewBookings",
+                path: routes.viewBookings,
             },
         ],
     },
@@ -112,12 +113,12 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Payment",
-                path: "addPayment",
+                path: routes.addPayment,
             },
             {
                 icon: IconEye,
                 label: "View Payments",
-                path: "viewPayments",
+                path: routes.viewPayments,
             },
         ],
     },
@@ -132,19 +133,19 @@ const data = [
             {
                 icon: IconPlus,
                 label: "Add Compaint",
-                path: "addComplaint",
+                path: routes.addComplaint,
             },
             {
                 icon: IconEye,
                 label: "View Complaints",
-                path: "viewComplaints",
+                path: routes.viewComplaints,
             },
         ],
     },
-    { icon: IconFileInfo, label: "Policies", path: "policies" },
-    { icon: IconSettings, label: "Settings", path: "settings" },
-    { icon: IconBrandFeedly, label: "Reviews & Feedback", path: "reviewsAndFeedbacks" },
-    { icon: IconUserQuestion, label: "FAQs", path: "FAQ" },
+    { icon: IconFileInfo, label: "Policies", path: routes.policies },
+    { icon: IconSettings, label: "Settings", path: routes.settings },
+    { icon: IconBrandFeedly, label: "Reviews & Feedback", path: routes.reviewsAndFeedbacks },
+    { icon: IconUserQuestion, label: "FAQs", path: routes.faq },
 ];
 const SidebarComponent = () => {
 

@@ -1,6 +1,7 @@
 import { IconEye, IconPlus } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
 import { data } from "./mockData"
+import { routes } from "../../helpers/routesHelper";
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
     {
@@ -61,7 +62,7 @@ const ViewPackages = () => {
                 uppercase: true,
                 size: "sm",
                 title: "Add Package",
-                path: "/addPackage",
+                path: routes.addPackage,
                 icon: <IconPlus size={20} />,
                 iconPosition: "right"
             }} headCells={headCells} rowData={data} />

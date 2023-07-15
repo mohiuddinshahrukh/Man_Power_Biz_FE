@@ -8,9 +8,6 @@ import {
     ChevronDown,
     Globe,
     Mail,
-    Mailbox,
-    Map2,
-    MapPin,
     Phone,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
@@ -37,24 +34,31 @@ import { Carousel } from "@mantine/carousel";
 import CancelScreenModal from "../modals/CancelScreenModal";
 import { getCallWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
 import UploadFiles from "../uploadFiles/UploadFiles";
-import { IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import { failureNotification, successNotification } from "../../helpers/notificationHelper";
 import { uploadFile } from "../../helpers/uploadFileHelper";
 import ViewUploadedFileModal from "../modals/ViewUploadedFileModal";
 import { useNavigate } from "react-router-dom";
+import { Document, Page } from "react-pdf";
+import ProceedToAddPackagesModal from "../modals/ProceedToAddPackagesModal";
+import { routes } from "../../helpers/routesHelper";
 
 
 
 const AddService = () => {
     const navigate = useNavigate()
+    const [apiResponseObj, setApiResponseObj] = useState("")
+
+    const [opened, setOpened] = useState(false)
     // const [loading, setLoading] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [imageLoading, setImageLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [imageLoading, setImageLoading] = useState(location.pathname?.includes("edit") ? true : false);
     const [imageUpload, setImageUpload] = useState([])
-    const [videoLoading, setVideoLoading] = useState(location.pathname.includes("edit") ? true : false);
+    const [videoLoading, setVideoLoading] = useState(location.pathname?.includes("edit") ? true : false);
     const [videoUpload, setVideoUpload] = useState([])
+    const [pdfUpload, setPdfUpload] = useState([])
+    const [pdfLoading, setPdfLoading] = useState([])
 
-
+    const [proceedToPkgModal, setProceedToPkgModal] = useState(false)
     // Images & Videos Modal states
     const [mediaModal, setMediaModal] = useState(false);
     const [dataType, setDataType] = useState("");
@@ -81,7 +85,7 @@ const AddService = () => {
             console.log(error)
         }
     }, [])
-    const [opened, setOpened] = useState(false)
+
     const [active, setActive] = useState(0);
     const nextStep = () =>
         setActive((current) => (current < 4 ? current + 1 : current));
@@ -186,19 +190,35 @@ const AddService = () => {
                 }
             }
 
+            let pdfUploadResult = [];
+            if (pdfUpload.length > 0) {
+                pdfUploadResult = await uploadFile(pdfUpload, setPdfLoading);
+                if (pdfUploadResult.length === 0) {
+                    failureNotification("Failed to upload PDFs");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("PDFs uploaded successfully");
+                }
+            }
+
             let res;
-            if (videoUpload.length > 0) {
-                // Only evaluate the condition if videos are uploaded
-                if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
+            if (videoUpload.length > 0 || pdfUpload.length > 0) {
+                // Only evaluate the condition if videos or PDFs are uploaded
+                if (
+                    imageUploadResult.length > 0 &&
+                    (videoUploadResult.length > 0 || pdfUploadResult.length > 0)
+                ) {
                     values.serviceImages = imageUploadResult;
                     values.serviceVideos = videoUploadResult;
+                    values.servicePDFs = pdfUploadResult;
                     res = await postCallWithHeaders("admin/addService", values);
                     console.log("This is res of the post call with headers", res);
                 } else {
                     console.log("here cos both false");
                 }
             } else {
-                // Upload images or other files when no videos are selected
+                // Upload images or other files when no videos or PDFs are selected
                 if (imageUploadResult.length > 0) {
                     values.serviceImages = imageUploadResult;
                     res = await postCallWithHeaders("admin/addService", values);
@@ -207,16 +227,30 @@ const AddService = () => {
             }
 
             if (
-                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
-                (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
+                (imageUploadResult.length > 0 &&
+                    (videoUploadResult.length > 0 || pdfUploadResult.length > 0) &&
+                    !res.error) ||
+                (imageUploadResult.length > 0 &&
+                    videoUpload.length === 0 &&
+                    pdfUpload.length === 0 &&
+                    !res.error)
             ) {
+                setLoading(false)
                 successNotification(res.msg);
-                navigate("/adminDashboard/viewServices");
+                setApiResponseObj(res.data.id)
+                setProceedToPkgModal(true);
+                //navigate("/adminDashboard/viewServices");
             } else if (
-                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
-                (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
+                (imageUploadResult.length > 0 &&
+                    (videoUploadResult.length > 0 || pdfUploadResult.length > 0) &&
+                    res.error) ||
+                (imageUploadResult.length > 0 &&
+                    videoUpload.length === 0 &&
+                    pdfUpload.length === 0 &&
+                    res.error)
             ) {
                 failureNotification(res.msg);
+                setLoading(false)
             } else {
                 console.log("here cos all 3 failed");
             }
@@ -224,11 +258,10 @@ const AddService = () => {
             failureNotification(`${error}`);
         }
         finally {
-
             setLoading(false)
         }
-        setLoading(false)
     };
+
 
 
 
@@ -257,8 +290,11 @@ const AddService = () => {
                     <Title order={2} align="center" py="xl">
                         Add Service
                     </Title>
+                    <ProceedToAddPackagesModal opened={proceedToPkgModal} setOpened={setProceedToPkgModal} data={"Do you want to proceed and add packages now for the service you just created?"} title={"Procced to adding packages?"}
+                        path={`${routes.addPackageWithId}${apiResponseObj}`}
 
-                    <CancelScreenModal opened={opened} setOpened={setOpened} path={"/adminDashboard/viewServices"}/>
+                    />
+                    <CancelScreenModal opened={opened} setOpened={setOpened} path={"/adminDashboard/viewServices"} />
                     <ViewUploadedFileModal opened={mediaModal} data={modalData} setOpened={setMediaModal} dataType={dataType} />
                     <Stepper
                         color="grape"
@@ -439,7 +475,7 @@ const AddService = () => {
                                     loading={imageLoading}
                                     fileUpload={imageUpload}
                                     setFileUpload={setImageUpload}
-                                    mimeType={IMAGE_MIME_TYPE}
+                                    mimeType={"image"}
                                 />
                             </Input.Wrapper>
 
@@ -448,7 +484,15 @@ const AddService = () => {
                                     loading={videoLoading}
                                     fileUpload={videoUpload}
                                     setFileUpload={setVideoUpload}
-                                    mimeType={MIME_TYPES.mp4} />
+                                    mimeType={"video"} />
+                            </Input.Wrapper>
+
+                            <Input.Wrapper label={"Upload PDF"}>
+                                <UploadFiles multiple={false}
+                                    loading={pdfLoading}
+                                    fileUpload={pdfUpload}
+                                    setFileUpload={setPdfUpload}
+                                    mimeType={"pdf"} />
                             </Input.Wrapper>
 
 
@@ -663,14 +707,26 @@ const AddService = () => {
                                             ]}
                                             align="start"
                                         >
-                                            {imageUpload?.map((image, index) => {
+                                            {imageUpload.concat(videoUpload).concat(pdfUpload)?.map((file, index) => {
 
-                                                return <Carousel.Slide key={index}><Image onClick={() => {
+                                                return <Carousel.Slide key={index} onClick={() => {
                                                     setMediaModal(true)
-                                                    setModalData(image)
+                                                    setModalData(file)
                                                     setDataType("image")
-                                                }} fit="contain" src={URL.createObjectURL(image)} /></Carousel.Slide>
+                                                }}>
+                                                    {file.type?.includes("image") ? <Image
+
+                                                        height={300} fit="cover" src={URL.createObjectURL(file)} /> : file.type?.includes("video") ? <video controls
+                                                            preload={"metadata"}
+                                                            height={300} src={URL.createObjectURL(file)} /> : <div style={{ overflow: "hidden", height: 300, }}>
+                                                        <Document file={URL.createObjectURL(file)} style={{ overflow: "hidden", position: "relative" }}>
+                                                            <Page pageNumber={1} width={300} style={{ position: "static", overflow: "hidden" }} />
+                                                        </Document>
+                                                    </div>}
+
+                                                </Carousel.Slide>
                                             })}
+
                                         </Carousel>
                                     </Card.Section>
                                     <Grid>
@@ -750,19 +806,20 @@ const AddService = () => {
                                 </Card>
                             </Paper>
                             <Grid justify="flex-end" py="md">
-                                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
+                                <Grid.Col xs={12} sm={6} md={6} lg={3} xl={3}>
                                     <Button
                                         fullWidth
                                         leftIcon={<ArrowLeft />}
                                         color="red"
                                         size="md"
                                         onClick={prevStep}
+                                        uppercase
                                     >
                                         Back
                                     </Button>
                                 </Grid.Col>
 
-                                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
+                                <Grid.Col xs={12} sm={6} md={6} lg={3} xl={3}>
                                     <Button
                                         fullWidth
                                         rightIcon={<Check />}

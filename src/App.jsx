@@ -42,17 +42,18 @@ function App() {
           <Route path='/uploadFile' element={<UploadFiles />} />
           <Route path={routes.auth} element={<LoginSignUp />} />
           <Route element={<PrivateRoutes />}>
-            <Route path={routes.adminDashboard} element={<Appshell />} >
+            <Route path={"/"} element={<Appshell />} >
               <Route path={routes.adminDashboard} element={<Dashboard />} />
               <Route path={routes.addUser} element={<AddUser />} />
-              <Route path={routes.editUser} element={<AddUser />} />
+              <Route path={`${routes.editUser}/:id`} element={<AddUser />} />
               <Route path={routes.viewUser} element={<ViewUser />} />
               <Route path={routes.addservicecategory} element={<AddServiceCategory />} />
-              <Route path={routes.editservicecategory} element={<AddServiceCategory />} />
+              <Route path={`${routes.editservicecategory}/:id`} element={<AddServiceCategory />} />
               <Route path={routes.viewServiceCategories} element={<ViewServiceCategory />} />
               <Route path={routes.addService} element={<AddServices />} />
               <Route path={routes.viewServices} element={<ViewServices />} />
               <Route path={routes.addPackage} element={<AddPackages />} />
+              <Route path={routes.addPackageWithId} element={<AddPackages />} />
               <Route path={routes.viewPackages} element={<ViewPackages />} />
               <Route path={routes.addBooking} element={<AddBooking />} />
               <Route path={routes.viewBookings} element={<ViewBooking />} />

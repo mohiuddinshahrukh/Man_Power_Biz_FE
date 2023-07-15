@@ -1,5 +1,6 @@
 import { IconEdit, IconEye, IconTrash, IconUserPlus } from "@tabler/icons-react";
 import TableComponent from "../tableComponenet/TableComponent"
+import { routes } from "../../helpers/routesHelper";
 
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
@@ -65,7 +66,7 @@ let headCells = [
     {
         id: "actions",
         view: { icon: <IconEye /> },
-        edit: { icon: <IconEdit />, editRoute: "/edituser/" },
+        edit: { icon: <IconEdit />, editRoute: `${routes.editUser}/` },
         delete: { icon: <IconTrash />, deleteURI: "admin/deleteUser" },
         numeric: false,
         label: "Actions",
@@ -85,7 +86,7 @@ const ViewUser = () => {
                 uppercase: true,
                 size: "sm",
                 title: "Add User",
-                path: "/addUser",
+                path: routes.addUser,
                 icon: <IconUserPlus size={20} />,
                 iconPosition: "right"
             }} headCells={headCells}

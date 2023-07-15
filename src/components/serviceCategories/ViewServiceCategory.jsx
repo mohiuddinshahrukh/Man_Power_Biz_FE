@@ -1,5 +1,6 @@
 import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
+import { routes } from "../../helpers/routesHelper";
 
 
 let headCells = [
@@ -40,7 +41,7 @@ let headCells = [
     {
         id: "actions",
         view: { icon: <IconEye /> },
-        edit: { icon: <IconEdit />, editRoute: "/adminDashboard/editServiceCategory/" },
+        edit: { icon: <IconEdit />, editRoute: `${routes.editservicecategory}/` },
         delete: { icon: <IconTrash />, deleteURI: "admin/deleteServiceCategory" },
         numeric: false,
         label: "Actions",
@@ -57,7 +58,7 @@ const ViewServiceCategory = () => {
                 uppercase: true,
                 size: "sm",
                 title: "Add Category",
-                path: "/adminDashboard/addServiceCategory",
+                path: routes.addservicecategory,
                 icon: <IconPlus size={20} />,
                 iconPosition: "right"
             }} headCells={headCells} getDataApiURI={"admin/getAllServicesCategories"} />

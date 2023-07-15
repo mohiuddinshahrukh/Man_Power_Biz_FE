@@ -75,9 +75,9 @@ const TableComponent = ({
       // console.log("Object.values(data)", Object.values(data)?.length);
       for (let i = 0; i < Object.values(data)?.length; i++) {
         if (
-          Object.values(data)[i].toString()
-            .toLowerCase()
-            .includes(event.target.value.toString().toLowerCase())
+          Object?.values(data)[i]?.toString()
+            ?.toLowerCase()
+            ?.includes(event.target.value.toString().toLowerCase())
         ) {
           return true;
         }
@@ -189,7 +189,7 @@ const TableComponent = ({
                     align={head?.numeric === true ? "right" : "left"}
                   >
 
-                    {console.log(head.id.includes("status"))}
+                    {console.log(head.id?.includes("status"))}
                     {
                       head.id === "profileImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "image" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "coverImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> :
                         head.id?.toLowerCase()?.includes("status") ? <Badge variant="filled" color={row[head.id] === true ? "green" : "red"}>{row[head.id] === true ? "Active" : "Blocked"}</Badge> :

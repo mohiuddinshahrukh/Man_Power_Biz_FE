@@ -21,18 +21,24 @@ import UploadFiles from "../uploadFiles/UploadFiles";
 import { IconCurrencyRupee } from "@tabler/icons-react";
 import { uploadFile } from "../../helpers/uploadFileHelper";
 import { failureNotification, successNotification } from "../../helpers/notificationHelper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CancelScreenModal from "../modals/CancelScreenModal";
+import { routes } from "../../helpers/routesHelper";
 
 
 const AddPackages = () => {
     const navigate = useNavigate()
+    const params = useParams()
+    const [value, setValue] = useState([])
+    console.log(params)
     const [imageLoading, setImageLoading] = useState(location.pathname.includes("edit") ? true : false);
     const [imageUpload, setImageUpload] = useState([])
     const [videoLoading, setVideoLoading] = useState(location.pathname.includes("edit") ? true : false);
     const [videoUpload, setVideoUpload] = useState([])
     const [getServices, setServices] = useState([])
+    // const [getSelectedServices, setSelectedService] = useState([])
     const [loading, setLoading] = useState(true);
+
 
     const getServicesFunction = async () => {
         const apiResponse = await getCallWithHeaders(`admin/getAllServices`)
@@ -42,84 +48,102 @@ const AddPackages = () => {
             element.label = element.serviceTitle
         });
         setLoading(false)
+        if (params.id) {
+            console.log(params.id)
+            apiResponse.forEach((service) => {
+                if (service.value === params.id) {
+                    setValue(service);
+                    console.log("Setting value to: ", service)
+                }
+                else {
+                    console.log("NO MATCH", service.value)
+                }
+            })
+        }
+        else {
+            console.log("NOT READING PARAMS>ID")
+        }
         return apiResponse
     }
 
     const addPackageFunction = async (values) => {
-        setLoading(true)
+        console.log("values", values)
+        // setLoading(true)
 
-        console.log(values);
-        try {
-            let imageUploadResult = [];
-            if (imageUpload.length > 0) {
-                imageUploadResult = await uploadFile(imageUpload, setImageLoading);
-                if (imageUploadResult.length === 0) {
-                    failureNotification("Failed to upload images");
-                    setLoading(false);
-                    return;
-                } else {
-                    successNotification("Images uploaded successfully");
-                }
-            }
+        // console.log(values);
+        // try {
+        //     let imageUploadResult = [];
+        //     if (imageUpload.length > 0) {
+        //         imageUploadResult = await uploadFile(imageUpload, setImageLoading);
+        //         if (imageUploadResult.length === 0) {
+        //             failureNotification("Failed to upload images");
+        //             setLoading(false);
+        //             return;
+        //         } else {
+        //             successNotification("Images uploaded successfully");
+        //         }
+        //     }
 
-            let videoUploadResult = [];
-            if (videoUpload.length > 0) {
-                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
-                if (videoUploadResult.length === 0) {
-                    failureNotification("Failed to upload videos");
-                    setLoading(false);
-                    return;
-                } else {
-                    successNotification("Videos uploaded successfully");
-                }
-            }
+        //     let videoUploadResult = [];
+        //     if (videoUpload.length > 0) {
+        //         videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
+        //         if (videoUploadResult.length === 0) {
+        //             failureNotification("Failed to upload videos");
+        //             setLoading(false);
+        //             return;
+        //         } else {
+        //             successNotification("Videos uploaded successfully");
+        //         }
+        //     }
 
-            let res;
-            if (videoUpload.length > 0) {
-                // Only evaluate the condition if videos are uploaded
-                if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
-                    values.serviceImages = imageUploadResult;
-                    values.serviceVideos = videoUploadResult;
-                    res = await postCallWithHeaders("admin/addService", values);
-                    console.log("This is res of the post call with headers", res);
-                } else {
-                    console.log("here cos both false");
-                }
-            } else {
-                // Upload images or other files when no videos are selected
-                if (imageUploadResult.length > 0) {
-                    values.serviceImages = imageUploadResult;
-                    res = await postCallWithHeaders("admin/addService", values);
-                    console.log("This is res of the post call with headers", res);
-                }
-            }
+        //     let res;
+        //     if (videoUpload.length > 0) {
+        //         // Only evaluate the condition if videos are uploaded
+        //         if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
+        //             values.serviceImages = imageUploadResult;
+        //             values.serviceVideos = videoUploadResult;
+        //             res = await postCallWithHeaders("admin/addService", values);
+        //             console.log("This is res of the post call with headers", res);
+        //         } else {
+        //             console.log("here cos both false");
+        //         }
+        //     } else {
+        //         // Upload images or other files when no videos are selected
+        //         if (imageUploadResult.length > 0) {
+        //             values.serviceImages = imageUploadResult;
+        //             res = await postCallWithHeaders("admin/addService", values);
+        //             console.log("This is res of the post call with headers", res);
+        //         }
+        //     }
 
-            if (
-                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
-                (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
-            ) {
-                successNotification(res.msg);
-                navigate("/adminDashboard/viewServices");
-            } else if (
-                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
-                (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
-            ) {
-                failureNotification(res.msg);
-            } else {
-                console.log("here cos all 3 failed");
-            }
-        } catch (error) {
-            failureNotification(`${error}`);
-        }
-        finally {
+        //     if (
+        //         (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
+        //         (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
+        //     ) {
+        //         successNotification(res.msg);
+        //         navigate("/adminDashboard/viewServices");
+        //     } else if (
+        //         (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
+        //         (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
+        //     ) {
+        //         failureNotification(res.msg);
+        //     } else {
+        //         console.log("here cos all 3 failed");
+        //     }
+        // } catch (error) {
+        //     failureNotification(`${error}`);
+        // }
+        // finally {
 
-            setLoading(false)
-        }
-        setLoading(false)
+        //     setLoading(false)
+        // }
+        // setLoading(false)
     };
 
     useEffect(() => {
+
         getServicesFunction().then(setServices)
+
     }, [])
 
     const [opened, setOpened] = useState(false);
@@ -129,6 +153,7 @@ const AddPackages = () => {
     const form = useForm({
         validateInputOnChange: true,
         initialValues: {
+            packageService: params.id || "",
             pacakgeTitle: "",
             packagePrice: 0,
             packageDescription: "",
@@ -155,7 +180,7 @@ const AddPackages = () => {
                 overlayOpacity={0.5}
                 overlayColor="#c5c5c5"
             />
-            <CancelScreenModal opened={opened} setOpened={setOpened} path={"/adminDashboard/viewPackages"} />
+            <CancelScreenModal opened={opened} setOpened={setOpened} path={routes.viewPackages} />
             <Center>
                 <Paper
                     py="xl"
@@ -188,7 +213,11 @@ const AddPackages = () => {
                                     label="Service"
                                     placeholder="Select Service"
                                     size="md"
+                                    // value={params.id}
+                                    value={value}
+                                    onChange={(event) => { console.log(event) }}
                                     data={getServices}
+                                // {...form.getInputProps("packageService")}
                                 />
                             </Grid.Col>
                         </Grid>
