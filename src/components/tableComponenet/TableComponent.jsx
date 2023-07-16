@@ -189,9 +189,8 @@ const TableComponent = ({
                     align={head?.numeric === true ? "right" : "left"}
                   >
 
-                    {console.log(head.id?.includes("status"))}
                     {
-                      head.id === "profileImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "image" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> : head.id === "coverImage" ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> :
+                      head.id?.toLowerCase()?.includes("image") ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> :
                         head.id?.toLowerCase()?.includes("status") ? <Badge variant="filled" color={row[head.id] === true ? "green" : "red"}>{row[head.id] === true ? "Active" : "Blocked"}</Badge> :
                           <Text lineClamp={2}>{head.date
                             ? row[head?.id]?.split("T")[0] +

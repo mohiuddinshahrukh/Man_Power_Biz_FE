@@ -10,6 +10,7 @@ export const routes = {
   addService: "/admindashboard/addservice",
   viewServices: "/admindashboard/viewservices",
   addPackage: "/admindashboard/addPackage",
+  editPackage: "/admindashboard/editPackage",
   addPackageWithId: "/admindashboard/addPackage/:id",
   viewPackages: "/admindashboard/viewPackages",
   addBooking: "/admindashboard/addBooking",

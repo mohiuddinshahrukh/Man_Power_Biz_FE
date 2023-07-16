@@ -15,7 +15,7 @@ import {
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { Plus, X } from "tabler-icons-react";
-import { getCallWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { editCallWithHeaders, getCallSpecificWithHeaders, getCallWithHeaders, postCallWithHeaders } from "../../helpers/apiCallHelpers";
 import { IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import UploadFiles from "../uploadFiles/UploadFiles";
 import { IconCurrencyRupee } from "@tabler/icons-react";
@@ -47,6 +47,7 @@ const AddPackages = () => {
             element.value = element._id
             element.label = element.serviceTitle
         });
+
         setLoading(false)
         if (params.id) {
             console.log(params.id)
@@ -68,83 +69,172 @@ const AddPackages = () => {
 
     const addPackageFunction = async (values) => {
         console.log("values", values)
-        // setLoading(true)
+        setLoading(true)
 
-        // console.log(values);
-        // try {
-        //     let imageUploadResult = [];
-        //     if (imageUpload.length > 0) {
-        //         imageUploadResult = await uploadFile(imageUpload, setImageLoading);
-        //         if (imageUploadResult.length === 0) {
-        //             failureNotification("Failed to upload images");
-        //             setLoading(false);
-        //             return;
-        //         } else {
-        //             successNotification("Images uploaded successfully");
-        //         }
-        //     }
+        console.log(values);
+        try {
+            let imageUploadResult = [];
+            if (imageUpload.length > 0) {
+                imageUploadResult = await uploadFile(imageUpload, setImageLoading);
+                if (imageUploadResult.length === 0) {
+                    failureNotification("Failed to upload images");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("Images uploaded successfully");
+                }
+            }
 
-        //     let videoUploadResult = [];
-        //     if (videoUpload.length > 0) {
-        //         videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
-        //         if (videoUploadResult.length === 0) {
-        //             failureNotification("Failed to upload videos");
-        //             setLoading(false);
-        //             return;
-        //         } else {
-        //             successNotification("Videos uploaded successfully");
-        //         }
-        //     }
+            let videoUploadResult = [];
+            if (videoUpload.length > 0) {
+                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
+                if (videoUploadResult.length === 0) {
+                    failureNotification("Failed to upload videos");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("Videos uploaded successfully");
+                }
+            }
 
-        //     let res;
-        //     if (videoUpload.length > 0) {
-        //         // Only evaluate the condition if videos are uploaded
-        //         if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
-        //             values.serviceImages = imageUploadResult;
-        //             values.serviceVideos = videoUploadResult;
-        //             res = await postCallWithHeaders("admin/addService", values);
-        //             console.log("This is res of the post call with headers", res);
-        //         } else {
-        //             console.log("here cos both false");
-        //         }
-        //     } else {
-        //         // Upload images or other files when no videos are selected
-        //         if (imageUploadResult.length > 0) {
-        //             values.serviceImages = imageUploadResult;
-        //             res = await postCallWithHeaders("admin/addService", values);
-        //             console.log("This is res of the post call with headers", res);
-        //         }
-        //     }
+            let res;
+            if (videoUpload.length > 0) {
+                // Only evaluate the condition if videos are uploaded
+                if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
+                    values.packageImages = imageUploadResult;
+                    values.packageVideos = videoUploadResult;
+                    res = await postCallWithHeaders("admin/addPackage", values);
+                    console.log("This is res of the post call with headers", res);
+                } else {
+                    console.log("here cos both false");
+                }
+            } else {
+                // Upload images or other files when no videos are selected
+                if (imageUploadResult.length > 0) {
+                    values.packageImages = imageUploadResult;
+                    res = await postCallWithHeaders("admin/addPackage", values);
+                    console.log("This is res of the post call with headers", res);
+                }
+            }
 
-        //     if (
-        //         (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
-        //         (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
-        //     ) {
-        //         successNotification(res.msg);
-        //         navigate("/adminDashboard/viewServices");
-        //     } else if (
-        //         (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
-        //         (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
-        //     ) {
-        //         failureNotification(res.msg);
-        //     } else {
-        //         console.log("here cos all 3 failed");
-        //     }
-        // } catch (error) {
-        //     failureNotification(`${error}`);
-        // }
-        // finally {
+            if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
+            ) {
+                successNotification(res.msg);
+                navigate(routes.viewPackages);
+            } else if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
+            ) {
+                failureNotification(res.msg);
+            } else {
+                console.log("here cos all 3 failed");
+            }
+        } catch (error) {
+            failureNotification(`${error}`);
+        }
+        finally {
 
-        //     setLoading(false)
-        // }
-        // setLoading(false)
+            setLoading(false)
+        }
+        setLoading(false)
     };
 
+    const editPackageFunction = async (values) => {
+        setLoading(true);
+
+        try {
+            let imageUploadResult = [];
+            if (imageUpload.length > 0) {
+                imageUploadResult = await uploadFile(imageUpload, setImageLoading);
+                if (imageUploadResult.length === 0) {
+                    failureNotification("Failed to upload images");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("Images uploaded successfully");
+                }
+            }
+
+            let videoUploadResult = [];
+            if (videoUpload.length > 0) {
+                videoUploadResult = await uploadFile(videoUpload, setVideoLoading);
+                if (videoUploadResult.length === 0) {
+                    failureNotification("Failed to upload videos");
+                    setLoading(false);
+                    return;
+                } else {
+                    successNotification("Videos uploaded successfully");
+                }
+            }
+
+            let res;
+            if (videoUpload.length > 0) {
+                // Only evaluate the condition if videos are uploaded
+                if (imageUploadResult.length > 0 && videoUploadResult.length > 0) {
+                    values.packageImages = imageUploadResult;
+                    values.packageVideos = videoUploadResult;
+                    res = await editCallWithHeaders("admin/editPackage", params.id, values);
+                    console.log("This is res of the post call with headers", res);
+                } else {
+                    console.log("here cos both false");
+                }
+            } else {
+                // Upload images or other files when no videos are selected
+                if (imageUploadResult.length > 0) {
+                    values.packageImages = imageUploadResult;
+                    res = await editCallWithHeaders("admin/editPackage", params.id, values);
+                    console.log("This is res of the post call with headers", res);
+                }
+            }
+
+            if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && !res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && !res.error)
+            ) {
+                successNotification(res.msg);
+                navigate(routes.viewPackages);
+            } else if (
+                (imageUploadResult.length > 0 && videoUploadResult.length > 0 && res.error) ||
+                (imageUploadResult.length > 0 && videoUpload.length === 0 && res.error)
+            ) {
+                failureNotification(res.msg);
+            } else {
+                console.log("here cos all 3 failed");
+            }
+        } catch (error) {
+            failureNotification(`${error}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getAPackage = async () => {
+        const apiResponse = await getCallSpecificWithHeaders("admin/getAPackage", params.id)
+        setImageUpload(apiResponse.data.packageImages)
+        setVideoUpload(apiResponse.data.packageVideos)
+        setLoading(false)
+        return apiResponse.data
+
+    }
     useEffect(() => {
 
-        getServicesFunction().then(setServices)
+        try {
+            getServicesFunction().then(setServices)
+            if (location.pathname.includes("edit")) {
+                getAPackage().then(form.setValues)
+            }
+            else {
+                form.reset()
+            }
+        }
+        catch (error) {
+            console.log("error: ", error)
+            failureNotification(error)
+        }
 
-    }, [])
+    }, [location.pathname])
 
     const [opened, setOpened] = useState(false);
 
@@ -153,14 +243,14 @@ const AddPackages = () => {
     const form = useForm({
         validateInputOnChange: true,
         initialValues: {
-            packageService: params.id || "",
-            pacakgeTitle: "",
+            packageService: "",
+            packageTitle: "",
             packagePrice: 0,
             packageDescription: "",
         },
 
         validate: {
-            pacakgeTitle: (value) =>
+            packageTitle: (value) =>
                 (/^[\w\s.,!?'-]{1,100}$/.test(value?.trim()) ? null : " Invalid title"),
 
             packageDescription: (value) => (/^[\s\S]{1,500}$/.test(value.trim()) ? null : "Description can't exceed 500 characters"),
@@ -202,7 +292,7 @@ const AddPackages = () => {
                         onSubmit={form.onSubmit((values) => {
 
                             console.log(values);
-                            addPackageFunction(values)
+                            location.pathname.includes("edit") ? editPackageFunction(values) : addPackageFunction(values)
                         })}
                     >
                         <Grid grow>
@@ -214,10 +304,10 @@ const AddPackages = () => {
                                     placeholder="Select Service"
                                     size="md"
                                     // value={params.id}
-                                    value={value}
-                                    onChange={(event) => { console.log(event) }}
+                                    // value={value}
+                                    // onChange={(event) => { console.log(event) }}
                                     data={getServices}
-                                // {...form.getInputProps("packageService")}
+                                    {...form.getInputProps("packageService")}
                                 />
                             </Grid.Col>
                         </Grid>
@@ -228,7 +318,7 @@ const AddPackages = () => {
                                     label="Title"
                                     placeholder="Package Title"
                                     size="md"
-                                    {...form.getInputProps("pacakgeTitle")}
+                                    {...form.getInputProps("packageTitle")}
                                 />
                             </Grid.Col>
                             <Grid.Col lg={6}>
@@ -282,7 +372,7 @@ const AddPackages = () => {
                         </Grid>
 
                         <Grid justify="flex-end" >
-                            <Grid.Col lg={3}>
+                            <Grid.Col sm={12} md={6} lg={4} xl={3}>
                                 <Button
                                     fullWidth
                                     leftIcon={<X />}
@@ -293,13 +383,14 @@ const AddPackages = () => {
                                     CANCEL
                                 </Button>
                             </Grid.Col>
-                            <Grid.Col lg={3}>
+                            <Grid.Col sm={12} md={6} lg={4} xl={3}>
                                 <Button
                                     fullWidth
                                     rightIcon={<Plus />}
                                     type="submit"
                                     size="md"
                                     color="dark"
+                                    uppercase
                                 >
                                     ADD PACKAGE
                                 </Button>

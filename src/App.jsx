@@ -53,6 +53,7 @@ function App() {
               <Route path={routes.addService} element={<AddServices />} />
               <Route path={routes.viewServices} element={<ViewServices />} />
               <Route path={routes.addPackage} element={<AddPackages />} />
+              <Route path={`${routes.editPackage}/:id`} element={<AddPackages />} />
               <Route path={routes.addPackageWithId} element={<AddPackages />} />
               <Route path={routes.viewPackages} element={<ViewPackages />} />
               <Route path={routes.addBooking} element={<AddBooking />} />

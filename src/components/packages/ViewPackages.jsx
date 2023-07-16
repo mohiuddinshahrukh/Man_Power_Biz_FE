@@ -1,11 +1,12 @@
-import { IconEye, IconPlus } from "@tabler/icons-react"
+import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
 import { data } from "./mockData"
 import { routes } from "../../helpers/routesHelper";
+import { IconTrash } from "@tabler/icons-react";
 let headCells = [
     { id: "SR", numeric: true, disablePadding: true, label: "ID" },
     {
-        id: "coverImage",
+        id: "packageCoverImage",
         numeric: false,
         disablePadding: true,
         label: "Image",
@@ -24,14 +25,14 @@ let headCells = [
     },
 
     {
-        id: "price",
+        id: "packagePrice",
         date: false,
         numeric: true,
         disablePadding: true,
         label: "Price",
     },
     {
-        id: "STATUS",
+        id: "packageStatus",
         date: false,
         numeric: true,
         disablePadding: true,
@@ -46,7 +47,9 @@ let headCells = [
     },
     {
         id: "actions",
-        view: <IconEye />,
+        view: { icon: <IconEye /> },
+        edit: { icon: <IconEdit />, editRoute: `${routes.editPackage}/` },
+        delete: { icon: <IconTrash />, deleteURI: "admin/deletePackage" },
         numeric: false,
         label: "Actions",
     },
@@ -65,7 +68,8 @@ const ViewPackages = () => {
                 path: routes.addPackage,
                 icon: <IconPlus size={20} />,
                 iconPosition: "right"
-            }} headCells={headCells} rowData={data} />
+            }} headCells={headCells} getDataApiURI={"admin/getAllPackages"} />
+
     )
 }
 

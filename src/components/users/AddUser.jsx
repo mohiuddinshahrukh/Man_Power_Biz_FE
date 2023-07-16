@@ -238,7 +238,7 @@ const AddUser = () => {
                                     size="md"
                                     required
                                     label="Contact Number"
-                                    placeholder="Enter 11 Digit Phone Number"
+                                    placeholder="Enter 10 Digit Phone Number"
                                     // disabled={disabled}
                                     {...form.getInputProps("contactNumber")}
 
