@@ -1,6 +1,5 @@
 import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react"
 import TableComponent from "../tableComponenet/TableComponent"
-import { data } from "./mockData"
 import { routes } from "../../helpers/routesHelper";
 import { IconTrash } from "@tabler/icons-react";
 let headCells = [
@@ -15,7 +14,13 @@ let headCells = [
         id: "packageTitle",
         numeric: false,
         disablePadding: true,
-        label: "Title",
+        label: "Package Title",
+    },
+    {
+        id: "serviceTitle",
+        numeric: false,
+        disablePadding: true,
+        label: "Service Title",
     },
     {
         id: "packageDescription",

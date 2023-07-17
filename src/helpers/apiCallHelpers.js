@@ -95,7 +95,8 @@ export const deleteCallWithHeaders = async (
   endpoint,
   id,
   refresh,
-  setRefresh
+  setRefresh,
+  setLoading
 ) => {
   try {
     let apiResponse = await axios({
@@ -108,12 +109,16 @@ export const deleteCallWithHeaders = async (
     console.log(apiResponse);
     if (!apiResponse.data.error) {
       successNotification(apiResponse.data.msg);
+      setLoading(false);
       setRefresh(!refresh);
     } else {
       failureNotification(apiResponse.data.msg);
+      setLoading(false);
+      setRefresh(!refresh);
     }
     return apiResponse.data;
   } catch (error) {
     console.log(error);
+    setLoading(false);
   }
 };

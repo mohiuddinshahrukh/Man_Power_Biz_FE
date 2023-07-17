@@ -65,7 +65,7 @@ let headCells = [
     },
     {
         id: "actions",
-        view: { icon: <IconEye /> },
+        // view: { icon: <IconEye /> },
         edit: { icon: <IconEdit />, editRoute: `${routes.editUser}/` },
         delete: { icon: <IconTrash />, deleteURI: "admin/deleteUser" },
         numeric: false,

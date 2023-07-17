@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Group,
+  LoadingOverlay,
   Paper,
   Table,
   Text,
@@ -17,6 +18,7 @@ import { Link } from "react-router-dom";
 import SpecificViewModal from "../modals/SpecificViewModal";
 import { useDisclosure } from "@mantine/hooks";
 import { deleteCallWithHeaders, getCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { failureNotification, successNotification } from "../../helpers/notificationHelper";
 
 const TableComponent = ({
   modalObject,
@@ -29,7 +31,6 @@ const TableComponent = ({
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
   const [searchPhrase, setSearchPhrase] = useState("");
   const [data, setData] = useState({});
-
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -40,8 +41,14 @@ const TableComponent = ({
 
 
   const deleteFunction = async (uri, id) => {
-    await deleteCallWithHeaders(uri, id, refresh, setRefresh);
-
+    setLoading(true)
+    try {
+      await deleteCallWithHeaders(uri, id, refresh, setRefresh, setLoading);
+    } catch (error) {
+      console.log(error)
+      failureNotification(`${error}`)
+      setLoading(false)
+    }
   }
   const sortNumericValue = (label) => {
     setSorted({
@@ -91,6 +98,12 @@ const TableComponent = ({
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Paper pos={"relative"}>
+      <LoadingOverlay
+        visible={loading}
+        loaderProps={{ size: "xl", color: "pink", variant: "bars" }}
+        overlayOpacity={0.5}
+        overlayColor="#c5c5c5"
+      />
       <SpecificViewModal opened={opened} open={open} close={close} title={modalObject.title} data={data} centered={"centered"} />
       <Paper p={"xs"} mb={"xs"}>
         <Group position="apart">

@@ -19,7 +19,7 @@ let headCells = [
         label: "ZIP",
     },
     {
-        id: "bookingCustomer",
+        id: "fullName",
         numeric: false,
         disablePadding: true,
         label: "Customer",
@@ -37,13 +37,13 @@ let headCells = [
         label: "Contact",
     },
     {
-        id: "bookingPackage",
+        id: "packageTitle",
         numeric: false,
         disablePadding: true,
         label: "Package",
     },
     {
-        id: "bookingService",
+        id: "serviceTitle",
         numeric: false,
         disablePadding: true,
         label: "Service",
@@ -70,7 +70,7 @@ let headCells = [
         label: "Paid",
     },
     {
-        id: "REMAINING_AMOUNT",
+        id: "bookingRemainingAmount",
         date: false,
         numeric: true,
         disablePadding: true,
