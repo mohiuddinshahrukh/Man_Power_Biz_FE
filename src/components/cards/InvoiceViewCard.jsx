@@ -15,6 +15,12 @@ const InvoiceViewCard = ({ data }) => {
             <ReactToPrint
                 trigger={() => <Button my={"xs"} rightIcon={<IconPrinter />}>Print</Button>}
                 content={() => componentRef.current}
+                documentTitle={data.bookingId}
+                pageStyle={'margin:auto'}
+                copyStyles={true}
+                suppressErrors={true}
+
+
             />
             <Paper ref={componentRef} withBorder p={"xs"}>
                 <Title order={2} p={5} bg={"dark"} color="white" align="center">Neha Services</Title>
