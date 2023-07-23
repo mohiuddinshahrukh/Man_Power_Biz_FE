@@ -353,7 +353,7 @@ export default function App() {
                 <Grid.Col>
                   {clientSecret.length > 0 && (
                     <Elements options={options} stripe={stripePromise}>
-                      <CheckoutForm />
+                      <CheckoutForm clientSecret={clientSecret} />
                     </Elements>
                   )}
                 </Grid.Col>
