@@ -17,15 +17,20 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SpecificViewModal from "../modals/SpecificViewModal";
 import { useDisclosure } from "@mantine/hooks";
-import { deleteCallWithHeaders, getCallWithHeaders } from "../../helpers/apiCallHelpers";
-import { failureNotification, successNotification } from "../../helpers/notificationHelper";
+import {
+  deleteCallWithHeaders,
+  getCallWithHeaders,
+} from "../../helpers/apiCallHelpers";
+import {
+  failureNotification,
+  successNotification,
+} from "../../helpers/notificationHelper";
 
 const TableComponent = ({
   modalObject,
   buttonObject,
   headCells,
   getDataApiURI,
-
 }) => {
   const [rows, setTableRows] = useState([]);
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
@@ -35,21 +40,21 @@ const TableComponent = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCallWithHeaders(`${getDataApiURI}`).then(setTableRows).then(setLoading(false));
-  }, [refresh])
-
-
+    getCallWithHeaders(`${getDataApiURI}`)
+      .then(setTableRows)
+      .then(setLoading(false));
+  }, [refresh]);
 
   const deleteFunction = async (uri, id) => {
-    setLoading(true)
+    setLoading(true);
     try {
       await deleteCallWithHeaders(uri, id, refresh, setRefresh, setLoading);
     } catch (error) {
-      console.log(error)
-      failureNotification(`${error}`)
-      setLoading(false)
+      console.log(error);
+      failureNotification(`${error}`);
+      setLoading(false);
     }
-  }
+  };
   const sortNumericValue = (label) => {
     setSorted({
       sorted: label,
@@ -82,7 +87,8 @@ const TableComponent = ({
       // console.log("Object.values(data)", Object.values(data)?.length);
       for (let i = 0; i < Object.values(data)?.length; i++) {
         if (
-          Object?.values(data)[i]?.toString()
+          Object?.values(data)
+            [i]?.toString()
             ?.toLowerCase()
             ?.includes(event.target.value.toString().toLowerCase())
         ) {
@@ -104,13 +110,31 @@ const TableComponent = ({
         overlayOpacity={0.5}
         overlayColor="#c5c5c5"
       />
-      <SpecificViewModal opened={opened} open={open} close={close} title={modalObject.title} data={data} centered={"centered"} />
+      <SpecificViewModal
+        opened={opened}
+        open={open}
+        close={close}
+        title={modalObject.title}
+        data={data}
+        centered={"centered"}
+      />
       <Paper p={"xs"} mb={"xs"}>
         <Group position="apart">
           <Button
             disabled={buttonObject.hidden}
-            uppercase={buttonObject.uppercase} size={buttonObject.size} component={Link} to={buttonObject.path} leftIcon={buttonObject.iconPosition === "left" ? buttonObject.icon : null}
-            rightIcon={buttonObject.iconPosition === "right" ? buttonObject.icon : null} >{buttonObject?.title}</Button>
+            uppercase={buttonObject.uppercase}
+            size={buttonObject.size}
+            component={Link}
+            to={buttonObject.path}
+            leftIcon={
+              buttonObject.iconPosition === "left" ? buttonObject.icon : null
+            }
+            rightIcon={
+              buttonObject.iconPosition === "right" ? buttonObject.icon : null
+            }
+          >
+            {buttonObject?.title}
+          </Button>
           <TextInput
             value={searchPhrase}
             onChange={search}
@@ -120,107 +144,129 @@ const TableComponent = ({
           />
         </Group>
       </Paper>
-      {rows?.length > 0 && !loading ? <Table striped withBorder withColumnBorders>
-        <thead>
-          <tr style={{ wordBreak: "keep-all" }}>
-            {headCells?.map((head, index) => {
+      {rows?.length > 0 && !loading ? (
+        <Table striped withBorder withColumnBorders>
+          <thead>
+            <tr style={{ wordBreak: "keep-all" }}>
+              {headCells?.map((head, index) => {
+                return head.id !== "actions" ? (
+                  <th
+                    key={index}
+                    onClick={() => {
+                      // console.log("I have been cilcked");
+                      head.numeric === true
+                        ? sortNumericValue(head.id)
+                        : sortStringValue(head.id);
+                    }}
+                  >
+                    <Group
+                      noWrap
+                      spacing={3}
+                      align={"center"}
+                      position={head.numeric === true ? "right" : "left"}
+                    >
+                      <Text style={{}}>{head?.label}</Text>{" "}
+                      {!sorted.reversed === true &&
+                      sorted.sorted === head.id ? (
+                        <IconArrowDown size={16} />
+                      ) : (
+                        <IconArrowUp size={16} />
+                      )}
+                    </Group>
+                  </th>
+                ) : (
+                  <th key={index}>
+                    <Group
+                      noWrap
+                      spacing={3}
+                      align={"center"}
+                      position={head.numeric === true ? "right" : "left"}
+                    >
+                      <Text style={{}}>{head?.label}</Text>
+                    </Group>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {rows?.map((row, outerIndex) => {
               return (
-                head.id !== "actions" ? <th
-                  key={index}
-                  onClick={() => {
-                    // console.log("I have been cilcked");
-                    head.numeric === true
-                      ? sortNumericValue(head.id)
-                      : sortStringValue(head.id);
-                  }}
-                >
-                  <Group
-                    noWrap
-                    spacing={3}
-                    align={"center"}
-                    position={head.numeric === true ? "right" : "left"}
-                  >
-                    <Text style={{}}>{head?.label}</Text>{" "}
-                    {!sorted.reversed === true && sorted.sorted === head.id ? (
-                      <IconArrowDown size={16} />
+                <tr key={outerIndex}>
+                  {headCells?.map((head, innerIndex) => {
+                    return head.id === "actions" ? (
+                      <td key={innerIndex}>
+                        <Group noWrap spacing={0}>
+                          {head.view && (
+                            <ActionIcon
+                              onClick={() => {
+                                open();
+                                setData(row);
+                              }}
+                            >
+                              {head.view.icon}
+                            </ActionIcon>
+                          )}
+                          {head.edit && head.edit ? (
+                            <ActionIcon
+                              component={Link}
+                              to={`${head.edit.editRoute}${row._id}`}
+                            >
+                              {head.edit.icon}
+                            </ActionIcon>
+                          ) : null}
+                          {head.delete && head.delete ? (
+                            <ActionIcon
+                              onClick={() => {
+                                deleteFunction(head.delete.deleteURI, row._id);
+                              }}
+                            >
+                              {head.delete.icon}
+                            </ActionIcon>
+                          ) : null}
+                        </Group>
+                      </td>
                     ) : (
-                      <IconArrowUp size={16} />
-                    )}
-                  </Group>
-                </th> : <th
-                  key={index}
-
-                >
-                  <Group
-                    noWrap
-                    spacing={3}
-                    align={"center"}
-                    position={head.numeric === true ? "right" : "left"}
-                  >
-                    <Text style={{}}>{head?.label}</Text>
-                  </Group>
-                </th>
+                      <td align={head?.numeric === true ? "right" : "left"}>
+                        {head.id?.toLowerCase()?.includes("image") ? (
+                          <Avatar
+                            size={"md"}
+                            radius={"xl"}
+                            src={row[head?.id]}
+                          ></Avatar>
+                        ) : head.id?.toLowerCase()?.includes("status") ? (
+                          <Badge
+                            variant="filled"
+                            color={row[head.id] === true ? "green" : "red"}
+                          >
+                            {row[head.id] === true ? "Active" : "Blocked"}
+                          </Badge>
+                        ) : (
+                          <Text
+                            lineClamp={2}
+                            style={{ wordBreak: "break-word" }}
+                          >
+                            {head.date
+                              ? row[head?.id]?.split("T")[0] +
+                                " " +
+                                row[head?.id]?.split("T")[1]?.split(".")[0]
+                              : row[head?.id]?.toLocaleString()}
+                          </Text>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
               );
             })}
-          </tr>
-        </thead>
-        <tbody>
-          {rows?.map((row, outerIndex) => {
-            return (
-              <tr key={outerIndex}>
-                {headCells?.map((head, innerIndex) => {
-                  return head.id === "actions" ? (
-                    <td key={innerIndex}>
-                      <Group noWrap spacing={0}>
-                        {head.view && <ActionIcon
-                          onClick={() => {
-                            open()
-                            setData(row)
-                          }}
-                        >
-                          {head.view.icon}
-                        </ActionIcon>}
-                        {head.edit &&
-                          head.edit ? <ActionIcon component={Link} to={`${head.edit.editRoute}${row._id}`}
-
-                          >
-                          {head.edit.icon}
-                        </ActionIcon> : null
-                        }
-                        {head.delete &&
-                          head.delete ? <ActionIcon
-                            onClick={() => {
-                              deleteFunction(head.delete.deleteURI, row._id)
-                            }}
-                          >
-                          {head.delete.icon}
-                        </ActionIcon> : null
-                        }
-                      </Group>
-                    </td>
-                  ) : <td
-                    align={head?.numeric === true ? "right" : "left"}
-                  >
-
-                    {
-                      head.id?.toLowerCase()?.includes("image") ? <Avatar size={"md"} radius={"xl"} src={row[head?.id]}></Avatar> :
-                        head.id?.toLowerCase()?.includes("status") ? <Badge variant="filled" color={row[head.id] === true ? "green" : "red"}>{row[head.id] === true ? "Active" : "Blocked"}</Badge> :
-                          <Text lineClamp={2}>{head.date
-                            ? row[head?.id]?.split("T")[0] +
-                            " " +
-                            row[head?.id]?.split("T")[1]?.split(".")[0]
-                            : row[head?.id]?.toLocaleString()}</Text>
-
-
-                    }
-                  </td>
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table> : <Title align="center" p={"xl"}>{!loading ? "No data to display" : "Loading"}</Title>}
-    </Paper >
+          </tbody>
+        </Table>
+      ) : (
+        <Title align="center" p={"xl"}>
+          {!loading ? "No data to display" : "Loading"}
+        </Title>
+      )}
+    </Paper>
   );
 };
 

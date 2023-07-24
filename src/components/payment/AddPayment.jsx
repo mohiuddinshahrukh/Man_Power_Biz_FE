@@ -22,6 +22,11 @@ import {
 } from "@mantine/core";
 import "./CheckoutForm.css";
 import { ArrowLeft, ArrowRight } from "tabler-icons-react";
+import { stripeHandlePayment } from "../../helpers/stripePaymentHelper";
+import PaymentPolicy from "./PaymentPolicy";
+import InvoiceViewCard from "../cards/InvoiceViewCard";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../helpers/routesHelper";
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
 // This is your test publishable API key.
@@ -30,6 +35,9 @@ const stripePromise = loadStripe(
 );
 
 export default function App() {
+  const navigate = useNavigate();
+
+  const [paidBooking, setPaidBooking] = useState({});
   const [loading, setLoading] = useState(true);
   const [clientSecret, setClientSecret] = useState("");
   const [bookings, setBookings] = useState([]);
@@ -50,18 +58,21 @@ export default function App() {
   const [packageError, setPackageError] = useState("");
   const [amountError, setAmountError] = useState("");
   //
+
+  // External Stripe
+  const [externalStripe, setExternalStripe] = useState(null);
+  const [externalElements, setExternalElements] = useState(null);
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [disabledStepper, setDisabledStepper] = useState(false);
+  //
   const [active, setActive] = useState(0);
   const nextStep = () =>
     setActive((current) => (current < 4 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  const getPaymentIntent = async () => {
-    const apiRes = await postCallWithHeaders("admin/create-payment-intent", {
-      items: [{ id: "xl-tshirt" }],
-    });
-    return apiRes.clientSecret;
-  };
   const getPaymentData = async () => {
     const [customers, bookings] = await Promise.all([
       getCallWithHeaders("admin/getAllUsers"),
@@ -103,7 +114,10 @@ export default function App() {
     setPaymentValue(0);
     console.log("Here");
     let checkBooking = bookings.filter((booking) => {
-      if (value === booking.bookingCustomer._id) {
+      if (
+        value === booking.bookingCustomer._id &&
+        booking.bookingRemainingAmount > 0
+      ) {
         return booking;
       } else {
         console.log(
@@ -211,6 +225,7 @@ export default function App() {
             pt="xl"
           >
             <Stepper.Step
+              disabled={disabledStepper}
               label="Payment Details"
               description="General Details"
               allowStepSelect={active > 0}
@@ -341,6 +356,7 @@ export default function App() {
             </Stepper.Step>
 
             <Stepper.Step
+              disabled={disabledStepper}
               label="Make Payment"
               description="Payment Details"
               allowStepSelect={active > 0}
@@ -349,11 +365,24 @@ export default function App() {
                 Payment Details
               </Text>
 
-              <Grid justify="center">
-                <Grid.Col>
+              <Grid align="start">
+                <Grid.Col sm={12} md={6} lg={6}>
+                  <PaymentPolicy />
+                </Grid.Col>
+                <Grid.Col sm={12} md={6} lg={6}>
                   {clientSecret.length > 0 && (
                     <Elements options={options} stripe={stripePromise}>
-                      <CheckoutForm clientSecret={clientSecret} />
+                      <CheckoutForm
+                        clientSecret={clientSecret}
+                        paymentValue={paymentValue}
+                        selectedBooking={selectedBooking}
+                        setMessage={setMessage}
+                        message={message}
+                        setExternalElements={setExternalElements}
+                        externalElements={externalElements}
+                        externalStripe={externalStripe}
+                        setExternalStripe={setExternalStripe}
+                      />
                     </Elements>
                   )}
                 </Grid.Col>
@@ -380,10 +409,22 @@ export default function App() {
                     size="md"
                     color="dark"
                     onClick={() => {
-                      nextStep();
+                      stripeHandlePayment(
+                        externalStripe,
+                        externalElements,
+                        setIsLoading,
+                        selectedBooking,
+                        paymentValue,
+                        setMessage,
+                        nextStep,
+                        setDisabledStepper,
+                        setPaidBooking,
+                        setLoading
+                      );
                     }}
+                    uppercase
                   >
-                    NEXT
+                    pay {paymentValue.toLocaleString()} now
                   </Button>
                 </Grid.Col>
               </Grid>
@@ -392,6 +433,24 @@ export default function App() {
               <Title align="center" order={2}>
                 Payment Completed
               </Title>
+
+              <InvoiceViewCard data={paidBooking} />
+              <Grid justify="flex-end" py="md">
+                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
+                  <Button
+                    fullWidth
+                    rightIcon={<ArrowRight />}
+                    size="md"
+                    color="dark"
+                    onClick={() => {
+                      // nextStep();
+                      navigate(routes.viewPayments);
+                    }}
+                  >
+                    All Payments
+                  </Button>
+                </Grid.Col>
+              </Grid>
             </Stepper.Completed>
           </Stepper>
         </Paper>
