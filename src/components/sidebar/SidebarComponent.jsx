@@ -3,21 +3,16 @@ import { useState } from "react";
 import { Box, NavLink, Paper, ScrollArea } from "@mantine/core";
 import { Link } from "react-router-dom";
 import {
-  IconBrandFeedly,
   IconCards,
   IconCategory2,
   IconChevronRight,
   IconCurrencyRupee,
   IconEye,
-  IconFileInfo,
   IconHome,
-  IconMessage,
   IconNotebook,
   IconPackages,
   IconPlus,
   IconSettings,
-  IconUserExclamation,
-  IconUserQuestion,
   IconUsers,
 } from "@tabler/icons-react";
 import { routes } from "../../helpers/routesHelper";

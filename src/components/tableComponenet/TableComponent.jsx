@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 /* eslint-disable react/prop-types */
 import {
   ActionIcon,
@@ -21,10 +22,7 @@ import {
   deleteCallWithHeaders,
   getCallWithHeaders,
 } from "../../helpers/apiCallHelpers";
-import {
-  failureNotification,
-  successNotification,
-} from "../../helpers/notificationHelper";
+import { failureNotification } from "../../helpers/notificationHelper";
 
 const TableComponent = ({
   modalObject,

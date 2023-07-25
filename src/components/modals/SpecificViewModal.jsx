@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import { Badge, Grid, Image, Modal, Stack, Text, Title } from "@mantine/core";
-import { UserProfileCard } from "../cards/UserProfileCard";
+import { Modal, Title } from "@mantine/core";
 import ServiceCategoryViewCard from "../cards/ServiceCategoryViewCard";
 import ServicesViewCard from "../cards/ServicesViewCard";
 import { useLocation } from "react-router-dom";
 import PackageViewCard from "../cards/PackageViewCard";
 import InvoiceViewCard from "../cards/InvoiceViewCard";
 
-const SpecificViewModal = ({ opened, close, title, open, data }) => {
+const SpecificViewModal = ({ opened, close, title, data }) => {
   const location = useLocation();
   const pathname = location.pathname;
   console.log(data);
@@ -28,7 +27,7 @@ const SpecificViewModal = ({ opened, close, title, open, data }) => {
       withCloseButton
       size={"xl"}
     >
-      {pathname.includes("categories") ? (
+      {pathname.includes("viewServiceCategories") ? (
         <ServiceCategoryViewCard data={data} />
       ) : pathname.includes("service") ? (
         <ServicesViewCard data={data} />
