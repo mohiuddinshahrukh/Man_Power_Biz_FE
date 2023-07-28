@@ -5,6 +5,24 @@ import { backendURL } from "./config";
 
 const baseURI = backendURL();
 
+export const getCallWithOutHeaders = async (endpoint) => {
+  try {
+    let apiResponse = await axios({
+      method: "get",
+      url: `${baseURI}/${endpoint}`,
+    });
+    if (!apiResponse.data.error) {
+      successNotification(`${apiResponse.data.msg}`);
+    } else {
+      failureNotification(`${apiResponse.data.msg}`);
+    }
+    console.log(apiResponse);
+    return appendSerialNumber(apiResponse.data.data);
+  } catch (error) {
+    console.log(error);
+    failureNotification(`${error}`);
+  }
+};
 export const getCallWithHeaders = async (endpoint) => {
   try {
     let apiResponse = await axios({
