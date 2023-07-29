@@ -1,0 +1,233 @@
+/* eslint-disable react/prop-types */
+import {
+  createStyles,
+  Text,
+  Container,
+  ActionIcon,
+  Group,
+  rem,
+  Stack,
+} from "@mantine/core";
+import {
+  IconBrandTwitter,
+  IconBrandYoutube,
+  IconBrandInstagram,
+} from "@tabler/icons-react";
+const data = [
+  {
+    title: "About",
+    links: [
+      {
+        label: "Features",
+        link: "#",
+      },
+      {
+        label: "Pricing",
+        link: "#",
+      },
+      {
+        label: "Support",
+        link: "#",
+      },
+      {
+        label: "Forums",
+        link: "#",
+      },
+    ],
+  },
+
+  {
+    title: "Project",
+    links: [
+      {
+        label: "Contribute",
+        link: "#",
+      },
+      {
+        label: "Media assets",
+        link: "#",
+      },
+      {
+        label: "Changelog",
+        link: "#",
+      },
+      {
+        label: "Releases",
+        link: "#",
+      },
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      {
+        label: "Join Discord",
+        link: "#",
+      },
+      {
+        label: "Follow on Twitter",
+        link: "#",
+      },
+      {
+        label: "Email newsletter",
+        link: "#",
+      },
+      {
+        label: "GitHub discussions",
+        link: "#",
+      },
+    ],
+  },
+];
+
+const useStyles = createStyles((theme) => ({
+  footer: {
+    marginTop: rem(120),
+    paddingTop: `calc(${theme.spacing.xl} * 2)`,
+    paddingBottom: `calc(${theme.spacing.xl} * 2)`,
+    backgroundColor: theme.colors.dark[6],
+    borderTop: `${rem(1)} solid ${theme.colors.gray[2]}`,
+  },
+
+  logo: {
+    maxWidth: rem(200),
+
+    [theme.fn.smallerThan("sm")]: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+  },
+
+  description: {
+    marginTop: rem(5),
+
+    [theme.fn.smallerThan("sm")]: {
+      marginTop: theme.spacing.xs,
+      textAlign: "center",
+    },
+  },
+
+  inner: {
+    display: "flex",
+    justifyContent: "space-between",
+
+    [theme.fn.smallerThan("sm")]: {
+      flexDirection: "column",
+      alignItems: "center",
+    },
+  },
+
+  groups: {
+    display: "flex",
+    flexWrap: "wrap",
+
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
+    },
+  },
+
+  wrapper: {
+    width: rem(160),
+  },
+
+  link: {
+    display: "block",
+    color: theme.white,
+    fontSize: theme.fontSizes.sm,
+    paddingTop: rem(3),
+    paddingBottom: rem(3),
+
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+
+  title: {
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 700,
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    marginBottom: `calc(${theme.spacing.xs} / 2)`,
+    color: theme.white,
+  },
+
+  afterFooter: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl,
+    borderTop: `${rem(1)} solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
+    }`,
+
+    [theme.fn.smallerThan("sm")]: {
+      flexDirection: "column",
+    },
+  },
+
+  social: {
+    [theme.fn.smallerThan("sm")]: {
+      marginTop: theme.spacing.xs,
+    },
+  },
+}));
+
+export function MainFooterComponent() {
+  const { classes } = useStyles();
+
+  const groups = data?.map((group) => {
+    const links = group.links.map((link, index) => (
+      <Text
+        key={index}
+        className={classes.link}
+        component="a"
+        href={link.link}
+        onClick={(event) => event.preventDefault()}
+      >
+        {link.label}
+      </Text>
+    ));
+
+    return (
+      <div className={classes.wrapper} key={group.title}>
+        <Text className={classes.title}>{group.title}</Text>
+        {links}
+      </div>
+    );
+  });
+
+  return (
+    <footer className={classes.footer}>
+      <Container className={classes.inner}>
+        <Stack align="self-start">
+          <Text color="white">Logo</Text>
+          <div className={classes.logo}>
+            <Text size="xs" color="dimmed" className={classes.description}>
+              Build fully functional accessible web applications faster than
+              ever
+            </Text>
+          </div>
+          <Group spacing={0} className={classes.social} position="right" noWrap>
+            <ActionIcon size="lg">
+              <IconBrandTwitter size="1.05rem" stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon size="lg">
+              <IconBrandYoutube size="1.05rem" stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon size="lg">
+              <IconBrandInstagram size="1.05rem" stroke={1.5} />
+            </ActionIcon>
+          </Group>
+        </Stack>
+        <div className={classes.groups}>{groups}</div>
+      </Container>
+      <Container className={classes.afterFooter}>
+        <Text color="dimmed" size="sm">
+          © 2023 Neha Services All rights reserved.
+        </Text>
+      </Container>
+    </footer>
+  );
+}

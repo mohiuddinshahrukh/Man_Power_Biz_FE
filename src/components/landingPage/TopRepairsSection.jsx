@@ -6,7 +6,7 @@ import { Carousel } from "@mantine/carousel";
 
 const TopRepairsSection = () => {
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(false);
+//   const [loading, setLoading] = useState(false);
   const getServiceCategories = async () => {
     const apiResponse = await getCallWithOutHeaders(
       "customer/get-landing-page-services"
@@ -21,7 +21,7 @@ const TopRepairsSection = () => {
   const categoryCards = services?.map((serviceCard, index) => {
     return (
       <Carousel.Slide key={index}>
-        <Card shadow="sm" p="lg" w={350}>
+        <Card p="lg" w={350}>
           <Card.Section>
             <Image
               radius={"md"}
