@@ -136,7 +136,7 @@ const SpecificServiceCategory = () => {
                         console.log("Package", pkg);
                         return (
                           <React.Fragment key={index}>
-                            <Tabs variant="outline" my={"sm"}>
+                            <Tabs defaultValue={'images'} variant="outline" my={"sm"}>
                               <Tabs.List value="images">
                                 <Tabs.Tab value="images">Images</Tabs.Tab>
                                 <Tabs.Tab value="videos" color="blue">
