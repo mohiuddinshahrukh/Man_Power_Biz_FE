@@ -26,3 +26,7 @@ export const routes = {
   faq: "/admindashboard/faq",
   "*": "/BadRequest",
 };
+
+export const customerRoutes = {
+  specificService: "/specificService",
+};

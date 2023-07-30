@@ -236,58 +236,33 @@ const AddService = () => {
           successNotification("PDFs uploaded successfully");
         }
       }
-
-      let res;
-      if (videoUpload.length > 0 || pdfUpload.length > 0) {
-        // Only evaluate the condition if videos or PDFs are uploaded
-        if (
-          imageUploadResult.length > 0 &&
-          (videoUploadResult.length > 0 || pdfUploadResult.length > 0)
-        ) {
-          values.serviceImages = imageUploadResult;
-          values.serviceVideos = videoUploadResult;
-          values.servicePDFs = pdfUploadResult;
-          res = await postCallWithHeaders("admin/addService", values);
-          console.log("This is res of the post call with headers", res);
-        } else {
-          console.log("here cos both false");
-        }
-      } else {
-        // Upload images or other files when no videos or PDFs are selected
-        if (imageUploadResult.length > 0) {
-          values.serviceImages = imageUploadResult;
-          res = await postCallWithHeaders("admin/addService", values);
-          console.log("This is res of the post call with headers", res);
-        }
-      }
-
+      console.log("images", imageUploadResult);
+      console.log("videos", videoUploadResult);
+      console.log("pdf", pdfUploadResult);
+      // Check if any of the upload types have files selected (image, video, or pdf)
       if (
-        (imageUploadResult.length > 0 &&
-          (videoUploadResult.length > 0 || pdfUploadResult.length > 0) &&
-          !res.error) ||
-        (imageUploadResult.length > 0 &&
-          videoUpload.length === 0 &&
-          pdfUpload.length === 0 &&
-          !res.error)
+        imageUploadResult.length > 0 ||
+        videoUploadResult.length > 0 ||
+        pdfUploadResult.length > 0
       ) {
-        setLoading(false);
-        successNotification(res.msg);
-        setApiResponseObj(res.data.id);
-        setProceedToPkgModal(true);
-        //navigate("/adminDashboard/viewServices");
-      } else if (
-        (imageUploadResult.length > 0 &&
-          (videoUploadResult.length > 0 || pdfUploadResult.length > 0) &&
-          res.error) ||
-        (imageUploadResult.length > 0 &&
-          videoUpload.length === 0 &&
-          pdfUpload.length === 0 &&
-          res.error)
-      ) {
-        failureNotification(res.msg);
-        setLoading(false);
+        values.serviceImages = imageUploadResult;
+        values.serviceVideos = videoUploadResult;
+        values.servicePDF = pdfUploadResult;
+        const res = await postCallWithHeaders("admin/addService", values);
+        console.log("This is res of the post call with headers", res);
+
+        if (!res.error) {
+          setLoading(false);
+          successNotification(res.msg);
+          setApiResponseObj(res.data.id);
+          setProceedToPkgModal(true);
+          navigate("/adminDashboard/viewServices");
+        } else {
+          failureNotification(res.msg);
+          setLoading(false);
+        }
       } else {
-        console.log("here cos all 3 failed");
+        console.log("No files selected (images, videos, or PDFs)");
       }
     } catch (error) {
       failureNotification(`${error}`);
@@ -329,6 +304,7 @@ const AddService = () => {
             }
             title={"Proceed to adding packages?"}
             path={`${routes.addPackageWithId}${apiResponseObj}`}
+            cancelPath={routes.viewServices}
           />
           <CancelScreenModal
             opened={opened}

@@ -29,7 +29,7 @@ const SpecificViewModal = ({ opened, close, title, data }) => {
     >
       {pathname.includes("viewServiceCategories") ? (
         <ServiceCategoryViewCard data={data} />
-      ) : pathname.includes("service") ? (
+      ) : pathname.includes("viewServices") ? (
         <ServicesViewCard data={data} />
       ) : pathname.includes("viewPackages") ? (
         <PackageViewCard data={data} />

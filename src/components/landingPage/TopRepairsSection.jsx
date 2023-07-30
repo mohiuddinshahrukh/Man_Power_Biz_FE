@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { getCallWithOutHeaders } from "../../helpers/apiCallHelpers";
 import { useState } from "react";
 import { Carousel } from "@mantine/carousel";
+import { Link } from "react-router-dom";
+import { customerRoutes } from "../../helpers/routesHelper";
 
 const TopRepairsSection = () => {
   const [services, setServices] = useState([]);
-//   const [loading, setLoading] = useState(false);
+  //   const [loading, setLoading] = useState(false);
   const getServiceCategories = async () => {
     const apiResponse = await getCallWithOutHeaders(
       "customer/get-landing-page-services"
@@ -21,7 +23,12 @@ const TopRepairsSection = () => {
   const categoryCards = services?.map((serviceCard, index) => {
     return (
       <Carousel.Slide key={index}>
-        <Card p="lg" w={350}>
+        <Card
+          p="lg"
+          w={350}
+          component={Link}
+          to={`${customerRoutes.specificService}/${serviceCard._id}`}
+        >
           <Card.Section>
             <Image
               radius={"md"}

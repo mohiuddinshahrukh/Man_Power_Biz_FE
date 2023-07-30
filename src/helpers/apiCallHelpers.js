@@ -44,6 +44,23 @@ export const getCallWithHeaders = async (endpoint) => {
     failureNotification(`${error}`);
   }
 };
+export const getCallSpecificWithoutHeaders = async (endpoint, id) => {
+  try {
+    let apiResponse = await axios({
+      method: "get",
+      url: `${baseURI}/${endpoint}/${id}`,
+    });
+    if (!apiResponse.data.error) {
+      successNotification(`${apiResponse.data.msg}`);
+    } else {
+      failureNotification(`${apiResponse.data.msg}`);
+    }
+    console.log("api Response: ",apiResponse);
+    return apiResponse.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const getCallSpecificWithHeaders = async (endpoint, id) => {
   try {
     let apiResponse = await axios({

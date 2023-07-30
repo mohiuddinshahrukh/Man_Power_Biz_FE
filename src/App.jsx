@@ -28,8 +28,10 @@ import LoginSignUp from "./components/login_signup/LoginSignUp";
 import PrivateRoutes from "./helpers/PrivateRoute";
 import LandingPage from "./components/landingPage/LandingPage";
 import UploadFiles from "./components/uploadFiles/UploadFiles";
-import { routes } from "./helpers/routesHelper";
-
+import { customerRoutes, routes } from "./helpers/routesHelper";
+import CustomerOutlet from "./components/customer-components/CustomerOutlet";
+import SpecificServiceCategory from "./components/customer-components/SpecificServiceCategory";
+import { ShoppingCartContext } from "./contexts/ShoppingCartContext";
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
@@ -92,7 +94,15 @@ function App() {
             </Route>
           </Route>
           {/* Customer side */}
-          <Route path="/" element={<LandingPage />}></Route>
+
+          <Route path="/" element={<CustomerOutlet />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path={`${customerRoutes.specificService}/:id`}
+              element={<SpecificServiceCategory />}
+            />
+          </Route>
+
           <Route path="*" element={<BadRequest />} />
         </Routes>
       </MantineProvider>
