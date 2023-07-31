@@ -28,14 +28,18 @@ import { IconCurrencyRupee, IconDownload } from "@tabler/icons-react";
 import PreviewPDFComponent from "./PreviewPDFComponent";
 import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
 import { useContext } from "react";
-import { addToCart, removeFromCart } from "../../helpers/addToCartHelper";
+
 import shoppingCartLogo from "../../assets/shoppingCart.svg";
+import {
+  addToCart,
+  handleQuantityChange,
+  removeFromCart,
+} from "../../helpers/shoppingCartHelper";
 const SpecificServiceCategory = () => {
-  const { shoppingCartItems, setShoppingCartItems } =
+  const { shoppingCartItems, setShoppingCartItems, cartTotal } =
     useContext(ShoppingCartContext);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  console.log("Refresh: ", refresh);
   const [pdfLink, setPdfLink] = useState("");
   const [PDFOpened, setPDFOpened] = useState(false);
   const [categoryData, setCategoryData] = useState({});
@@ -46,7 +50,6 @@ const SpecificServiceCategory = () => {
       `customer/get-specific-service-category`,
       params.id
     );
-    console.log("api Respoonse inside useEffect: ", apiResponse.data);
     setCategoryData(apiResponse.data);
   };
   useEffect(() => {
@@ -68,7 +71,6 @@ const SpecificServiceCategory = () => {
             <Divider my="xs" label="Select a service" />
             <SimpleGrid cols={3}>
               {categoryData?.categoryServices?.map((service, index) => {
-                console.log("Service: ", service);
                 return (
                   <Stack
                     spacing={0}
@@ -156,7 +158,6 @@ const SpecificServiceCategory = () => {
                           </ActionIcon>
                         </Group>
                         {service?.servicePackages?.map((pkg, index) => {
-                          console.log("Package", pkg);
                           return (
                             <Card withBorder my={"sm"} key={index}>
                               <Tabs
@@ -234,7 +235,6 @@ const SpecificServiceCategory = () => {
                                     my={"sm"}
                                     compact
                                     onClick={() => {
-                                      console.log(pkg);
                                       addToCart(
                                         shoppingCartItems,
                                         pkg,
@@ -251,7 +251,6 @@ const SpecificServiceCategory = () => {
                                     my={"sm"}
                                     compact
                                     onClick={() => {
-                                      console.log(pkg);
                                       removeFromCart(
                                         shoppingCartItems,
                                         pkg,
@@ -316,6 +315,16 @@ const SpecificServiceCategory = () => {
                                     value={item.quantity}
                                     min={0}
                                     max={3}
+                                    onChange={(e) => {
+                                      console.log(e);
+                                      console.log(item);
+                                      handleQuantityChange(
+                                        e,
+                                        shoppingCartItems,
+                                        item,
+                                        setShoppingCartItems
+                                      );
+                                    }}
                                   />
                                 </td>
                                 <td align="right">
@@ -340,11 +349,7 @@ const SpecificServiceCategory = () => {
                         leftIcon={
                           <Group spacing={3}>
                             <IconCurrencyRupee />
-                            <Text>
-                              {shoppingCartItems?.map((item) => {
-                                console.log("Shopping cart items: ", item);
-                              })}
-                            </Text>
+                            <Text>{cartTotal}</Text>
                           </Group>
                         }
                         rightIcon={<Text align="right">View Cart</Text>}
