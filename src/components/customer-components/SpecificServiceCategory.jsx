@@ -11,10 +11,8 @@ import {
   Group,
   HoverCard,
   Image,
-  NumberInput,
   SimpleGrid,
   Stack,
-  Table,
   Tabs,
   Text,
   Title,
@@ -30,13 +28,10 @@ import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
 import { useContext } from "react";
 
 import shoppingCartLogo from "../../assets/shoppingCart.svg";
-import {
-  addToCart,
-  handleQuantityChange,
-  removeFromCart,
-} from "../../helpers/shoppingCartHelper";
+import { addToCart, removeFromCart } from "../../helpers/shoppingCartHelper";
+import ShoppingCartTable from "./ShoppingCartTable";
 const SpecificServiceCategory = () => {
-  const { shoppingCartItems, setShoppingCartItems, cartTotal } =
+  const { shoppingCartItems, setShoppingCartItems } =
     useContext(ShoppingCartContext);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -131,17 +126,6 @@ const SpecificServiceCategory = () => {
                         <Title>{service.serviceTitle}</Title>
                         <Group spacing={5}>
                           <Text>PDF Guide</Text>
-
-                          {/* <Button
-                          hidden={true}
-                          rightIcon={<IconEye />}
-                          onClick={() => {
-                            setPdfLink(service.servicePDF[0]);
-                            setPDFOpened(true);
-                          }}
-                        >
-                          View
-                        </Button> */}
                           <ActionIcon
                             disabled={
                               service?.servicePDF?.length > 0 ? false : true
@@ -287,76 +271,7 @@ const SpecificServiceCategory = () => {
                       <Text> Click on Add to start adding!</Text>
                     </Stack>
                   ) : (
-                    <>
-                      <Table>
-                        <thead>
-                          <tr>
-                            <th>
-                              <Text align="left">Item</Text>
-                            </th>
-                            <th align="right">
-                              <Text align="right">Quantity</Text>
-                            </th>
-                            <th align="right">
-                              <Group position="right" spacing={3}>
-                                <IconCurrencyRupee />
-                                <Text align="right">Price</Text>
-                              </Group>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {shoppingCartItems?.map((item, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{item.packageTitle}</td>
-                                <td align="right">
-                                  <NumberInput
-                                    value={item.quantity}
-                                    min={0}
-                                    max={3}
-                                    onChange={(e) => {
-                                      console.log(e);
-                                      console.log(item);
-                                      handleQuantityChange(
-                                        e,
-                                        shoppingCartItems,
-                                        item,
-                                        setShoppingCartItems
-                                      );
-                                    }}
-                                  />
-                                </td>
-                                <td align="right">
-                                  <Text>{item.price?.toLocaleString()}</Text>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </Table>
-                      <Button
-                        styles={{
-                          leftIcon: {
-                            width: "50%",
-                          },
-                          rightIcon: {
-                            width: "50%",
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          },
-                        }}
-                        leftIcon={
-                          <Group spacing={3}>
-                            <IconCurrencyRupee />
-                            <Text>{cartTotal}</Text>
-                          </Group>
-                        }
-                        rightIcon={<Text align="right">View Cart</Text>}
-                        my={"xs"}
-                        fullWidth
-                      ></Button>
-                    </>
+                    <ShoppingCartTable />
                   )}
                 </Card>
                 <Card my={"xs"} withBorder>

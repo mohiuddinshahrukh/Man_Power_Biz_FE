@@ -15,6 +15,10 @@ import {
   ScrollArea,
   rem,
   Anchor,
+  Avatar,
+  Menu,
+  ActionIcon,
+  Badge,
 } from "@mantine/core";
 // import { MantineLogo } from '@mantine/ds';
 import { useDisclosure } from "@mantine/hooks";
@@ -26,9 +30,20 @@ import {
   IconFingerprint,
   IconCoin,
   IconChevronDown,
+  IconDeviceMobile,
+  IconBrandWhatsapp,
+  IconMail,
+  IconUser,
+  IconSettings,
+  IconEdit,
+  IconDashboard,
+  IconLayoutGrid,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-
+import { UserProfileContext } from "../../contexts/userProfileContext";
+import { useContext } from "react";
+import { ToggleTheme } from "../dashboard/theme/ToggleTheme";
+import UserAvatar from "../dashboard/UserAvatar";
 const useStyles = createStyles((theme) => ({
   link: {
     display: "flex",
@@ -132,6 +147,8 @@ const mockdata = [
 ];
 
 export function MainNavbarComponent() {
+  const { loggedInUserDetails, setLoggedInUserDetails } =
+    useContext(UserProfileContext);
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
@@ -154,12 +171,18 @@ export function MainNavbarComponent() {
       </Group>
     </UnstyledButton>
   ));
-
+  console.log("loggedInUserDetails", loggedInUserDetails);
   return (
     <Box h={60} pos={"sticky"} top={0} style={{ zIndex: 10 }}>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
-          <Anchor component={Link} to={"/"} underline={false} color="black" fs={10}>
+          <Anchor
+            component={Link}
+            to={"/"}
+            underline={false}
+            color="black"
+            fs={10}
+          >
             Logo
           </Anchor>
           <Group
@@ -175,65 +198,93 @@ export function MainNavbarComponent() {
             >
               Home
             </Anchor>
-            {/* <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
-                            <HoverCard.Target>
-                                <a href="#" className={classes.link}>
-                                    <Center inline>
-                                        <Box component="span" mr={5}>
-                                            Features
-                                        </Box>
-                                        <IconChevronDown size={16} color={theme.fn.primaryColor()} />
-                                    </Center>
-                                </a>
-                            </HoverCard.Target>
-
-                            <HoverCard.Dropdown sx={{ overflow: 'hidden' }}>
-                                <Group position="apart" px="md">
-                                    <Text fw={500}>Features</Text>
-                                    <Anchor href="#" fz="xs">
-                                        View all
-                                    </Anchor>
-                                </Group>
-
-                                <Divider
-                                    my="sm"
-                                    mx="-md"
-                                    color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
-                                />
-
-                                <SimpleGrid cols={2} spacing={0}>
-                                    {links}
-                                </SimpleGrid>
-
-                                <div className={classes.dropdownFooter}>
-                                    <Group position="apart">
-                                        <div>
-                                            <Text fw={500} fz="sm">
-                                                Get started
-                                            </Text>
-                                            <Text size="xs" color="dimmed">
-                                                Their food sources have decreased, and their numbers
-                                            </Text>
-                                        </div>
-                                        <Button variant="default">Get started</Button>
-                                    </Group>
-                                </div>
-                            </HoverCard.Dropdown>
-                        </HoverCard> */}
-            {/* <a href="#" className={classes.link}>
-                            Learn
-                        </a> */}
             <a href="#" className={classes.link}>
               Help
             </a>
 
-            <Group className={classes.hiddenMobile}>
-              <Button variant="default" component={Link} to={"/auth"}>
-                Log in
-              </Button>
-              <Button>Sign up</Button>
-            </Group>
+            {loggedInUserDetails &&
+            JSON.stringify(loggedInUserDetails) != "{}" ? (
+              <Group spacing={3}>
+                <Menu>
+                  <Menu.Target>
+                    <ActionIcon>
+                      <Avatar
+                        variant="outline"
+                        size={28}
+                        radius={"sm"}
+                        src={""}
+                      />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Label>Options</Menu.Label>
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconLayoutGrid />
+                        <Text>Dashboard</Text>
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Divider></Menu.Divider>
+                    <Menu.Label>Profile</Menu.Label>
+
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconUser />
+                        <Text>{loggedInUserDetails.fullName} </Text>{" "}
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconMail />
+                        <Text>{loggedInUserDetails.email}</Text>
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconDeviceMobile />
+                        <Text>{loggedInUserDetails.contactNumber}</Text>
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconBrandWhatsapp />
+                        <Text>{loggedInUserDetails.whatsappNumber}</Text>
+                      </Group>
+                    </Menu.Item>
+
+                    <Menu.Divider></Menu.Divider>
+                    <Menu.Label>Settings</Menu.Label>
+                    <Menu.Item>
+                      <Group spacing={3}>
+                        <IconEdit />
+                        <Text>Edit Profile</Text>
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Item
+                      onClick={() => {
+                        localStorage.removeItem("customerDetails");
+                        setLoggedInUserDetails({});
+                      }}
+                    >
+                      <Group spacing={3}>
+                        <IconSettings />
+                        <Text>Logout</Text>
+                      </Group>
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+                <ToggleTheme />
+              </Group>
+            ) : (
+              <Group className={classes.hiddenMobile}>
+                <Button variant="default" component={Link} to={"/auth"}>
+                  Log in
+                </Button>
+                <Button>Sign up</Button>
+              </Group>
+            )}
           </Group>
+
           <Burger
             opened={drawerOpened}
             onClick={toggleDrawer}

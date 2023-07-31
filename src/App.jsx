@@ -31,7 +31,7 @@ import UploadFiles from "./components/uploadFiles/UploadFiles";
 import { customerRoutes, routes } from "./helpers/routesHelper";
 import CustomerOutlet from "./components/customer-components/CustomerOutlet";
 import SpecificServiceCategory from "./components/customer-components/SpecificServiceCategory";
-import { ShoppingCartContext } from "./contexts/ShoppingCartContext";
+import ViewCart from "./components/customer-components/ViewCart";
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
@@ -101,6 +101,7 @@ function App() {
               path={`${customerRoutes.specificService}/:id`}
               element={<SpecificServiceCategory />}
             />
+            <Route path={customerRoutes.viewCart} element={<ViewCart />} />
           </Route>
 
           <Route path="*" element={<BadRequest />} />

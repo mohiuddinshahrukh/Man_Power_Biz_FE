@@ -29,4 +29,6 @@ export const routes = {
 
 export const customerRoutes = {
   specificService: "/specificService",
+  viewCart: "/viewCart",
+  
 };
