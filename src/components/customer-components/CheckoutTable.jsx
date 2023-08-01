@@ -4,13 +4,16 @@ import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
 import { IconCurrencyRupee } from "@tabler/icons-react";
 import { useState } from "react";
 import LoginSignupModal from "./LoginSignupModal";
+import PaymentModal from "./BookingModal";
 
-const CheckoutTable = () => {
+const CheckoutTable = ({ hideCheckoutButton }) => {
+  const [paymentModal, setPaymentModal] = useState(false);
   const [loginSignupModalOpened, setLoginSignupModalOpened] = useState(false);
   const { cartTotal, taxTotal, totalAmountWithTaxes } =
     useContext(ShoppingCartContext);
   return (
     <Box>
+      <PaymentModal opened={paymentModal} setOpened={setPaymentModal} />
       <LoginSignupModal
         opened={loginSignupModalOpened}
         setOpened={setLoginSignupModalOpened}
@@ -61,6 +64,7 @@ const CheckoutTable = () => {
         </thead>
       </Table>
       <Button
+        display={hideCheckoutButton ? "none" : "block"}
         my={"xs"}
         fullWidth
         onClick={() => {
@@ -68,6 +72,8 @@ const CheckoutTable = () => {
           console.log();
           if (!customer || customer == "{}") {
             setLoginSignupModalOpened(true);
+          } else {
+            setPaymentModal(!paymentModal);
           }
         }}
       >

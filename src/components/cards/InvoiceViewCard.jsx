@@ -85,7 +85,7 @@ const InvoiceViewCard = ({ data }) => {
             <Text>
               <b>Payment Status: </b>
               {data.bookingPaymentStatus} (
-              {data.bookingPaidAmount.toLocaleString()})
+              {data.bookingPaidAmount?.toLocaleString()})
             </Text>
             <Text>
               <b>Customer Name: </b>
@@ -121,7 +121,7 @@ const InvoiceViewCard = ({ data }) => {
               <td>
                 <Text>{data.bookingDate?.split("T")[0]}</Text>
               </td>
-              <td align="right">{data.bookingPrice.toLocaleString()}</td>
+              <td align="right">{data.bookingPrice?.toLocaleString()}</td>
             </tr>
           </tbody>
         </Table>
@@ -154,16 +154,16 @@ const InvoiceViewCard = ({ data }) => {
           <tbody>
             <tr>
               <td>Total Price</td>
-              <td align="right">{data.bookingPrice.toLocaleString()}</td>
+              <td align="right">{data.bookingPrice?.toLocaleString()}</td>
             </tr>
             <tr>
               <td>Total Paid</td>
-              <td align="right">{data.bookingPaidAmount.toLocaleString()}</td>
+              <td align="right">{data.bookingPaidAmount?.toLocaleString()}</td>
             </tr>
             <tr>
               <td>Remaining</td>
               <td align="right">
-                {data.bookingRemainingAmount.toLocaleString()}
+                {data.bookingRemainingAmount?.toLocaleString()}
               </td>
             </tr>
           </tbody>

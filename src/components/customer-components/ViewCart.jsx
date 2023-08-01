@@ -1,18 +1,16 @@
 import {
   ActionIcon,
   Box,
-  Button,
   Card,
   Container,
   Divider,
   Grid,
   Group,
-  Text,
   Title,
 } from "@mantine/core";
 import ShoppingCartTable from "./ShoppingCartTable";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CheckoutTable from "./CheckoutTable";
 
 const ViewCart = () => {
@@ -45,7 +43,7 @@ const ViewCart = () => {
         <Grid.Col lg={4}>
           <Card withBorder>
             <Title order={3}>Payment Breakdown</Title>
-            <CheckoutTable />
+            <CheckoutTable  />
           </Card>
         </Grid.Col>
       </Grid>

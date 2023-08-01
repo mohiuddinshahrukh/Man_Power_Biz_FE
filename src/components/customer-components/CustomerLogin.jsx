@@ -10,8 +10,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { Checkbox } from "tabler-icons-react";
-
 import { useForm } from "@mantine/form";
 import { postCallWithoutHeaders } from "../../helpers/apiCallHelpers";
 import {
