@@ -21,6 +21,7 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   deleteCallWithHeaders,
   getCallWithHeaders,
+  getCallWithOutHeaders,
 } from "../../helpers/apiCallHelpers";
 import { failureNotification } from "../../helpers/notificationHelper";
 
@@ -38,7 +39,7 @@ const TableComponent = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCallWithHeaders(`${getDataApiURI}`)
+    getCallWithOutHeaders(`${getDataApiURI}`)
       .then(setTableRows)
       .then(setLoading(false));
   }, [refresh]);
@@ -119,6 +120,7 @@ const TableComponent = ({
       <Paper p={"xs"} mb={"xs"}>
         <Group position="apart">
           <Button
+            display={buttonObject.hidden ? "none" : "block"}
             disabled={buttonObject.hidden}
             uppercase={buttonObject.uppercase}
             size={buttonObject.size}
@@ -232,6 +234,11 @@ const TableComponent = ({
                             radius={"xl"}
                             src={row[head?.id]}
                           ></Avatar>
+                        ) : head.id?.toLowerCase()?.includes("bookingstatus") ||
+                          head.id
+                            ?.toLowerCase()
+                            ?.includes("bookingpaymentstatus") ? (
+                          <Text>{row[head.id]}</Text>
                         ) : head.id?.toLowerCase()?.includes("status") ? (
                           <Badge
                             variant="filled"

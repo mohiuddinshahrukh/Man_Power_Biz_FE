@@ -10,7 +10,6 @@ import {
 import dayjs from "dayjs";
 import { useRef } from "react";
 import ReactToPrint from "react-to-print";
-import { v4 } from "uuid";
 
 const InvoiceViewCard = ({ data }) => {
   console.log("Data Received in Invoice View Card: ", data);
@@ -115,7 +114,7 @@ const InvoiceViewCard = ({ data }) => {
         >
           Booking Details
         </Title>
-        <Table withBorder withColumnBorders striped>
+        <Table withColumnBorders withBorder striped>
           <thead>
             <tr>
               <th> Package title</th>
@@ -134,14 +133,19 @@ const InvoiceViewCard = ({ data }) => {
           </thead>
           <tbody>
             {data.bookingPackage?.map((pkg, index) => {
+              console.log("This si the pakacge: ", pkg);
               return (
                 <tr key={index}>
-                  <td>{pkg.packageTitle}</td>
+                  <td>{pkg?.package?.packageTitle}</td>{" "}
+                  {/* Access packageTitle */}
                   <td>
                     <Text>{dayjs(pkg?.bookingDate).format("YYYY-MM-DD")}</Text>
                   </td>
                   <td align="right">{pkg.quantity?.toLocaleString()}</td>
-                  <td align="right">{pkg.packagePrice?.toLocaleString()}</td>
+                  <td align="right">
+                    {pkg?.package?.packagePrice?.toLocaleString()}
+                  </td>{" "}
+                  {/* Access packagePrice */}
                 </tr>
               );
             })}
@@ -152,7 +156,8 @@ const InvoiceViewCard = ({ data }) => {
             Total:{" "}
             {data.bookingPackage
               ?.reduce(
-                (total, pkg) => total + pkg.packagePrice * pkg.quantity,
+                (total, pkg) =>
+                  total + pkg?.package?.packagePrice * pkg?.quantity,
                 0
               )
               ?.toLocaleString()}

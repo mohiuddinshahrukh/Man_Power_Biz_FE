@@ -39,11 +39,12 @@ import {
   IconDashboard,
   IconLayoutGrid,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserProfileContext } from "../../contexts/userProfileContext";
 import { useContext } from "react";
 import { ToggleTheme } from "../dashboard/theme/ToggleTheme";
 import UserAvatar from "../dashboard/UserAvatar";
+import { customerRoutes } from "../../helpers/routesHelper";
 const useStyles = createStyles((theme) => ({
   link: {
     display: "flex",
@@ -153,7 +154,7 @@ export function MainNavbarComponent() {
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
-
+  const navigate = useNavigate();
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
       <Group noWrap align="flex-start">
@@ -218,7 +219,11 @@ export function MainNavbarComponent() {
                   </Menu.Target>
                   <Menu.Dropdown>
                     <Menu.Label>Options</Menu.Label>
-                    <Menu.Item>
+                    <Menu.Item
+                      onClick={() => {
+                        navigate(customerRoutes.customerHome);
+                      }}
+                    >
                       <Group spacing={3}>
                         <IconLayoutGrid />
                         <Text>Dashboard</Text>

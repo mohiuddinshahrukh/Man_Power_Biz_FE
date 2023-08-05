@@ -32,7 +32,8 @@ import { customerRoutes, routes } from "./helpers/routesHelper";
 import CustomerOutlet from "./components/customer-components/CustomerOutlet";
 import SpecificServiceCategory from "./components/customer-components/SpecificServiceCategory";
 import ViewCart from "./components/customer-components/ViewCart";
-import CustomerDashboard from "./components/customer-components/CustomerDashboard";
+import CustomerHome from "./components/customer-components/CustomerHome";
+import CustomerBookingsView from "./components/customer-components/CustomerBookingsView";
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
@@ -104,9 +105,26 @@ function App() {
             />
             <Route path={customerRoutes.viewCart} element={<ViewCart />} />
             <Route
-              path={customerRoutes.customerDashboard}
-              element={<CustomerDashboard />}
-            />
+              path={customerRoutes.customerHome}
+              element={<CustomerHome />}
+            >
+              <Route
+                path={customerRoutes.customerHome}
+                element={<h1>Dashboard</h1>}
+              />
+              <Route
+                path={customerRoutes.customerBookings}
+                element={<CustomerBookingsView />}
+              />
+              <Route
+                path={customerRoutes.customerPayments}
+                element={<h1>Payments</h1>}
+              />
+              <Route
+                path={customerRoutes.customerSettings}
+                element={<h1>Settings</h1>}
+              />
+            </Route>
           </Route>
 
           <Route path="*" element={<BadRequest />} />

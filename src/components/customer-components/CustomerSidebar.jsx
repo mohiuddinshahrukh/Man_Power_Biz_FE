@@ -17,7 +17,7 @@ const data = [
     icon: IconHome,
     label: "Dashboard",
     // description: "Item with description",
-    path: customerRoutes.customerDashboard,
+    path: customerRoutes.customerHome,
   },
 
   {
@@ -30,7 +30,7 @@ const data = [
       {
         icon: IconEye,
         label: "View Bookings",
-        // path: routes.viewBookings,
+        path: customerRoutes.customerBookings,
       },
     ],
   },
@@ -44,7 +44,7 @@ const data = [
       {
         icon: IconEye,
         label: "View Payments",
-        // path: routes.viewPayments,
+        path: customerRoutes.customerPayments,
       },
     ],
   },
@@ -52,7 +52,7 @@ const data = [
   {
     icon: IconSettings,
     label: "Settings",
-    //   path: routes.settings
+    path: customerRoutes.customerSettings,
   },
 ];
 const CustomerSidebar = () => {
@@ -103,7 +103,8 @@ const CustomerSidebar = () => {
 
   return (
     <Paper
-      style={{ width: "", height: "80vh" }}
+      withBorder
+      style={{ width: "", height: "70vh" }}
       component={ScrollArea}
       type="never"
       styles={{}}

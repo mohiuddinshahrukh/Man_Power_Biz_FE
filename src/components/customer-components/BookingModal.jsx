@@ -65,7 +65,7 @@ const BookingModal = ({ opened, setOpened, categories }) => {
   const [step1FormValues, setStep1FormValues] = useState({});
   const [step2FormValues, setStep2FormValues] = useState({});
   const [dataBeforeBooking, setDataBeforeBooking] = useState({});
-  const { shoppingCartItems, totalAmountWithTaxes } =
+  const { shoppingCartItems, totalAmountWithTaxes, setShoppingCartItems } =
     useContext(ShoppingCartContext);
   const { loggedInUserDetails } = useContext(UserProfileContext);
   const { categoriesData, setCategoriesData } = useContext(CategoriesContext);
@@ -179,6 +179,7 @@ const BookingModal = ({ opened, setOpened, categories }) => {
     );
     if (!apiResponse.error) {
       successNotification(`Booking successful`);
+      setShoppingCartItems([]);
       nextStep();
     } else {
       failureNotification(`Booking unsuccessful`);
@@ -525,7 +526,7 @@ const BookingModal = ({ opened, setOpened, categories }) => {
                 rightIcon={<ArrowRight />}
                 uppercase
                 onClick={() => {
-                  navigate(customerRoutes.customerDashboard);
+                  navigate(customerRoutes.customerHome);
                 }}
               >
                 Dashboard

@@ -30,5 +30,9 @@ export const routes = {
 export const customerRoutes = {
   specificService: "/specificService",
   viewCart: "/viewCart",
-  customerDashboard: "/customerDashboard",
+  customerHome: "/customerHome",
+  customerDashboard: "/customerHome/viewCustomerDashboard",
+  customerBookings: "/customerHome/viewCustomerBookings",
+  customerPayments: "/customerHome/viewCustomerPayments",
+  customerSettings: "/customerHome/viewCustomerSettings",
 };

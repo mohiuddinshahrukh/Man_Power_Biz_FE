@@ -34,7 +34,8 @@ const SpecificViewModal = ({ opened, close, title, data }) => {
       ) : pathname.includes("viewPackages") ? (
         <PackageViewCard data={data} />
       ) : pathname.includes("viewBookings") ||
-        pathname.includes("viewPayments") ? (
+        pathname.includes("viewPayments") ||
+        pathname.includes("viewCustomerBookings") ? (
         <InvoiceViewCard data={data} />
       ) : null}
       {/* <UserProfileCard data={data} /> */}
