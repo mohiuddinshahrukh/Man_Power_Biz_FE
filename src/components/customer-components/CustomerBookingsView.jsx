@@ -1,8 +1,6 @@
 import { routes } from "../../helpers/routesHelper";
 import TableComponent from "../tableComponenet/TableComponent";
 import { IconEye, IconPlus } from "@tabler/icons-react";
-import { useContext } from "react";
-import { UserProfileContext } from "../../contexts/userProfileContext";
 
 let headCells = [
   { id: "SR", numeric: true, disablePadding: true, label: "ID" },

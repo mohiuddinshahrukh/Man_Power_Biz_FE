@@ -121,10 +121,15 @@ const BookingModal = ({ opened, setOpened, categories }) => {
     console.log("paymentMethod: ", paymentMethod);
     try {
       console.log(values);
+      const invoicePackages = shoppingCartItems.map((pkg) => ({
+        package: pkg,
+        bookingDate: dayjs(pkg?.bookingDate).format("YYYY-MM-DD"),
+        quantity: pkg.quantity,
+      }));
       let bookingData = {
         ...step1FormValues,
         ...values,
-        ...{ bookingPackage: shoppingCartItems },
+        ...{ bookingPackage: invoicePackages },
         ...{ bookingCustomer: loggedInUserDetails },
       };
       bookingData.bookingId =
@@ -526,7 +531,7 @@ const BookingModal = ({ opened, setOpened, categories }) => {
                 rightIcon={<ArrowRight />}
                 uppercase
                 onClick={() => {
-                  navigate(customerRoutes.customerHome);
+                  navigate(customerRoutes.customerDashboard);
                 }}
               >
                 Dashboard
