@@ -32,6 +32,7 @@ import { customerRoutes, routes } from "./helpers/routesHelper";
 import CustomerOutlet from "./components/customer-components/CustomerOutlet";
 import SpecificServiceCategory from "./components/customer-components/SpecificServiceCategory";
 import ViewCart from "./components/customer-components/ViewCart";
+import CustomerDashboard from "./components/customer-components/CustomerDashboard";
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
@@ -102,6 +103,10 @@ function App() {
               element={<SpecificServiceCategory />}
             />
             <Route path={customerRoutes.viewCart} element={<ViewCart />} />
+            <Route
+              path={customerRoutes.customerDashboard}
+              element={<CustomerDashboard />}
+            />
           </Route>
 
           <Route path="*" element={<BadRequest />} />

@@ -13,7 +13,6 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
-import React from "react";
 import { useForm } from "@mantine/form";
 import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
 import { useContext } from "react";
@@ -23,8 +22,14 @@ import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import CheckoutTable from "./CheckoutTable";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
-import { postCallWithHeaders } from "../../helpers/apiCallHelpers";
-import { failureNotification } from "../../helpers/notificationHelper";
+import {
+  postCallWithHeaders,
+  postCallWithoutHeaders,
+} from "../../helpers/apiCallHelpers";
+import {
+  failureNotification,
+  successNotification,
+} from "../../helpers/notificationHelper";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "react-stripe-js";
 import CheckoutForm from "../payment/CheckoutForm";
@@ -32,10 +37,16 @@ import card from "../../assets/card.jpg";
 import cod from "../../assets/cod.jpg";
 import { PaymentOptions } from "./PaymentOptions";
 import InvoiceViewCard from "../cards/InvoiceViewCard";
+import { UserProfileContext } from "../../contexts/userProfileContext";
+import { CategoriesContext } from "../../contexts/categoriesContext";
+import { v4 } from "uuid";
+import { customerRoutes } from "../../helpers/routesHelper";
+import { useNavigate } from "react-router-dom";
 const stripePromise = loadStripe(
   "pk_test_51LZZvfE15s0GgNMhr1G5APbmPXyGbm10KdljXh7FWBA9QvUtisLvRVN6SAswoq2M1D6v5f0hTi484tqZDs50P8Rq00pU0tq3QQ"
 );
-const PaymentModal = ({ opened, setOpened }) => {
+const BookingModal = ({ opened, setOpened, categories }) => {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("card");
   // STRIPE
   const [externalStripe, setExternalStripe] = useState(null);
@@ -54,13 +65,15 @@ const PaymentModal = ({ opened, setOpened }) => {
   const [step1FormValues, setStep1FormValues] = useState({});
   const [step2FormValues, setStep2FormValues] = useState({});
   const [dataBeforeBooking, setDataBeforeBooking] = useState({});
-  console.log("step1FormValues", step1FormValues);
   const { shoppingCartItems, totalAmountWithTaxes } =
     useContext(ShoppingCartContext);
+  const { loggedInUserDetails } = useContext(UserProfileContext);
+  const { categoriesData, setCategoriesData } = useContext(CategoriesContext);
   const step1Form = useForm({
     validateInputOnChange: true,
     initialValues: {
       bookingZip: "",
+      bookingDate: "",
     },
     validate: {
       bookingZip: (value) => (value.trim().length > 0 ? null : "Select A ZIP"),
@@ -68,11 +81,11 @@ const PaymentModal = ({ opened, setOpened }) => {
   });
   const [active, setActive] = useState(0);
   const nextStep = () =>
-    setActive((current) => (current < 3 ? current + 1 : current));
+    setActive((current) => (current < 5 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
   const nextNextStep = () =>
-    setActive((current) => (current < 3 ? current + 2 : current));
+    setActive((current) => (current < 5 ? current + 2 : current));
   const prevPrevStep = () =>
     setActive((current) => (current > 0 ? current - 2 : current));
 
@@ -105,9 +118,39 @@ const PaymentModal = ({ opened, setOpened }) => {
   });
 
   const contactInformationFunction = async (values) => {
+    console.log("paymentMethod: ", paymentMethod);
     try {
       console.log(values);
-      let bookingData = { ...step1FormValues, ...step2FormValues };
+      let bookingData = {
+        ...step1FormValues,
+        ...values,
+        ...{ bookingPackage: shoppingCartItems },
+        ...{ bookingCustomer: loggedInUserDetails },
+      };
+      bookingData.bookingId =
+        "kolkata" +
+        "_" +
+        step1FormValues.bookingZip +
+        "_" +
+        loggedInUserDetails?.fullName[0] +
+        "_" +
+        new Date().toISOString().toLocaleString().split("T")[0] +
+        "_" +
+        v4().split("-")[0];
+      bookingData.bookingStatus = "IN PROGRESS";
+      bookingData.bookingPaidAmount = 0;
+      bookingData.bookingPrice = totalAmountWithTaxes;
+      bookingData.bookingCity = "kolkata";
+      bookingData.bookingService = shoppingCartItems
+        .map((pkg) => pkg.packageService) // Get an array of packageService IDs
+        .filter((value, index, self) => self.indexOf(value) === index) // Filter out duplicate IDs
+        .map((serviceId) =>
+          categoriesData.categoryServices.find(
+            (category) => category._id === serviceId
+          )
+        );
+
+      console.log("Final Booking Date: $123", bookingData);
       setDataBeforeBooking(bookingData);
       setStep2FormValues(values);
       const apiResponse = await postCallWithHeaders(
@@ -129,6 +172,18 @@ const PaymentModal = ({ opened, setOpened }) => {
     }
   };
 
+  const createBooking = async () => {
+    const apiResponse = await postCallWithoutHeaders(
+      "customer/customer-create-payment",
+      dataBeforeBooking
+    );
+    if (!apiResponse.error) {
+      successNotification(`Booking successful`);
+      nextStep();
+    } else {
+      failureNotification(`Booking unsuccessful`);
+    }
+  };
   return (
     <Modal
       size={"xl"}
@@ -353,6 +408,7 @@ const PaymentModal = ({ opened, setOpened }) => {
                 title={"CARD PAYMENT"}
                 buttonTitle={"Credit Card"}
                 setPaymentMethod={setPaymentMethod}
+                setDataBeforeBooking={setDataBeforeBooking}
               />
             </div>
             <div>
@@ -362,6 +418,7 @@ const PaymentModal = ({ opened, setOpened }) => {
                 buttonTitle={"COD"}
                 title={"CASH ON DELIVERY"}
                 setPaymentMethod={setPaymentMethod}
+                setDataBeforeBooking={setDataBeforeBooking}
               />
             </div>
           </SimpleGrid>
@@ -393,10 +450,92 @@ const PaymentModal = ({ opened, setOpened }) => {
           description="Confirm your booking details"
         >
           <InvoiceViewCard data={dataBeforeBooking} />
+          <Grid justify="flex-end">
+            <Grid.Col sm={6} xs={12} md={5} lg={4} xl={3} p="md">
+              <Button
+                size="sm"
+                fullWidth
+                variant="filled"
+                // disabled={loading}
+                leftIcon={<ArrowLeft />}
+                onClick={() => {
+                  paymentMethod === "card" ? prevStep() : prevPrevStep();
+                }}
+                uppercase
+              >
+                BACK
+              </Button>
+            </Grid.Col>
+            <Grid.Col sm={6} xs={12} md={5} lg={4} xl={3} py="md">
+              <Button
+                size="sm"
+                fullWidth
+                variant="filled"
+                // disabled={disabled}
+                // loading={loading}
+                rightIcon={<ArrowRight />}
+                uppercase
+                onClick={() => {
+                  createBooking();
+                }}
+              >
+                Book
+              </Button>
+            </Grid.Col>
+          </Grid>
         </Stepper.Step>
+        <Stepper.Completed>
+          <Grid>
+            <Grid.Col>
+              <Title fw="normal" order={3} my="md">
+                Your booking was created{" "}
+                <b style={{ color: "green" }}>successfully</b> and has been
+                added to your dashboard!{" "}
+              </Title>
+
+              <Title fw="normal" order={3} my="md">
+                Click on <b>Dashboard</b> to see your bookings
+              </Title>
+            </Grid.Col>
+          </Grid>
+          <Grid justify="flex-end">
+            <Grid.Col sm={6} xs={12} md={5} lg={4} xl={3} p="md">
+              <Button
+                disabled
+                size="sm"
+                fullWidth
+                variant="filled"
+                // disabled={loading}
+                leftIcon={<ArrowLeft />}
+                onClick={() => {
+                  prevStep();
+                }}
+                uppercase
+              >
+                BACK
+              </Button>
+            </Grid.Col>
+            <Grid.Col sm={6} xs={12} md={5} lg={4} xl={3} py="md">
+              <Button
+                size="sm"
+                fullWidth
+                variant="filled"
+                // disabled={disabled}
+                // loading={loading}
+                rightIcon={<ArrowRight />}
+                uppercase
+                onClick={() => {
+                  navigate(customerRoutes.customerDashboard);
+                }}
+              >
+                Dashboard
+              </Button>
+            </Grid.Col>
+          </Grid>
+        </Stepper.Completed>
       </Stepper>
     </Modal>
   );
 };
 
-export default PaymentModal;
+export default BookingModal;

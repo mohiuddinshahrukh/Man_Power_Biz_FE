@@ -7,11 +7,13 @@ import {
   IconPhone,
   IconPrinter,
 } from "@tabler/icons-react";
+import dayjs from "dayjs";
 import { useRef } from "react";
 import ReactToPrint from "react-to-print";
+import { v4 } from "uuid";
 
 const InvoiceViewCard = ({ data }) => {
-  console.log("Booking data: ", data);
+  console.log("Data Received in Invoice View Card: ", data);
   const componentRef = useRef();
   return (
     <Paper>
@@ -41,20 +43,26 @@ const InvoiceViewCard = ({ data }) => {
         <Group position="center" spacing={3}>
           <IconMail />
           <Text align="center" size={"md"} transform="none">
-            {data.serviceInfoEmail}
+            {data.bookingService?.map((booking) => {
+              return booking.serviceInfoEmail;
+            })}
           </Text>
         </Group>
         <Group position="center" spacing={3}>
           <Group spacing={3}>
             <IconPhone />
             <Text align="center" size={"md"} transform="none">
-              {data.serviceContactPhone}
+              {data.bookingService?.map((booking) => {
+                return booking.serviceContactPhone;
+              })}
             </Text>
           </Group>
           <Group spacing={3}>
             <IconBrandWhatsapp />
             <Text align="center" size={"md"} transform="none">
-              {data.serviceWhatsAppPhone}
+              {data.bookingService?.map((booking) => {
+                return booking.serviceWhatsAppPhone;
+              })}
             </Text>
           </Group>
         </Group>
@@ -72,7 +80,7 @@ const InvoiceViewCard = ({ data }) => {
           <Grid.Col>
             <Text>
               <b>Invoice Date: </b>
-              {data.createdAt?.split("T")[0]}
+              {data.createdAt?.split("T")[0] || dayjs().format("YYYY-MM-DD")}
             </Text>
             <Text>
               <b>Tracking ID: </b>
@@ -89,7 +97,7 @@ const InvoiceViewCard = ({ data }) => {
             </Text>
             <Text>
               <b>Customer Name: </b>
-              {data.fullName}
+              {data.bookingCustomer.fullName}
             </Text>
             <Text>
               <b>Customer Email: </b>
@@ -112,19 +120,44 @@ const InvoiceViewCard = ({ data }) => {
             <tr>
               <th> Package title</th>
               <th> Package Booking Date</th>
-              <th align="right"> Package Price</th>
+              <th>
+                <Group position="right">
+                  <Text>Package Quantity</Text>
+                </Group>{" "}
+              </th>
+              <th>
+                <Group position="right">
+                  <Text>Package Price</Text>
+                </Group>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{data.packageTitle}</td>
-              <td>
-                <Text>{data.bookingDate?.split("T")[0]}</Text>
-              </td>
-              <td align="right">{data.bookingPrice?.toLocaleString()}</td>
-            </tr>
+            {data.bookingPackage?.map((pkg, index) => {
+              return (
+                <tr key={index}>
+                  <td>{pkg.packageTitle}</td>
+                  <td>
+                    <Text>{dayjs(pkg?.bookingDate).format("YYYY-MM-DD")}</Text>
+                  </td>
+                  <td align="right">{pkg.quantity?.toLocaleString()}</td>
+                  <td align="right">{pkg.packagePrice?.toLocaleString()}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
+        <Group position="right">
+          <Text color={"dimmed"}>
+            Total:{" "}
+            {data.bookingPackage
+              ?.reduce(
+                (total, pkg) => total + pkg.packagePrice * pkg.quantity,
+                0
+              )
+              ?.toLocaleString()}
+          </Text>
+        </Group>
         <Text align="justify">
           <b>Customer Request: </b>
           <br />
@@ -142,19 +175,23 @@ const InvoiceViewCard = ({ data }) => {
           Billing Details
         </Title>
 
-        <Table withColumnBorders withBorder>
+        <Table withColumnBorders withBorder striped>
           <thead>
             <tr>
               <th>Item</th>
               <th>
-                <Text align="right"></Text>Item Cost
+                <Text align="right">Item Cost</Text>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Total Price</td>
-              <td align="right">{data.bookingPrice?.toLocaleString()}</td>
+              <td align="right">
+                {data.bookingPrice
+                  ? data.bookingPrice?.toLocaleString()
+                  : data.bookingPrice}
+              </td>
             </tr>
             <tr>
               <td>Total Paid</td>
@@ -163,7 +200,11 @@ const InvoiceViewCard = ({ data }) => {
             <tr>
               <td>Remaining</td>
               <td align="right">
-                {data.bookingRemainingAmount?.toLocaleString()}
+                {data.bookingRemainingAmount
+                  ? data.bookingRemainingAmount?.toLocaleString()
+                  : (
+                      data.bookingPrice - data.bookingPaidAmount
+                    )?.toLocaleString()}
               </td>
             </tr>
           </tbody>

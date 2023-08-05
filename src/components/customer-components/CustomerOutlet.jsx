@@ -5,10 +5,11 @@ import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
 import { useState } from "react";
 import { useEffect } from "react";
 import { UserProfileContext } from "../../contexts/userProfileContext";
+import { CategoriesContext } from "../../contexts/categoriesContext";
 
 const CustomerOutlet = () => {
+  const [categoriesData, setCategoriesData] = useState([]);
   const [shoppingCartItems, setShoppingCartItems] = useState([]);
-  console.log("Shopping cart items: ", shoppingCartItems);
   useEffect(() => {
     const storedCart = localStorage.getItem("shoppingCartItems");
     if (storedCart) {
@@ -57,6 +58,17 @@ const CustomerOutlet = () => {
       JSON.stringify(loggedInUserDetails)
     );
   }, [loggedInUserDetails]);
+
+  useEffect(() => {
+    const categories = localStorage.getItem("categoriesData");
+    if (categories) {
+      setCategoriesData(JSON.parse(categories));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("categoriesData", JSON.stringify(categoriesData));
+  }, [categoriesData]);
   return (
     <ShoppingCartContext.Provider
       value={{
@@ -70,9 +82,13 @@ const CustomerOutlet = () => {
       <UserProfileContext.Provider
         value={{ loggedInUserDetails, setLoggedInUserDetails }}
       >
-        <MainNavbarComponent />
-        <Outlet />
-        <MainFooterComponent />
+        <CategoriesContext.Provider
+          value={{ categoriesData, setCategoriesData }}
+        >
+          <MainNavbarComponent />
+          <Outlet />
+          <MainFooterComponent />
+        </CategoriesContext.Provider>
       </UserProfileContext.Provider>
     </ShoppingCartContext.Provider>
   );

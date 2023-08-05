@@ -30,9 +30,11 @@ import { useContext } from "react";
 import shoppingCartLogo from "../../assets/shoppingCart.svg";
 import { addToCart, removeFromCart } from "../../helpers/shoppingCartHelper";
 import ShoppingCartTable from "./ShoppingCartTable";
+import { CategoriesContext } from "../../contexts/categoriesContext";
 const SpecificServiceCategory = () => {
   const { shoppingCartItems, setShoppingCartItems } =
     useContext(ShoppingCartContext);
+  const { categoriesData, setCategoriesData } = useContext(CategoriesContext);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [pdfLink, setPdfLink] = useState("");
@@ -45,6 +47,7 @@ const SpecificServiceCategory = () => {
       `customer/get-specific-service-category`,
       params.id
     );
+    setCategoriesData(apiResponse.data);
     setCategoryData(apiResponse.data);
   };
   useEffect(() => {
@@ -219,6 +222,7 @@ const SpecificServiceCategory = () => {
                                     my={"sm"}
                                     compact
                                     onClick={() => {
+                                      console.log("Service: ", service);
                                       addToCart(
                                         shoppingCartItems,
                                         pkg,
