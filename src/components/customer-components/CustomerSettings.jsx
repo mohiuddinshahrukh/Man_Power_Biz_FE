@@ -1,4 +1,6 @@
 import {
+  Accordion,
+  Button,
   Center,
   Grid,
   LoadingOverlay,
@@ -9,7 +11,9 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCallSpecificWithoutHeaders } from "../../helpers/apiCallHelpers";
+import { IconEdit, IconUserEdit } from "@tabler/icons-react";
 
 const CustomerSettings = () => {
   const [errorMessages, setErrorMessages] = useState({});
@@ -24,9 +28,57 @@ const CustomerSettings = () => {
   const [loading, setLoading] = useState(false);
   const updateCustomerProfile = useForm({
     validateInputOnChange: true,
-    initialValues: {},
-    validate: {},
+    initialValues: {
+      contactNumber: "",
+      whatsappNumber: "",
+    },
+    validate: {
+      contactNumber: (value) =>
+        /^[1-9]\d{9}$/.test(value) ? null : "10 digit Phone Number",
+      whatsappNumber: (value) =>
+        /^[1-9]\d{9}$/.test(value) ? null : "10 digit WhatsApp Number",
+    },
   });
+
+  const updateCustomerPassword = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+
+    validate: {
+      currentPassword: (value, values) =>
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+          value
+        ) || value === ""
+          ? null
+          : "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+      newPassword: (value, values) =>
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+          value
+        ) || value === ""
+          ? values.currentPassword !== value
+            ? null
+            : "The current password and new password cant be the same"
+          : "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+      confirmPassword: (value, values) =>
+        value === values.newPassword ? null : "Passwords do not match",
+    },
+  });
+
+  const fetchUserData = async () => {
+    const apiResponse = await getCallSpecificWithoutHeaders(
+      "customer/get-me",
+      JSON.parse(localStorage.getItem("customerDetails"))._id
+    );
+    updateCustomerProfile.setValues(apiResponse.data);
+    console.log(apiResponse);
+  };
+  useEffect(() => {
+    fetchUserData();
+  }, []);
   return (
     <Paper
       pos={"relative"}
@@ -70,6 +122,7 @@ const CustomerSettings = () => {
               </Grid.Col>
               <Grid.Col md={12} lg={6} p="md">
                 <TextInput
+                  readOnly
                   size="md"
                   required
                   label="Full Name"
@@ -124,46 +177,130 @@ const CustomerSettings = () => {
                   {...updateCustomerProfile.getInputProps("whatsappNumber")}
                 />
               </Grid.Col>
-              <Grid.Col md={12} lg={6} p="md">
-                <PasswordInput
-                  error={renderErrorMessage("password")}
-                  size="md"
-                  placeholder="Enter Password"
-                  label="Password"
-                  // disabled={disabled}
-                  value={password}
-                  onInput={(e) => {
-                    if (
-                      e.target.value !== updateCustomerProfile.values.cpassword
-                    ) {
-                      updateCustomerProfile.setFieldError(
-                        "cpassword",
-                        "Passwords Do Not Match"
-                      );
-                    } else {
-                      updateCustomerProfile.setFieldError("cpassword", "");
-                    }
-                  }}
-                  onChange={(e) => setPassword(e.target.value)}
-                  {...updateCustomerProfile.getInputProps("password")}
-                />
-              </Grid.Col>
-              <Grid.Col md={12} lg={6} p="md">
-                <PasswordInput
-                  // error={renderErrorMessage("cpassword")}
-                  size="md"
-                  label="Confirm Password"
-                  // disabled={disabled}
-                  placeholder="Re-Enter Password"
-                  value={cpassword}
-                  errorProps={(v) => {
-                    return v !== password;
-                  }}
-                  onChange={(e) => setCPassword(e.target.value)}
-                  {...updateCustomerProfile.getInputProps("cpassword")}
-                />
+            </Grid>
+            <Grid justify="flex-end">
+              <Grid.Col p={"md"} xl={3} lg={4} md={4} sm={6} xs={12}>
+                <Button type="submit" fullWidth rightIcon={<IconUserEdit />}>
+                  Edit Profile
+                </Button>
               </Grid.Col>
             </Grid>
+          </form>
+
+          <form
+            onSubmit={updateCustomerPassword.onSubmit((values) => {
+              console.log(values);
+            })}
+          >
+            <Accordion
+              p={"xs"}
+              variant="contained"
+              defaultValue="updatePassword"
+            >
+              <Accordion.Item value="updatePassword">
+                <Accordion.Control>
+                  <Title order={3}>Change Password</Title>
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <Grid>
+                    <Grid.Col p="md">
+                      <PasswordInput
+                        size="md"
+                        placeholder="Current Password"
+                        label="Current Password"
+                        required
+                        onInput={(event) => {
+                          if (
+                            event.target.value ===
+                            updateCustomerPassword.values.newPassword
+                          ) {
+                            updateCustomerPassword.setFieldError(
+                              "newPassword",
+                              "CURRENT PASSWORD AND NEW PASSWORD CANT BE THE SAME"
+                            );
+                          } else {
+                            updateCustomerPassword.setFieldError(
+                              "newPassword",
+                              ""
+                            );
+                          }
+                        }}
+                        {...updateCustomerPassword.getInputProps(
+                          "currentPassword"
+                        )}
+                      />
+                    </Grid.Col>
+                    <Grid.Col md={12} lg={6} p="md">
+                      <PasswordInput
+                        size="md"
+                        placeholder="New Password"
+                        label="New Password"
+                        required
+                        onInput={(event) => {
+                          if (
+                            event.target.value !==
+                            updateCustomerPassword.values.confirmPassword
+                          ) {
+                            updateCustomerPassword.setFieldError(
+                              "confirmPassword",
+                              "New password and confirm password don't match"
+                            );
+                          } else {
+                            updateCustomerPassword.setFieldError(
+                              "confirmPassword",
+                              ""
+                            );
+                          }
+                        }}
+                        {...updateCustomerPassword.getInputProps("newPassword")}
+                      />
+                    </Grid.Col>
+                    <Grid.Col md={12} lg={6} p="md">
+                      <PasswordInput
+                        size="md"
+                        placeholder="Confirm Password"
+                        label="Confirm Password"
+                        required
+                        {...updateCustomerPassword.getInputProps(
+                          "confirmPassword"
+                        )}
+                      />
+                    </Grid.Col>
+                  </Grid>
+                  <Grid justify="flex-end">
+                    <Grid.Col p={"md"} xl={3} lg={4} md={4} sm={6} xs={12}>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        rightIcon={<IconEdit />}
+                        disabled={
+                          updateCustomerPassword.values.confirmPassword &&
+                          updateCustomerPassword.values.newPassword &&
+                          updateCustomerPassword.values.currentPassword &&
+                          updateCustomerPassword.values.currentPassword !==
+                            updateCustomerPassword.values.newPassword &&
+                          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+                            updateCustomerPassword.values.currentPassword
+                          ) &&
+                          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+                            updateCustomerPassword.values.newPassword
+                          ) &&
+                          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,100}$/.test(
+                            updateCustomerPassword.values.confirmPassword
+                          ) &&
+                          updateCustomerPassword.values.newPassword ===
+                            updateCustomerPassword.values.confirmPassword
+                            ? false
+                            : true
+                        }
+                      >
+                        Edit Password
+                      </Button>
+                    </Grid.Col>
+                  </Grid>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
           </form>
         </Paper>
       </Center>

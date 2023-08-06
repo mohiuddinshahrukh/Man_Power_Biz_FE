@@ -39,7 +39,7 @@ const TableComponent = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCallWithOutHeaders(`${getDataApiURI}`)
+    getCallWithHeaders(`${getDataApiURI}`)
       .then(setTableRows)
       .then(setLoading(false));
   }, [refresh]);

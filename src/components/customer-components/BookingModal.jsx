@@ -45,14 +45,14 @@ import { useNavigate } from "react-router-dom";
 const stripePromise = loadStripe(
   "pk_test_51LZZvfE15s0GgNMhr1G5APbmPXyGbm10KdljXh7FWBA9QvUtisLvRVN6SAswoq2M1D6v5f0hTi484tqZDs50P8Rq00pU0tq3QQ"
 );
-const BookingModal = ({ opened, setOpened, categories }) => {
+const BookingModal = ({ opened, setOpened }) => {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("card");
   // STRIPE
   const [externalStripe, setExternalStripe] = useState(null);
   const [externalElements, setExternalElements] = useState(null);
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
   const appearance = {
     theme: "stripe",
@@ -63,12 +63,11 @@ const BookingModal = ({ opened, setOpened, categories }) => {
   };
 
   const [step1FormValues, setStep1FormValues] = useState({});
-  const [step2FormValues, setStep2FormValues] = useState({});
   const [dataBeforeBooking, setDataBeforeBooking] = useState({});
   const { shoppingCartItems, totalAmountWithTaxes, setShoppingCartItems } =
     useContext(ShoppingCartContext);
   const { loggedInUserDetails } = useContext(UserProfileContext);
-  const { categoriesData, setCategoriesData } = useContext(CategoriesContext);
+  const { categoriesData } = useContext(CategoriesContext);
   const step1Form = useForm({
     validateInputOnChange: true,
     initialValues: {
@@ -157,7 +156,6 @@ const BookingModal = ({ opened, setOpened, categories }) => {
 
       console.log("Final Booking Date: $123", bookingData);
       setDataBeforeBooking(bookingData);
-      setStep2FormValues(values);
       const apiResponse = await postCallWithHeaders(
         "customer/customer-payment-intent",
         {
@@ -531,7 +529,7 @@ const BookingModal = ({ opened, setOpened, categories }) => {
                 rightIcon={<ArrowRight />}
                 uppercase
                 onClick={() => {
-                  navigate(customerRoutes.customerDashboard);
+                  navigate(customerRoutes.customerHome);
                 }}
               >
                 Dashboard

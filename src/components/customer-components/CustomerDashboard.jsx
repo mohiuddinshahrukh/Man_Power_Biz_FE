@@ -5,6 +5,7 @@ import {
   SimpleGrid,
   Text,
   rem,
+  Stack,
 } from "@mantine/core";
 import {
   IconUserPlus,
@@ -12,6 +13,7 @@ import {
   IconReceipt2,
   IconCoin,
 } from "@tabler/icons-react";
+import CustomerDashboardChart from "./CustomerDashboardChart";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -94,15 +96,18 @@ export function CustomerDashboard() {
   });
   return (
     <div className={classes.root}>
-      <SimpleGrid
-        cols={4}
-        breakpoints={[
-          { maxWidth: "md", cols: 2 },
-          { maxWidth: "xs", cols: 1 },
-        ]}
-      >
-        {stats}
-      </SimpleGrid>
+      <Stack h={"100%"} w={"100%"} spacing={"xl"}>
+        <SimpleGrid
+          cols={4}
+          breakpoints={[
+            { maxWidth: "md", cols: 2 },
+            { maxWidth: "xs", cols: 1 },
+          ]}
+        >
+          {stats}
+        </SimpleGrid>
+        <CustomerDashboardChart />
+      </Stack>
     </div>
   );
 }

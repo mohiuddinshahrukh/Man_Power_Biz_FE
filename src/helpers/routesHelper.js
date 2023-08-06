@@ -31,7 +31,6 @@ export const customerRoutes = {
   specificService: "/specificService",
   viewCart: "/viewCart",
   customerHome: "/customerHome",
-  customerDashboard: "/customerHome/viewCustomerDashboard",
   customerBookings: "/customerHome/viewCustomerBookings",
   customerPayments: "/customerHome/viewCustomerPayments",
   customerSettings: "/customerHome/viewCustomerSettings",
