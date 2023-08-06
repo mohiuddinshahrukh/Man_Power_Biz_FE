@@ -101,6 +101,32 @@ const CustomerSettings = () => {
       setLoading(false);
     }
   };
+
+  const updatePassword = async (values) => {
+    setLoading(true);
+    try {
+      const apiResponse = await editCallWithoutHeaders(
+        `customer/edit-password`,
+        `${JSON.parse(localStorage.getItem("adminData"))._id}`,
+        {
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        }
+      );
+      console.log("Edit response: ", apiResponse);
+      if (apiResponse.error) {
+        failureNotification(apiResponse.msg);
+      } else {
+        successNotification(apiResponse.msg);
+        updateCustomerPassword.reset();
+      }
+    } catch (error) {
+      failureNotification(`${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Paper
       pos={"relative"}
@@ -213,6 +239,7 @@ const CustomerSettings = () => {
           <form
             onSubmit={updateCustomerPassword.onSubmit((values) => {
               console.log(values);
+              updatePassword(values);
             })}
           >
             <Accordion
