@@ -55,7 +55,7 @@ export const getCallSpecificWithoutHeaders = async (endpoint, id) => {
     } else {
       failureNotification(`${apiResponse.data.msg}`);
     }
-    console.log("api Response: ",apiResponse);
+    console.log("api Response: ", apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -115,6 +115,20 @@ export const editCallWithHeaders = async (endpoint, id, data) => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminDataToken")}`,
       },
+      method: "put",
+      url: `${baseURI}/${endpoint}/${id}`,
+      data: data,
+    });
+    console.log(apiResponse);
+    return apiResponse.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const editCallWithoutHeaders = async (endpoint, id, data) => {
+  console.log(data);
+  try {
+    let apiResponse = await axios({
       method: "put",
       url: `${baseURI}/${endpoint}/${id}`,
       data: data,
