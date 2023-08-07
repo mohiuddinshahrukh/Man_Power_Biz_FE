@@ -12,11 +12,13 @@ import React, { useEffect } from "react";
 import CategoryInfoCard from "./CategoryInfoCard";
 import { useState } from "react";
 import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
-import { IconSearch } from "@tabler/icons-react";
 
 const AllCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [zip, setZip] = useState("");
+  const [search, setSearch] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
   const fetchCategories = async () => {
     const apiResponse = await getCallWithHeaders(
@@ -29,12 +31,32 @@ const AllCategories = () => {
     fetchCategories();
   }, []);
 
-  const params = new URLSearchParams(window.location.search);
-  const search = params.get("search");
-  const zip = params.get("zip");
-  const city = params.get("city");
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get("search");
+    const zipParam = params.get("zip");
+    if (searchParam) {
+      setSearch(searchParam);
+    }
+    if (zipParam) {
+      setZip(zipParam);
+    }
+  }, []);
 
-  console.log("search, zip, city:::", search, zip, city);
+  useEffect(() => {
+    const filtered = categories?.filter((category) => {
+      const searchMatch = category.categoryTitle
+        .toLowerCase()
+        .includes(search?.toLowerCase());
+
+      const zipMatch = category.categoryServices.some((service) => {
+        return service.serviceZipCode?.includes(zip); // Updated field name to serviceZipCode
+      });
+
+      return searchMatch && (zip === "" || zipMatch); // Updated the condition here
+    });
+    setFilteredCategories(filtered);
+  }, [categories, search, zip]);
 
   return (
     <Container size={"xl"} pt={20} mt={"lg"}>
@@ -49,7 +71,7 @@ const AllCategories = () => {
           mb={"xl"}
         >
           <Text size={"1.4rem"} fw={"bold"}>
-            All Categories
+            {search ? `Search results for "${search}"` : "All Categories"}
           </Text>
           <Group>
             <Select
@@ -60,9 +82,16 @@ const AllCategories = () => {
               }}
               placeholder="Select a zip"
               data={[
-                { value: "zip1", label: "zip 1" },
-                { value: "zip2", label: "zip 2" },
+                { value: "70024", label: "70024" },
+                { value: "70025", label: "70025" },
+                { value: "70026", label: "70026" },
+                { value: "70027", label: "70027" },
+                { value: "70028", label: "70028" },
+                { value: "70029", label: "70029" },
               ]}
+              value={zip}
+              onChange={setZip}
+              clearable
             />
             <TextInput
               rightSectionWidth={"100px"}
@@ -72,11 +101,26 @@ const AllCategories = () => {
                 },
               }}
               placeholder="Search..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.currentTarget.value);
+              }}
             />
+            <Button
+              color="gray"
+              onClick={() => {
+                setSearch("");
+                setZip("");
+                window.history.replaceState({}, "", window.location.pathname);
+              }}
+              disabled={search === "" && zip === ""}
+            >
+              Clear
+            </Button>
           </Group>
         </Box>
       )}
-      <CategoryInfoCard categories={categories} loading={loading} />
+      <CategoryInfoCard categories={filteredCategories} loading={loading} />
     </Container>
   );
 };

@@ -34,7 +34,7 @@ const MainSearchArea = () => {
   }, []);
 
   const handleSearch = () => {
-    navigate(`/categories?search=${search}&zip=${zip}&city=${city}`);
+    navigate(`/categories?search=${search}&zip=${zip}`);
   };
 
   return (
@@ -89,8 +89,8 @@ const MainSearchArea = () => {
                 { value: "70028", label: "70028" },
                 { value: "70029", label: "70029" },
               ]}
-              onSelect={(value) => {
-                setZip(value);
+              onSelect={(e) => {
+                setZip(e.target.value);
               }}
               clearable
             />

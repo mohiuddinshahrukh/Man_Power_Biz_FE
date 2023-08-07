@@ -10,7 +10,6 @@ import {
   Button,
   Loader,
 } from "@mantine/core";
-import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -31,8 +30,6 @@ const useStyles = createStyles((theme) => ({
 
 const CategoryInfoCard = ({ categories, loading }) => {
   const { classes } = useStyles();
-
-  console.log(categories);
 
   const cards = categories?.map((category) => (
     <Card
@@ -86,6 +83,19 @@ const CategoryInfoCard = ({ categories, loading }) => {
           }}
         >
           <Loader size={"xl"} />
+        </div>
+      )}
+      {!loading && cards.length === 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+            width: "100%",
+          }}
+        >
+          No categories found
         </div>
       )}
       <SimpleGrid
