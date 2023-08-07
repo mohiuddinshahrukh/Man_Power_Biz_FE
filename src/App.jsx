@@ -36,6 +36,7 @@ import CustomerHome from "./components/customer-components/CustomerHome";
 import CustomerBookingsView from "./components/customer-components/CustomerBookingsView";
 import { CustomerDashboard } from "./components/customer-components/CustomerDashboard";
 import CustomerSettings from "./components/customer-components/CustomerSettings";
+import AllCategories from "./components/categories/AllCategories";
 
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
@@ -107,6 +108,10 @@ function App() {
               element={<SpecificServiceCategory />}
             />
             <Route path={customerRoutes.viewCart} element={<ViewCart />} />
+            <Route
+              path={customerRoutes.categories}
+              element={<AllCategories />}
+            />
             <Route
               path={customerRoutes.customerHome}
               element={<CustomerHome />}

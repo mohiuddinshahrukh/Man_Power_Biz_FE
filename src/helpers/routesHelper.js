@@ -34,6 +34,5 @@ export const customerRoutes = {
   customerBookings: "/customerHome/viewCustomerBookings",
   customerPayments: "/customerHome/viewCustomerPayments",
   customerSettings: "/customerHome/viewCustomerSettings",
-  login: "/login",
-  signup: "/register",
+  categories: "/categories",
 };

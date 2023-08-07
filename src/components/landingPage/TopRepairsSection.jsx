@@ -13,7 +13,6 @@ const TopRepairsSection = () => {
     const apiResponse = await getCallWithOutHeaders(
       "customer/get-landing-page-services"
     );
-    console.log("Api response: ", apiResponse);
     setServices(apiResponse);
   };
 
