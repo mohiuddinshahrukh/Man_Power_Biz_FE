@@ -145,8 +145,8 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
             {...signUpForm.getInputProps("password")}
           />
           <PasswordInput
-            label="Password"
-            placeholder="Your password"
+            label="Confirm Password"
+            placeholder=""
             required
             mt="md"
             value={confirmPassword}

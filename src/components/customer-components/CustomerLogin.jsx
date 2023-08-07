@@ -20,6 +20,7 @@ import { UserProfileContext } from "../../contexts/userProfileContext";
 import { useContext } from "react";
 import { useEffect } from "react";
 const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
+  /*eslint-disable*/
   const { loggedInUserDetails, setLoggedInUserDetails } =
     useContext(UserProfileContext);
   const loginForm = useForm({

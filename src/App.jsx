@@ -36,6 +36,7 @@ import CustomerHome from "./components/customer-components/CustomerHome";
 import CustomerBookingsView from "./components/customer-components/CustomerBookingsView";
 import { CustomerDashboard } from "./components/customer-components/CustomerDashboard";
 import CustomerSettings from "./components/customer-components/CustomerSettings";
+
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
