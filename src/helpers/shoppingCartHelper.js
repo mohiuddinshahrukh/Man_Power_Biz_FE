@@ -5,9 +5,6 @@ export const addToCart = (
   refresh,
   setRefresh
 ) => {
-  console.log("Cart function called");
-  console.log("cartItems", cartItems);
-
   const existingItem = cartItems.find((cartItem) => cartItem._id === item._id);
 
   // Define the maximum quantity allowed for each item

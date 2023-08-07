@@ -103,7 +103,6 @@ const AddUser = () => {
     setLoading(true);
 
     try {
-      console.log("values after file uplaod:", values);
       let res = await postCallWithHeaders("users/addUser", values);
       if (!res.error) {
         successNotification(res.msg);

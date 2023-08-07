@@ -222,7 +222,6 @@ const SpecificServiceCategory = () => {
                                     my={"sm"}
                                     compact
                                     onClick={() => {
-                                      console.log("Service: ", service);
                                       addToCart(
                                         shoppingCartItems,
                                         pkg,

@@ -67,7 +67,6 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
     } else {
       failureNotification(apiResponse.data.msg);
     }
-    console.log(apiResponse);
   };
   useEffect(() => {
     signUpForm.reset();

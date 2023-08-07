@@ -39,8 +39,6 @@ const ShoppingCartTable = () => {
                     min={0}
                     max={3}
                     onChange={(e) => {
-                      console.log(e);
-                      console.log(item);
                       handleQuantityChange(
                         e,
                         shoppingCartItems,

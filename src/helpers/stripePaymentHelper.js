@@ -15,8 +15,6 @@ export const stripeHandlePayment = async (
 ) => {
   setLoading(true);
   if (!stripe || !elements) {
-    console.log("Stripe: ", stripe);
-    console.log("Elements: ", elements);
     // Stripe.js hasn't yet loaded.
     // Make sure to disable form submission until Stripe.js has loaded.
     setLoading(false);
@@ -30,9 +28,7 @@ export const stripeHandlePayment = async (
       confirmParams: {},
       redirect: "if_required",
     });
-    console.log("Payment error: ", error);
     if (error && error.message) {
-      console.log("error is not null: ", error.message);
       failureNotification(error.message);
       setLoading(false);
     } else {
@@ -59,7 +55,6 @@ export const stripeHandlePayment = async (
       }
     }
   } catch (error) {
-    console.log("ERROR: ", error);
     setIsLoading(false);
     setLoading(false);
   }

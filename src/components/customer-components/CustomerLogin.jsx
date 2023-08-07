@@ -43,7 +43,6 @@ const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
     },
   });
   const handleLogin = async (values) => {
-    console.log(values);
     const apiResponse = await postCallWithoutHeaders(
       `customer/login-customer`,
       values
@@ -63,7 +62,6 @@ const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
         setLoggedInUserDetails(apiResponse.data);
       }
     }
-    console.log("Login api response: ", apiResponse);
   };
   useEffect(() => {
     loginForm.reset();

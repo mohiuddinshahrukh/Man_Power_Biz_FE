@@ -52,7 +52,6 @@ export const getCallSpecificWithoutHeaders = async (endpoint, id) => {
     } else {
       failureNotification(`${apiResponse.data.msg}`);
     }
-    console.log("api Response: ", apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -67,7 +66,6 @@ export const getCallSpecificWithHeaders = async (endpoint, id) => {
       method: "get",
       url: `${baseURI}/${endpoint}/${id}`,
     });
-    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -85,7 +83,6 @@ export const postCallWithHeaders = async (endpoint, data) => {
       url: `${baseURI}/${endpoint}`,
       data: data,
     });
-    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -99,7 +96,6 @@ export const postCallWithoutHeaders = async (endpoint, data) => {
       url: `${baseURI}/${endpoint}`,
       data: data,
     });
-    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -116,21 +112,18 @@ export const editCallWithHeaders = async (endpoint, id, data) => {
       url: `${baseURI}/${endpoint}/${id}`,
       data: data,
     });
-    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
   }
 };
 export const editCallWithoutHeaders = async (endpoint, id, data) => {
-  console.log(data);
   try {
     let apiResponse = await axios({
       method: "put",
       url: `${baseURI}/${endpoint}/${id}`,
       data: data,
     });
-    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
@@ -152,7 +145,6 @@ export const deleteCallWithHeaders = async (
       method: "delete",
       url: `${baseURI}/${endpoint}/${id}`,
     });
-    console.log(apiResponse);
     if (!apiResponse.data.error) {
       successNotification(apiResponse.data.msg);
       setLoading(false);

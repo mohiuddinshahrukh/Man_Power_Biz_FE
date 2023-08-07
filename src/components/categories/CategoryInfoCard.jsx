@@ -66,7 +66,7 @@ const CategoryInfoCard = ({ categories, loading }) => {
         </Menu.Target>
 
         {category.categoryServices.map((service) => (
-          <Menu.Dropdown>
+          <Menu.Dropdown key={service._id}>
             <Menu.Label>{service.serviceTitle}</Menu.Label>
           </Menu.Dropdown>
         ))}

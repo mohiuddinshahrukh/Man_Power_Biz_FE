@@ -86,19 +86,13 @@ export default function LoginSignUp() {
         /^[1-9]\d{9}$/.test(value.trim()) ? null : "10 digit WhatsApp Number",
     },
   });
-  // const getTest = async () => {
-  //     let res = await axios.get("http://localhost:8080/api/v1/urbanservices");
-  //     console.log("res", res)
-  // }
   const loginApiCall = async (credentials) => {
-    console.log("Flow here");
     try {
       let apiResponse = await axios({
         method: "post",
         url: `${backendURI}/users/login`,
         data: credentials,
       });
-      console.log(apiResponse);
       if (!apiResponse.data.error) {
         if (apiResponse.data.data.userType === "admin") {
           successNotification(apiResponse.data.msg);
@@ -120,7 +114,6 @@ export default function LoginSignUp() {
       failureNotification(err.message);
     } finally {
       setLoading(false);
-      console.log("Flow here 1");
     }
   };
   const loginFunction = (credentials) => {

@@ -117,9 +117,7 @@ const BookingModal = ({ opened, setOpened }) => {
   });
 
   const contactInformationFunction = async (values) => {
-    console.log("paymentMethod: ", paymentMethod);
     try {
-      console.log(values);
       const invoicePackages = shoppingCartItems.map((pkg) => ({
         package: pkg,
         bookingDate: dayjs(pkg?.bookingDate).format("YYYY-MM-DD"),
@@ -154,7 +152,6 @@ const BookingModal = ({ opened, setOpened }) => {
           )
         );
 
-      console.log("Final Booking Date: $123", bookingData);
       setDataBeforeBooking(bookingData);
       const apiResponse = await postCallWithHeaders(
         "customer/customer-payment-intent",
@@ -162,7 +159,6 @@ const BookingModal = ({ opened, setOpened }) => {
           amount: totalAmountWithTaxes,
         }
       );
-      console.log("Stripe customer: ", apiResponse);
       if (apiResponse.error) {
         failureNotification(`${apiResponse.msg}`);
       } else {

@@ -21,12 +21,11 @@ import {
   X,
   ChevronDown,
   ArrowLeft,
-  Calendar,
   ArrowDown,
   Printer,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
-import { DateInput, DatePicker } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 
 import dayjs from "dayjs";
 import CancelScreenModal from "../modals/CancelScreenModal";
@@ -36,7 +35,6 @@ import {
   getCallWithHeaders,
   postCallWithHeaders,
 } from "../../helpers/apiCallHelpers";
-import { validate } from "uuid";
 import {
   failureNotification,
   successNotification,
@@ -50,6 +48,7 @@ const AddBooking = () => {
   const [packagesList, setPackagesList] = useState([]);
   const [servicesList, setServicesList] = useState([]);
   const [generalBookingDetails, setGeneralBookingDetails] = useState({});
+  /*eslint-disable*/
   const [contactInfo, setContactInfo] = useState({});
 
   const getBookingList = async () => {
@@ -75,9 +74,6 @@ const AddBooking = () => {
         element.value = element._id;
         element.label = element.serviceTitle;
       });
-      console.log("FILTERED: 1: ", filteredUsers);
-      console.log("FILTERED: 2: ", apiResponsePackages);
-      console.log("FILTERED: 3: ", apiResponseServices);
       setCustomersList(filteredUsers);
       setPackagesList(apiResponsePackages);
       setServicesList(apiResponseServices);
@@ -120,7 +116,6 @@ const AddBooking = () => {
     },
   });
   const generalBookingDetailsFunction = (values) => {
-    console.log(values);
     setGeneralBookingDetails(values);
     nextStep();
   };
@@ -150,17 +145,14 @@ const AddBooking = () => {
   const contactInformationFunction = (values) => {
     try {
       setLoading(true);
-      console.log(values);
       setContactInfo(values);
       let booking = { ...generalBookingDetails, ...values };
       booking.bookingStatus = "IN PROGRESS";
       booking.bookingPrice = 5000;
       booking.bookingPaymentStatus = "ADVANCE";
       booking.bookingPaidAmount = 500;
-      console.log(booking);
 
       const apiResponse = postCallWithHeaders(`admin/addBooking`, booking);
-      console.log(apiResponse);
       if (apiResponse.error) {
         failureNotification(`Failed to add booking`);
       } else {
@@ -169,7 +161,6 @@ const AddBooking = () => {
       }
       // nextStep()
     } catch (error) {
-      console.log(error);
       failureNotification(`${error}`);
     } finally {
       setLoading(false);
@@ -584,9 +575,6 @@ const AddBooking = () => {
                       fullWidth
                       color="dark"
                       size="md"
-                      onClick={() => {
-                        console.log("Downloading your invoice");
-                      }}
                     >
                       Print Invoice
                     </Button>

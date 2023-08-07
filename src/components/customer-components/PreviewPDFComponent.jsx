@@ -3,7 +3,6 @@ import { Modal } from "@mantine/core";
 import { Document, Page } from "react-pdf";
 
 const PreviewPDFComponent = ({ pdfLink, opened, setOpened, setPdfLink }) => {
-  // console.log("pdf link: ", pdfLink);
   return (
     <Modal
       opened={opened}

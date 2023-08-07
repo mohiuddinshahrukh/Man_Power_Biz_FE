@@ -16,12 +16,11 @@ import { IconThumbUp } from "@tabler/icons-react";
 
 const CustomerTestimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
-//   const [loading, setLoading] = useState(false);
+  //   const [loading, setLoading] = useState(false);
   const getCustomerTestimonials = async () => {
     const apiResponse = await getCallWithOutHeaders(
       "customer/get-landing-page-services"
     );
-    console.log("Api response: ", apiResponse);
     setTestimonials(apiResponse);
   };
   useEffect(() => {

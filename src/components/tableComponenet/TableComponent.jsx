@@ -21,7 +21,6 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   deleteCallWithHeaders,
   getCallWithHeaders,
-  getCallWithOutHeaders,
 } from "../../helpers/apiCallHelpers";
 import { failureNotification } from "../../helpers/notificationHelper";
 
@@ -49,7 +48,6 @@ const TableComponent = ({
     try {
       await deleteCallWithHeaders(uri, id, refresh, setRefresh, setLoading);
     } catch (error) {
-      console.log(error);
       failureNotification(`${error}`);
       setLoading(false);
     }
@@ -83,7 +81,6 @@ const TableComponent = ({
 
   const search = (event) => {
     const matchedData = rows?.filter((data) => {
-      // console.log("Object.values(data)", Object.values(data)?.length);
       for (let i = 0; i < Object.values(data)?.length; i++) {
         if (
           Object?.values(data)
@@ -153,7 +150,6 @@ const TableComponent = ({
                   <th
                     key={index}
                     onClick={() => {
-                      // console.log("I have been cilcked");
                       head.numeric === true
                         ? sortNumericValue(head.id)
                         : sortStringValue(head.id);

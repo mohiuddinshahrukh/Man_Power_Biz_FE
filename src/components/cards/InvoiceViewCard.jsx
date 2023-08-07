@@ -12,7 +12,6 @@ import { useRef } from "react";
 import ReactToPrint from "react-to-print";
 
 const InvoiceViewCard = ({ data }) => {
-  console.log("Data Received in Invoice View Card: ", data);
   const componentRef = useRef();
   return (
     <Paper>

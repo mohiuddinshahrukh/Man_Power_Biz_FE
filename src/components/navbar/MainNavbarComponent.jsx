@@ -112,7 +112,6 @@ export function MainNavbarComponent() {
   const { classes, theme } = useStyles();
   const navigate = useNavigate();
 
-  console.log("loggedInUserDetails", loggedInUserDetails);
   return (
     <>
       <LoginSignupModal

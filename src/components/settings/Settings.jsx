@@ -72,7 +72,6 @@ const CustomerSettings = () => {
     );
     updateCustomerProfile.setValues(apiResponse.data);
     setLoading(false);
-    console.log(apiResponse);
   };
   useEffect(() => {
     fetchUserData();
@@ -89,7 +88,6 @@ const CustomerSettings = () => {
           whatsappNumber: values.whatsappNumber,
         }
       );
-      console.log("Edit response: ", apiResponse);
       if (apiResponse.error) {
         failureNotification(`Profile couldn't be updated`);
       } else {
@@ -113,7 +111,6 @@ const CustomerSettings = () => {
           newPassword: values.newPassword,
         }
       );
-      console.log("Edit response: ", apiResponse);
       if (apiResponse.error) {
         failureNotification(apiResponse.msg);
       } else {
@@ -154,7 +151,6 @@ const CustomerSettings = () => {
 
           <form
             onSubmit={updateCustomerProfile.onSubmit((values) => {
-              console.log("values", values);
               updateProfile(values);
             })}
           >
@@ -238,7 +234,6 @@ const CustomerSettings = () => {
 
           <form
             onSubmit={updateCustomerPassword.onSubmit((values) => {
-              console.log(values);
               updatePassword(values);
             })}
           >

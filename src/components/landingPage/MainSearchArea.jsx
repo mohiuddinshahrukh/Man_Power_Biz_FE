@@ -1,5 +1,7 @@
+/*eslint-disable*/
 import {
   BackgroundImage,
+  Box,
   Button,
   Center,
   Chip,
@@ -9,9 +11,32 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconSquareRoundedX } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
+import { useNavigate } from "react-router-dom";
 
 const MainSearchArea = () => {
+  const [search, setSearch] = useState("");
+  const [zip, setZip] = useState("");
+  const [city, setCity] = useState("kolkata");
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
+
+  const fetchCategories = async () => {
+    const apiResponse = await getCallWithHeaders(
+      "customer/get-all-service-categories"
+    );
+    setCategories(apiResponse);
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleSearch = () => {
+    navigate(`/categories?search=${search}&zip=${zip}&city=${city}`);
+  };
+
   return (
     <div style={{ position: "relative" }}>
       <div
@@ -46,29 +71,43 @@ const MainSearchArea = () => {
               label="City"
               placeholder="Select a city"
               data={[{ value: "kolkata", label: "Kolkata" }]}
-            ></Select>
+              value={city}
+            />
             <Select
               styles={{
                 label: {
                   color: "white",
                 },
               }}
-              label="Pin"
-              placeholder="Select a pin"
+              label="Zip"
+              placeholder="Select a Zip"
               data={[
-                { value: "pin1", label: "Pin 1" },
-                { value: "pin2", label: "Pin 2" },
-                { value: "pin3", label: "Pin 3" },
-                { value: "pin4", label: "Pin 4" },
-                { value: "pin5", label: "Pin 5" },
-                { value: "pin6", label: "Pin 6" },
+                { value: "70024", label: "70024" },
+                { value: "70025", label: "70025" },
+                { value: "70026", label: "70026" },
+                { value: "70027", label: "70027" },
+                { value: "70028", label: "70028" },
+                { value: "70029", label: "70029" },
               ]}
-            ></Select>
+              onSelect={(value) => {
+                setZip(value);
+              }}
+              clearable
+            />
             <Stack spacing={3}>
               <TextInput
-                rightSectionWidth={"100px"}
                 rightSection={
-                  <Button rightIcon={<IconSearch />}>{"Search"}</Button>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 5,
+                    }}
+                  >
+                    <Button rightIcon={<IconSearch />} onClick={handleSearch}>
+                      {"Search"}
+                    </Button>
+                  </div>
                 }
                 styles={{
                   label: {
@@ -77,28 +116,29 @@ const MainSearchArea = () => {
                 }}
                 label="Search"
                 placeholder="Search"
+                onChange={(event) => {
+                  setSearch(event.currentTarget.value);
+                }}
+                value={search}
               />
-              <Group spacing={3}>
-                {[
-                  {
-                    value: "mens hair salons",
-                    label: "Mens Hair Salons",
-                  },
-                  {
-                    value: "womens hair salons",
-                    label: "Womens Hair Salons",
-                  },
-                  {
-                    value: "electrician",
-                    label: "Electricians",
-                  },
-                  {
-                    value: "house painters",
-                    label: "House Painters",
-                  },
-                ].map((data, index) => {
-                  return <Chip key={index}>{data.label}</Chip>;
-                })}
+
+              <Group spacing={3} maw={"100%"}>
+                <Chip.Group
+                  multiple={false}
+                  value={search}
+                  onChange={setSearch}
+                >
+                  {categories?.map((data, index) => {
+                    return (
+                      <Chip
+                        key={index}
+                        value={data.categoryTitle.toLowerCase()}
+                      >
+                        {data.categoryTitle}
+                      </Chip>
+                    );
+                  })}
+                </Chip.Group>
               </Group>
             </Stack>
           </Group>

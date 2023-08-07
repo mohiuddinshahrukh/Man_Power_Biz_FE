@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable */
 import { Button, Image, SimpleGrid, Text } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
@@ -18,13 +18,11 @@ const UploadFiles = ({
 
   useEffect(() => {
     if (Array.isArray(fileUpload)) {
-      console.log("fileUpload: ", fileUpload);
       const filteredArray = fileUpload.filter((file) => {
         if (file === "") {
           return;
         } else return file;
       });
-      console.log(filteredArray);
       setFiles(filteredArray);
     }
   }, [fileUpload]);

@@ -29,6 +29,13 @@ const AllCategories = () => {
     fetchCategories();
   }, []);
 
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get("search");
+  const zip = params.get("zip");
+  const city = params.get("city");
+
+  console.log("search, zip, city:::", search, zip, city);
+
   return (
     <Container size={"xl"} pt={20} mt={"lg"}>
       {!loading && (

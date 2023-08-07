@@ -5,10 +5,8 @@ import { v4 } from "uuid";
 
 export const uploadFile = async (files, setLoading) => {
   try {
-    console.log("This is the files list: ", files);
     if (files.length <= 0) {
       failureNotification(`No images uploaded yet`);
-      console.log("No images uploaded yet");
     } else {
       setLoading(true);
       const uploadedFiles = []; // Initialize an empty array to store uploaded file URLs
@@ -17,8 +15,6 @@ export const uploadFile = async (files, setLoading) => {
         const res = await uploadBytes(imageRef, element);
         const url = await getDownloadURL(res.ref);
         successNotification(`Image uploaded successfully`);
-        console.log("ref: ", res);
-        console.log("url: ", url);
         uploadedFiles.push(url); // Add the uploaded file URL to the array
       }
       setLoading(false);

@@ -70,7 +70,6 @@ const CheckoutTable = ({ hideCheckoutButton }) => {
         fullWidth
         onClick={() => {
           let customer = localStorage.getItem("customerDetails");
-          console.log();
           if (!customer || customer == "{}") {
             setLoginSignupModalOpened(true);
           } else {

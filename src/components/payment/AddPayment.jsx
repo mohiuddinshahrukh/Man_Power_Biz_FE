@@ -99,7 +99,6 @@ export default function App() {
     setBookings(bookingsArray);
 
     setLoading(false);
-    // console.log("NEW API RES: ", apiResponse);
   };
 
   useEffect(() => {
@@ -112,7 +111,6 @@ export default function App() {
     setServiceValue("");
     setPackageValue("");
     setPaymentValue(0);
-    console.log("Here");
     let checkBooking = bookings.filter((booking) => {
       if (
         value === booking.bookingCustomer._id &&
@@ -129,7 +127,6 @@ export default function App() {
     if (checkBooking.length > 0) {
       console.log("Customer found");
     }
-    console.log("Check Bookings");
     setCustomerBookings(checkBooking);
   };
 
@@ -318,7 +315,6 @@ export default function App() {
                     minRows={3}
                     onChange={(e) => {
                       setPaymentDescription(e.target.value);
-                      console.log(e.target.value);
                     }}
                   />
                 </Grid.Col>

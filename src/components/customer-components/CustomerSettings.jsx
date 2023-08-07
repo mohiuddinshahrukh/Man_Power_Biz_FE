@@ -74,7 +74,6 @@ const CustomerSettings = () => {
       JSON.parse(localStorage.getItem("customerDetails"))._id
     );
     updateCustomerProfile.setValues(apiResponse.data);
-    console.log(apiResponse);
   };
   useEffect(() => {
     fetchUserData();

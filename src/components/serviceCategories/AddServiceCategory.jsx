@@ -123,7 +123,6 @@ const AddServiceCategory = () => {
       "admin/getAServicesCategory",
       params.id
     );
-    console.log("API RES: ", apiResponse.data);
     form.setValues(apiResponse.data);
     setFileUpload(apiResponse.data.image);
     setLoading(false);
@@ -216,7 +215,6 @@ const AddServiceCategory = () => {
                 !location.pathname.includes("edit")
                   ? addCategory(values)
                   : editCategory(values);
-                console.log(values);
               }
             })}
           >

@@ -80,7 +80,6 @@ const AddService = () => {
     const apiResponse = await getCallWithHeaders(
       `admin/getAllServicesCategories`
     );
-    console.log("apiResponse: ", apiResponse);
     apiResponse.forEach((element) => {
       element.value = element._id;
       element.label = element.categoryTitle;
@@ -199,7 +198,6 @@ const AddService = () => {
   const addServiceFunction = async () => {
     setLoading(true);
     let values = { ...generalDetails, ...contactInformation };
-    console.log(values);
     try {
       let imageUploadResult = [];
       if (imageUpload.length > 0) {
@@ -236,9 +234,6 @@ const AddService = () => {
           successNotification("PDFs uploaded successfully");
         }
       }
-      console.log("images", imageUploadResult);
-      console.log("videos", videoUploadResult);
-      console.log("pdf", pdfUploadResult);
       // Check if any of the upload types have files selected (image, video, or pdf)
       if (
         imageUploadResult.length > 0 ||
@@ -249,7 +244,6 @@ const AddService = () => {
         values.serviceVideos = videoUploadResult;
         values.servicePDF = pdfUploadResult;
         const res = await postCallWithHeaders("admin/addService", values);
-        console.log("This is res of the post call with headers", res);
 
         if (!res.error) {
           setLoading(false);
@@ -560,7 +554,6 @@ const AddService = () => {
               <form
                 style={{ padding: "0px", margin: "auto" }}
                 onSubmit={addServiceStep3Form.onSubmit((values) => {
-                  console.log(values);
                   addServiceStep3Function(values);
                 })}
               >
@@ -899,7 +892,6 @@ const AddService = () => {
                     color="green"
                     uppercase
                     onClick={() => {
-                      console.log("Do the api call final one to reg service");
                       addServiceFunction();
                     }}
                   >

@@ -9,8 +9,6 @@ import InvoiceViewCard from "../cards/InvoiceViewCard";
 const SpecificViewModal = ({ opened, close, title, data }) => {
   const location = useLocation();
   const pathname = location.pathname;
-  console.log(data);
-  console.log("location: ", location);
   return (
     <Modal
       closeOnEscape
