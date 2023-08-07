@@ -32,12 +32,9 @@ export const getCallWithHeaders = async (endpoint) => {
       method: "get",
       url: `${baseURI}/${endpoint}`,
     });
-    if (!apiResponse.data.error) {
-      successNotification(`${apiResponse.data.msg}`);
-    } else {
+    if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }
-    console.log(apiResponse);
     return appendSerialNumber(apiResponse.data.data);
   } catch (error) {
     console.log(error);
