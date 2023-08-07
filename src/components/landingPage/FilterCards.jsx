@@ -18,6 +18,8 @@ import mechanic from "../../assets/map_mechanic.svg";
 import men_therapy from "../../assets/map_men_therapy.svg";
 import plumber from "../../assets/map_plumber.svg";
 import plus from "../../assets/map_plus.svg";
+import { useMediaQuery } from "@mantine/hooks";
+
 const mockdata = [
   { title: "Electricians", icon: electrician, color: "violet" },
   { title: "Plumbers", icon: plumber, color: "indigo" },
@@ -35,8 +37,8 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === "dark"
         ? theme.colors.dark[6]
         : theme.colors.gray[0],
-    width: "50vw",
-    border: "1px solid #eaeaea",
+    width: "60vw",
+    border: "2px solid #eaeaea",
   },
 
   title: {
@@ -52,7 +54,7 @@ const useStyles = createStyles((theme) => ({
     textAlign: "center",
     borderRadius: theme.radius.md,
     height: rem(120),
-    width: rem(170),
+    width: "auto",
     backgroundColor:
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
     transition: "box-shadow 150ms ease, transform 100ms ease",
@@ -67,6 +69,7 @@ const useStyles = createStyles((theme) => ({
 
 const FilterCards = () => {
   const { classes } = useStyles();
+  const match1200 = useMediaQuery("(max-width: 1200px)");
 
   const items = mockdata.map((item) => (
     <UnstyledButton key={item.title} className={classes.item} p={"xl"}>
@@ -93,7 +96,19 @@ const FilterCards = () => {
             + 21 other services
           </Anchor>
         </Group>
-        <SimpleGrid cols={4} mt="md">
+        <SimpleGrid
+          cols={4}
+          spacing="md"
+          breakpoints={[
+            { maxWidth: "lg", cols: 3 },
+            { maxWidth: "md", cols: 2 },
+            { maxWidth: "sm", cols: 1 },
+          ]}
+          style={{
+            marginTop: match1200 ? "2rem" : "3rem",
+            marginBottom: match1200 ? "2rem" : "3rem",
+          }}
+        >
           {items}
         </SimpleGrid>
       </Card>
