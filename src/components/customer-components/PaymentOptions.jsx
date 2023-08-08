@@ -36,6 +36,7 @@ export const PaymentOptions = ({
   setPaymentMethod,
   nextStep,
   setDataBeforeBooking,
+  nextNextStep,
 }) => {
   const { classes } = useStyles();
 
@@ -73,12 +74,14 @@ export const PaymentOptions = ({
               bookingPaymentStatus: "cod",
             }));
             nextStep();
-          } else {
+          }
+          if (buttonTitle == "Credit Card") {
+            setPaymentMethod("card");
             setDataBeforeBooking((prevData) => ({
               ...prevData,
-              bookingPaymentStatus: "card",
+              bookingPaymentStatus: "full",
             }));
-            nextStep();
+            nextNextStep();
           }
         }}
       >

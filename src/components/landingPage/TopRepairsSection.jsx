@@ -20,6 +20,8 @@ const TopRepairsSection = () => {
     getServiceCategories();
   }, []);
 
+  // console.log("services::", services);
+
   const categoryCards = services?.map((serviceCard, index) => {
     return (
       <Carousel.Slide key={index}>

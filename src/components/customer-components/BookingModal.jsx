@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable */
 import {
   Button,
   Card,
@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ShoppingCartContext } from "../../contexts/ShoppingCartContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown } from "tabler-icons-react";
 import { DateInput } from "@mantine/dates";
@@ -30,7 +30,7 @@ import {
   failureNotification,
   successNotification,
 } from "../../helpers/notificationHelper";
-import { Elements } from "@stripe/react-stripe-js";
+import { Elements, CardElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "react-stripe-js";
 import CheckoutForm from "../payment/CheckoutForm";
 import card from "../../assets/card.jpg";
@@ -42,6 +42,8 @@ import { CategoriesContext } from "../../contexts/categoriesContext";
 import { v4 } from "uuid";
 import { customerRoutes } from "../../helpers/routesHelper";
 import { useNavigate } from "react-router-dom";
+import CheckoutFormCustomer from "./CheckoutForm-Customer";
+import { stripeHandlePaymentCustomer } from "../../helpers/stripePaymentHelperCustomer";
 const stripePromise = loadStripe(
   "pk_test_51LZZvfE15s0GgNMhr1G5APbmPXyGbm10KdljXh7FWBA9QvUtisLvRVN6SAswoq2M1D6v5f0hTi484tqZDs50P8Rq00pU0tq3QQ"
 );
@@ -52,8 +54,13 @@ const BookingModal = ({ opened, setOpened }) => {
   const [externalStripe, setExternalStripe] = useState(null);
   const [externalElements, setExternalElements] = useState(null);
   const [message, setMessage] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [disabledStepper, setDisabledStepper] = useState(false);
+  const [paidBooking, setPaidBooking] = useState({});
+  const [invoiceData, setInvoiceData] = useState({});
+
   const appearance = {
     theme: "stripe",
   };
@@ -68,6 +75,7 @@ const BookingModal = ({ opened, setOpened }) => {
     useContext(ShoppingCartContext);
   const { loggedInUserDetails } = useContext(UserProfileContext);
   const { categoriesData } = useContext(CategoriesContext);
+
   const step1Form = useForm({
     validateInputOnChange: true,
     initialValues: {
@@ -115,6 +123,19 @@ const BookingModal = ({ opened, setOpened }) => {
           : "Description can't exceed 500 characters",
     },
   });
+
+  useEffect(() => {
+    if (loggedInUserDetails) {
+      try {
+        contactInformationForm.setValues({
+          bookingContactNumber: loggedInUserDetails?.contactNumber.toString(),
+          bookingEmailAddress: loggedInUserDetails?.email,
+        });
+      } catch (e) {
+        console.log("Failed to prefill values");
+      }
+    }
+  }, [loggedInUserDetails]);
 
   const contactInformationFunction = async (values) => {
     try {
@@ -166,7 +187,6 @@ const BookingModal = ({ opened, setOpened }) => {
         nextStep();
       }
     } catch (error) {
-      console.log(error);
       failureNotification(`${error}`);
     }
   };
@@ -184,11 +204,30 @@ const BookingModal = ({ opened, setOpened }) => {
       failureNotification(`Booking unsuccessful`);
     }
   };
+  // };
+  const [dataToSend, setDataToSend] = useState({});
+
+  useEffect(() => {
+    setDataToSend({
+      bookingCity: dataBeforeBooking?.bookingCity,
+      bookingZip: dataBeforeBooking?.bookingZip,
+      bookingDate: dataBeforeBooking?.bookingDate,
+      bookingPackage: dataBeforeBooking?.bookingPackage,
+      bookingCustomer: dataBeforeBooking?.bookingCustomer,
+      bookingContactNumber: dataBeforeBooking?.bookingContactNumber,
+      bookingDescription: dataBeforeBooking?.bookingDescription,
+      bookingEmailAddress: dataBeforeBooking?.bookingEmailAddress,
+      bookingId: dataBeforeBooking?.bookingId,
+      bookingStatus: dataBeforeBooking?.bookingStatus,
+      bookingPrice: dataBeforeBooking?.bookingPrice,
+      bookingPaymentStatus: dataBeforeBooking?.bookingPaymentStatus,
+      bookingPaidAmount: dataBeforeBooking?.bookingPaidAmount,
+    });
+  }, [dataBeforeBooking]);
+
   return (
     <Modal
-      size={"xl"}
-      p={"xl"}
-      m={"xl"}
+      size={"70vw"}
       opened={opened}
       closeOnClickOutside={false}
       closeOnEscape={false}
@@ -409,6 +448,7 @@ const BookingModal = ({ opened, setOpened }) => {
                 buttonTitle={"Credit Card"}
                 setPaymentMethod={setPaymentMethod}
                 setDataBeforeBooking={setDataBeforeBooking}
+                nextNextStep={nextNextStep}
               />
             </div>
             <div>
@@ -429,15 +469,18 @@ const BookingModal = ({ opened, setOpened }) => {
             <Grid.Col sm={12} md={12} lg={12}>
               {clientSecret.length > 0 && (
                 <Elements options={options} stripe={stripePromise}>
-                  <CheckoutForm
+                  <CheckoutFormCustomer
                     clientSecret={clientSecret}
                     paymentValue={totalAmountWithTaxes}
-                    setMessage={setMessage}
-                    message={message}
                     setExternalElements={setExternalElements}
                     externalElements={externalElements}
                     externalStripe={externalStripe}
                     setExternalStripe={setExternalStripe}
+                    dataToSend={dataToSend}
+                    nextStep={nextNextStep}
+                    prevStep={prevStep}
+                    invoiceData={invoiceData}
+                    setInvoiceData={setInvoiceData}
                   />
                 </Elements>
               )}
@@ -459,7 +502,7 @@ const BookingModal = ({ opened, setOpened }) => {
                 // disabled={loading}
                 leftIcon={<ArrowLeft />}
                 onClick={() => {
-                  paymentMethod === "card" ? prevStep() : prevPrevStep();
+                  paymentMethod === "card" ? prevPrevStep() : prevPrevStep();
                 }}
                 uppercase
               >
@@ -476,10 +519,11 @@ const BookingModal = ({ opened, setOpened }) => {
                 rightIcon={<ArrowRight />}
                 uppercase
                 onClick={() => {
-                  createBooking();
+                  // createBooking();
+                  paymentMethod === "card" ? prevStep() : createBooking();
                 }}
               >
-                Book
+                {paymentMethod === "card" ? "Proceed to Payment" : "Confirm"}
               </Button>
             </Grid.Col>
           </Grid>

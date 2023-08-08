@@ -89,7 +89,6 @@ export const postCallWithHeaders = async (endpoint, data) => {
   }
 };
 export const postCallWithoutHeaders = async (endpoint, data) => {
-  console.log(data);
   try {
     let apiResponse = await axios({
       method: "post",
