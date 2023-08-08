@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import {
   createStyles,
   Card,
@@ -8,28 +9,17 @@ import {
   Group,
   rem,
   Image,
+  Loader,
 } from "@mantine/core";
 
-import cooking from "../../assets/map_cooking.svg";
 import dry_cleaning from "../../assets/map_dry_cleaning.svg";
 import electrician from "../../assets/map_electrician.svg";
-import electronics from "../../assets/map_electronics.svg";
-import mechanic from "../../assets/map_mechanic.svg";
-import men_therapy from "../../assets/map_men_therapy.svg";
 import plumber from "../../assets/map_plumber.svg";
-import plus from "../../assets/map_plus.svg";
 import { useMediaQuery } from "@mantine/hooks";
-
-const mockdata = [
-  { title: "Electricians", icon: electrician, color: "violet" },
-  { title: "Plumbers", icon: plumber, color: "indigo" },
-  { title: "Electronics", icon: electronics, color: "blue" },
-  { title: "Mechanics", icon: mechanic, color: "green" },
-  { title: "Men's Therapy", icon: men_therapy, color: "teal" },
-  { title: "Dry Cleaning", icon: dry_cleaning, color: "cyan" },
-  { title: "Cooking", icon: cooking, color: "pink" },
-  { title: "More", icon: plus, color: "red" },
-];
+import { useEffect, useState } from "react";
+import { getCallWithOutHeaders } from "../../helpers/apiCallHelpers";
+import { useNavigate } from "react-router-dom";
+import { customerRoutes } from "../../helpers/routesHelper";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -70,49 +60,104 @@ const useStyles = createStyles((theme) => ({
 const FilterCards = () => {
   const { classes } = useStyles();
   const match1200 = useMediaQuery("(max-width: 1200px)");
+  const [loading, setLoading] = useState(true);
 
-  const items = mockdata.map((item) => (
-    <UnstyledButton key={item.title} className={classes.item} p={"xl"}>
-      <Image src={item.icon} height={50} width={50} />
-      <Text size="xs" mt={7}>
-        {item.title}
-      </Text>
-    </UnstyledButton>
-  ));
+  /*eslint-disable*/
+  const [services, setServices] = useState([]);
+  const getServiceCategories = async () => {
+    const apiResponse = await getCallWithOutHeaders(
+      "customer/get-landing-page-services"
+    );
+    setServices(apiResponse);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getServiceCategories();
+  }, []);
+
+  const navigate = useNavigate();
+
+  const items = services?.map((item) => {
+    return (
+      <UnstyledButton
+        key={item.SR}
+        className={classes.item}
+        p={"xl"}
+        onClick={() => {
+          navigate(`${customerRoutes.specificService}/${item._id}`);
+        }}
+      >
+        <Image
+          src={
+            item.categoryTitle.toLowerCase() === "cleaning"
+              ? dry_cleaning
+              : item.categoryTitle.toLowerCase() === "home services"
+              ? plumber
+              : item.categoryTitle.toLowerCase() === "electricity"
+              ? electrician
+              : null
+          }
+          alt={"ICON"}
+          height={50}
+          width={50}
+        />
+        <Text size="xs" mt={7}>
+          {item.categoryTitle}
+        </Text>
+      </UnstyledButton>
+    );
+  });
 
   return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Card withBorder radius="md" className={classes.card} p={"xl"}>
-        <Group position="apart">
-          <Text className={classes.title}>Services</Text>
-          <Anchor size="xs" color="dimmed" sx={{ lineHeight: 1 }}>
-            + 21 other services
-          </Anchor>
-        </Group>
-        <SimpleGrid
-          cols={4}
-          spacing="md"
-          breakpoints={[
-            { maxWidth: "lg", cols: 3 },
-            { maxWidth: "md", cols: 2 },
-            { maxWidth: "sm", cols: 1 },
-          ]}
+    <>
+      {loading ? (
+        <div
           style={{
-            marginTop: match1200 ? "2rem" : "3rem",
-            marginBottom: match1200 ? "2rem" : "3rem",
+            height: "50vh",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          {items}
-        </SimpleGrid>
-      </Card>
-    </div>
+          <Loader size="xl" />
+        </div>
+      ) : (
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Card withBorder radius="md" className={classes.card} p={"xl"}>
+            <Group position="apart">
+              <Text className={classes.title}>Services</Text>
+              <Anchor size="xs" color="dimmed" sx={{ lineHeight: 1 }}>
+                + 21 other services
+              </Anchor>
+            </Group>
+            <SimpleGrid
+              cols={3}
+              spacing="md"
+              breakpoints={[
+                // { maxWidth: "lg", cols: 2 },
+                { maxWidth: "md", cols: 2 },
+                { maxWidth: "sm", cols: 1 },
+              ]}
+              style={{
+                marginTop: match1200 ? "2rem" : "3rem",
+                marginBottom: match1200 ? "2rem" : "3rem",
+              }}
+            >
+              {items}
+            </SimpleGrid>
+          </Card>
+        </div>
+      )}
+    </>
   );
 };
 
