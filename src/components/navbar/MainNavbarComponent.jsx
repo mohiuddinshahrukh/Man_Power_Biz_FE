@@ -213,6 +213,7 @@ export function MainNavbarComponent() {
                         onClick={() => {
                           localStorage.removeItem("customerDetails");
                           setLoggedInUserDetails({});
+                          navigate("/");
                         }}
                       >
                         <Group spacing={3}>
