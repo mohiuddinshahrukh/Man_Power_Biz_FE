@@ -108,6 +108,10 @@ function App() {
             />
             <Route path={customerRoutes.viewCart} element={<ViewCart />} />
             <Route
+              path={customerRoutes.customerSettings}
+              element={<Settings />}
+            />
+            <Route
               path={customerRoutes.categories}
               element={<AllCategories />}
             />

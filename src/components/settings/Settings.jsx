@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import {
   Accordion,
   Button,
@@ -22,7 +23,12 @@ import {
 } from "../../helpers/notificationHelper";
 
 const CustomerSettings = () => {
+  const user = JSON.parse(localStorage.getItem("customerDetails"));
+  const admin = JSON.parse(localStorage.getItem("adminData"));
+
+  const [loggedUser, setLoggedUser] = useState(user || admin);
   const [loading, setLoading] = useState(true);
+
   const updateCustomerProfile = useForm({
     validateInputOnChange: true,
     initialValues: {
@@ -66,23 +72,33 @@ const CustomerSettings = () => {
   });
 
   const fetchUserData = async () => {
-    const apiResponse = await getCallSpecificWithoutHeaders(
-      "customer/get-me",
-      JSON.parse(localStorage.getItem("adminData"))._id
-    );
-    updateCustomerProfile.setValues(apiResponse.data);
-    setLoading(false);
+    const targetUser = user || admin;
+    if (targetUser && targetUser._id) {
+      try {
+        const apiResponse = await getCallSpecificWithoutHeaders(
+          "customer/get-me",
+          targetUser._id
+        );
+        updateCustomerProfile.setValues(apiResponse.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
+
   useEffect(() => {
     fetchUserData();
   }, []);
 
   const updateProfile = async (values) => {
+    const targetUser = user || admin;
     setLoading(true);
     try {
       const apiResponse = await editCallWithoutHeaders(
         `customer/edit-profile`,
-        `${JSON.parse(localStorage.getItem("adminData"))._id}`,
+        targetUser?._id,
         {
           contactNumber: values.contactNumber,
           whatsappNumber: values.whatsappNumber,
@@ -101,11 +117,12 @@ const CustomerSettings = () => {
   };
 
   const updatePassword = async (values) => {
+    const targetUser = user || admin;
     setLoading(true);
     try {
       const apiResponse = await editCallWithoutHeaders(
         `customer/edit-password`,
-        `${JSON.parse(localStorage.getItem("adminData"))._id}`,
+        targetUser?._id,
         {
           currentPassword: values.currentPassword,
           newPassword: values.newPassword,
