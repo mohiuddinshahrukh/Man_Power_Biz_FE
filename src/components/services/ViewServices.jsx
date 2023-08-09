@@ -75,7 +75,7 @@ let headCells = [
   {
     id: "actions",
     view: { icon: <IconEye /> },
-    edit: { icon: <IconEdit />, editRoute: routes.editservicecategory },
+    edit: { icon: <IconEdit />, editRoute: `${routes.editService}/` },
     delete: { icon: <IconTrash />, deleteURI: "admin/deleteService" },
     numeric: false,
     label: "Actions",

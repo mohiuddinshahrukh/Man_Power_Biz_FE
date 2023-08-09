@@ -69,6 +69,10 @@ function App() {
                 element={<AddServiceCategory />}
               />
               <Route
+                path={`${routes.editService}/:id`}
+                element={<AddServices />}
+              />
+              <Route
                 path={routes.viewServiceCategories}
                 element={<ViewServiceCategory />}
               />

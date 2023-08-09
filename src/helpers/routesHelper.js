@@ -9,6 +9,7 @@ export const routes = {
   viewServiceCategories: "/admindashboard/viewservicecategories",
   addService: "/admindashboard/addservice",
   viewServices: "/admindashboard/viewservices",
+  editService: "/admindashboard/editservice/",
   addPackage: "/admindashboard/addPackage",
   editPackage: "/admindashboard/editPackage",
   addPackageWithId: "/admindashboard/addPackage/:id",

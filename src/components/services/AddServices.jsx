@@ -33,6 +33,7 @@ import { X } from "tabler-icons-react";
 import { Carousel } from "@mantine/carousel";
 import CancelScreenModal from "../modals/CancelScreenModal";
 import {
+  getCallSpecificWithHeaders,
   getCallWithHeaders,
   postCallWithHeaders,
 } from "../../helpers/apiCallHelpers";
@@ -43,13 +44,15 @@ import {
 } from "../../helpers/notificationHelper";
 import { uploadFile } from "../../helpers/uploadFileHelper";
 import ViewUploadedFileModal from "../modals/ViewUploadedFileModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Document, Page } from "react-pdf";
 import ProceedToAddPackagesModal from "../modals/ProceedToAddPackagesModal";
 import { routes } from "../../helpers/routesHelper";
 
 const AddService = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   const [apiResponseObj, setApiResponseObj] = useState("");
 
   const [opened, setOpened] = useState(false);
@@ -107,7 +110,7 @@ const AddService = () => {
       serviceTitle: "",
       serviceCategory: "",
       serviceCity: "",
-      serviceZipCode: "",
+      serviceZipCode: [],
       serviceDescription: "",
       // serviceAddress: ""
     },
@@ -263,6 +266,37 @@ const AddService = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  ///updating service code below, idk waht is above////
+
+  useEffect(() => {
+    try {
+      if (location.pathname.includes("edit")) {
+        getServiceDetails();
+      }
+    } catch (error) {
+      failureNotification(error);
+    }
+  }, [location.pathname]);
+
+  const getServiceDetails = async () => {
+    setLoading(true);
+    const apiResponse = await getCallSpecificWithHeaders(
+      "admin/getAServices",
+      params.id
+    );
+
+    const zipCode = apiResponse?.data.serviceZipCode[0] || "";
+
+    addServiceStep1Form.setValues({
+      ...apiResponse?.data,
+      serviceZipCode: zipCode,
+    });
+
+    console.log("NAWA DATA:", apiResponse?.data);
+    setLoading(false);
+    return apiResponse?.data;
   };
 
   return (
@@ -430,17 +464,6 @@ const AddService = () => {
                       )}
                     />
                   </Grid.Col>
-                  {/* <Grid.Col lg={12}>
-                                        <Textarea
-                                            required
-                                            label="Address "
-                                            maxLength={100}
-                                            placeholder="Enter Service Address"
-                                            // mt="sm"
-                                            size="md"
-                                            {...addServiceStep1Form.getInputProps("serviceAddress")}
-                                        />
-                                    </Grid.Col> */}
                 </Grid>
                 <Grid justify="flex-end" pt="xl">
                   <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
