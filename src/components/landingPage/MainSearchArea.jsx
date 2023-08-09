@@ -27,7 +27,7 @@ const MainSearchArea = () => {
     const apiResponse = await getCallWithHeaders(
       "customer/get-all-service-categories"
     );
-    setCategories(apiResponse);
+    setCategories(apiResponse.slice(0, 4));
   };
   useEffect(() => {
     fetchCategories();

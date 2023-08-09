@@ -35,7 +35,6 @@ import ViewCart from "./components/customer-components/ViewCart";
 import CustomerHome from "./components/customer-components/CustomerHome";
 import CustomerBookingsView from "./components/customer-components/CustomerBookingsView";
 import { CustomerDashboard } from "./components/customer-components/CustomerDashboard";
-import CustomerSettings from "./components/customer-components/CustomerSettings";
 import AllCategories from "./components/categories/AllCategories";
 
 function App() {
@@ -127,10 +126,6 @@ function App() {
               <Route
                 path={customerRoutes.customerPayments}
                 element={<h1>Payments</h1>}
-              />
-              <Route
-                path={customerRoutes.customerSettings}
-                element={<CustomerSettings />}
               />
             </Route>
           </Route>
