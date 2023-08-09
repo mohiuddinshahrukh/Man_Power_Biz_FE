@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import {
   ArrowLeft,
   ArrowRight,
@@ -246,7 +247,37 @@ const AddService = () => {
         values.serviceImages = imageUploadResult;
         values.serviceVideos = videoUploadResult;
         values.servicePDF = pdfUploadResult;
-        const res = await postCallWithHeaders("admin/addService", values);
+        // const res = await postCallWithHeaders("admin/addService", values);
+        if (location.pathname.includes("edit")) {
+          // values.id = params.id;
+          const res = await postCallWithHeaders(
+            `admin/updateService/${params.id}`,
+            values
+          );
+          if (!res.error) {
+            setLoading(false);
+            successNotification(res.msg);
+            setApiResponseObj(res.data.id);
+            setProceedToPkgModal(true);
+            navigate("/adminDashboard/viewServices");
+          } else {
+            failureNotification(res.msg);
+            setLoading(false);
+          }
+        }
+        if (location.pathname.includes("add")) {
+          const res = await postCallWithHeaders("admin/addService", values);
+          if (!res.error) {
+            setLoading(false);
+            successNotification(res.msg);
+            setApiResponseObj(res.data.id);
+            setProceedToPkgModal(true);
+            navigate("/adminDashboard/viewServices");
+          } else {
+            failureNotification(res.msg);
+            setLoading(false);
+          }
+        }
 
         if (!res.error) {
           setLoading(false);
@@ -293,6 +324,12 @@ const AddService = () => {
       ...apiResponse?.data,
       serviceZipCode: zipCode,
     });
+
+    addServiceStep3Form.setValues({
+      ...apiResponse?.data,
+    });
+
+    setImageUpload(apiResponse?.data?.serviceImages);
 
     console.log("NAWA DATA:", apiResponse?.data);
     setLoading(false);
@@ -757,7 +794,7 @@ const AddService = () => {
                       ]}
                       align="start"
                     >
-                      {imageUpload
+                      {/* {imageUpload
                         .concat(videoUpload)
                         .concat(pdfUpload)
                         ?.map((file, index) => {
@@ -807,7 +844,7 @@ const AddService = () => {
                               )}
                             </Carousel.Slide>
                           );
-                        })}
+                        })} */}
                     </Carousel>
                   </Card.Section>
                   <Grid>
