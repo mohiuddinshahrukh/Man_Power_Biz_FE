@@ -5,10 +5,6 @@ import { Elements } from "@stripe/react-stripe-js";
 
 import CheckoutForm from "./CheckoutForm";
 import {
-  getCallWithHeaders,
-  postCallWithHeaders,
-} from "../../helpers/apiCallHelpers";
-import {
   Button,
   Center,
   Grid,
@@ -28,172 +24,54 @@ import PaymentPolicy from "./PaymentPolicy";
 import InvoiceViewCard from "../cards/InvoiceViewCard";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../helpers/routesHelper";
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-// This is your test publishable API key.
+import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
+
 const stripePromise = loadStripe(
   "pk_test_51LZZvfE15s0GgNMhr1G5APbmPXyGbm10KdljXh7FWBA9QvUtisLvRVN6SAswoq2M1D6v5f0hTi484tqZDs50P8Rq00pU0tq3QQ"
 );
 
-export default function App() {
+const Test = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const [paidBooking, setPaidBooking] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [clientSecret, setClientSecret] = useState("");
-  const [bookings, setBookings] = useState([]);
+  // User
   const [customers, setCustomers] = useState([]);
 
-  const [customerBookings, setCustomerBookings] = useState([]);
-  const [customerValue, setCustomerValue] = useState(null);
-  const [selectedBooking, setSelectedBooking] = useState("");
-  const [serviceValue, setServiceValue] = useState("");
-  const [packageValue, setPackageValue] = useState("");
-  const [paymentDescription, setPaymentDescription] = useState("");
+  // Payment
   const [paymentValue, setPaymentValue] = useState(0);
-  //ERRORS
 
-  const [customerError, setCustomerError] = useState("");
-  const [bookingError, setBookingError] = useState("");
-  const [serviceError, setServiceError] = useState("");
-  const [packageError, setPackageError] = useState("");
-  const [amountError, setAmountError] = useState("");
-  //
+  // Bookings
+  const [bookings, setBookings] = useState([]);
+  const [paidBooking, setPaidBooking] = useState({});
 
   // External Stripe
+  const [clientSecret, setClientSecret] = useState("");
   const [externalStripe, setExternalStripe] = useState(null);
   const [externalElements, setExternalElements] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [disabledStepper, setDisabledStepper] = useState(false);
-  //
+  // Stepper
   const [active, setActive] = useState(0);
+  const [disabledStepper, setDisabledStepper] = useState(false);
   const nextStep = () =>
     setActive((current) => (current < 4 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  const getPaymentData = async () => {
+  const getData = async () => {
     const [customers, bookings] = await Promise.all([
       getCallWithHeaders("admin/getAllUsers"),
       getCallWithHeaders("admin/getAllBookings"),
     ]);
 
-    let customerArray = customers.filter((user) => {
-      if (user.userType !== "admin") {
-        return user;
-      }
-    });
-    customerArray.map((customer) => {
-      customer.label = customer.email;
-      customer.value = customer._id;
-    });
-
-    let bookingsArray = bookings.map((booking) => ({
-      ...booking,
-      label: booking.bookingDate,
-      value: booking._id,
-    }));
-
-    setCustomers(customerArray);
-    setBookings(bookingsArray);
-
-    setLoading(false);
+    setCustomers(customers);
+    setBookings(bookings);
   };
 
   useEffect(() => {
-    getPaymentData();
-    // Create PaymentIntent as soon as the page loads
+    getData();
   }, []);
-
-  console.log("customer:", customers);
-  console.log("bookings:", bookings);
-
-  const checkCustomerBookings = (value) => {
-    if (!value) {
-      console.log("no customers");
-      return;
-    }
-
-    setCustomerBookings([]);
-    setServiceValue("");
-    setPackageValue("");
-    setPaymentValue(0);
-    let checkBooking = bookings.filter((booking) => {
-      if (
-        value === booking.bookingCustomer._id &&
-        booking.bookingRemainingAmount > 0
-      ) {
-        return booking;
-      } else {
-        console.log("Booking not found!");
-      }
-    });
-    if (checkBooking.length > 0) {
-      console.log("Customer found");
-    }
-    setCustomerBookings(checkBooking);
-  };
-
-  const checkPackageAndService = (value) => {
-    let checkPkgAndSvc = bookings.filter((booking) => {
-      if (value === booking._id) {
-        console.log("booking found");
-        return booking;
-      }
-    });
-    if (checkPkgAndSvc.length > 0) {
-      setServiceValue(checkPkgAndSvc[0].bookingService.serviceTitle);
-      setPackageValue(checkPkgAndSvc[0].bookingPackage.packageTitle);
-      setPaymentValue(checkPkgAndSvc[0].bookingRemainingAmount);
-    }
-  };
-
-  const appearance = {
-    theme: "stripe",
-  };
-  const options = {
-    clientSecret,
-    appearance,
-  };
-
-  const checkBeforePaymentIntent = async () => {
-    setCustomerError("");
-    setBookingError("");
-    setServiceError("");
-    setPackageError("");
-    setAmountError();
-    if (!customerValue.length > 0) {
-      setCustomerError("A customer must be selected");
-    } else if (!selectedBooking.length > 0) {
-      setBookingError("A booking must be selected");
-    } else if (!serviceValue.length > 0) {
-      setServiceError("Service must be selected");
-    } else if (!packageValue.length > 0) {
-      setPackageError("Package must be selected");
-    } else if (!paymentValue > 0) {
-      setAmountError(
-        "An amount greater than 0 must be present to make booking"
-      );
-    } else {
-      setLoading(true);
-      const apiResponse = await postCallWithHeaders(
-        "admin/createPaymentIntent",
-        {
-          amount: paymentValue,
-        }
-      );
-      if (apiResponse.error) {
-        setLoading(false);
-      } else {
-        setLoading(false);
-        setClientSecret(apiResponse.data);
-        nextStep();
-      }
-      // nextStep();
-    }
-  };
 
   return (
     <Paper
@@ -240,88 +118,71 @@ export default function App() {
               <Grid>
                 <Grid.Col sm={12} lg={6}>
                   <Select
-                    searchable
                     required
                     size="md"
                     label={"Select Customer"}
-                    value={customerValue}
-                    data={customers}
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
                     placeholder="Select Customer"
-                    onChange={(event) => {
-                      setCustomerValue(event);
-                      checkCustomerBookings(event);
-                    }}
-                    error={customerError}
                   />
                 </Grid.Col>
                 <Grid.Col sm={12} lg={6}>
                   <Select
-                    searchable
                     required
-                    value={selectedBooking}
                     size="md"
                     placeholder="Select Booking"
                     label={"Select Booking"}
-                    data={customerBookings}
-                    onChange={(event) => {
-                      setSelectedBooking(event);
-                      checkPackageAndService(event);
-                    }}
-                    // value={customerValue}
-                    // onChange={(event) => {
-                    //   console.log("ChNGED")
-                    //   checkCustomerBookings(event);
-                    // }}
-                    error={bookingError}
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
                   />
                 </Grid.Col>
 
                 <Grid.Col lg={6}>
-                  <TextInput
+                  <Select
                     placeholder="Select Booking"
-                    readOnly
                     required
                     size="md"
                     label={"Booked Service"}
-                    value={serviceValue}
-                    // onChange={(event) => {
-                    //   checkCustomerBookings(event);
-                    error={serviceError}
-                    // }}
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
                   />
                 </Grid.Col>
                 <Grid.Col lg={6}>
-                  <TextInput
+                  <Select
                     placeholder="Select Booking"
-                    readOnly
                     required
                     size="md"
                     label={"Booked Package"}
-                    value={packageValue}
-                    error={packageError}
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
                   />
                 </Grid.Col>
                 <Grid.Col lg={12}>
-                  <TextInput
-                    required
-                    error={amountError}
-                    size="md"
-                    readOnly
-                    value={paymentValue}
-                    label={"Payment Amount"}
-                  />
+                  <TextInput required size="md" label={"Payment Amount"} />
                 </Grid.Col>
                 <Grid.Col lg={12}>
                   <Textarea
-                    value={paymentDescription}
                     size="md"
                     label={"Payment Details"}
                     maxLength={200}
                     maxRows={3}
                     minRows={3}
-                    onChange={(e) => {
-                      setPaymentDescription(e.target.value);
-                    }}
                   />
                 </Grid.Col>
               </Grid>
@@ -334,8 +195,6 @@ export default function App() {
                     color="red"
                     size="md"
                     onClick={prevStep}
-
-                    // disabled={disabled}
                   >
                     BACK
                   </Button>
@@ -347,9 +206,7 @@ export default function App() {
                     rightIcon={<ArrowRight />}
                     size="md"
                     color="dark"
-                    onClick={() => {
-                      checkBeforePaymentIntent();
-                    }}
+                    onClick={nextStep}
                   >
                     NEXT
                   </Button>
@@ -397,8 +254,6 @@ export default function App() {
                     color="red"
                     size="md"
                     onClick={prevStep}
-
-                    // disabled={disabled}
                   >
                     BACK
                   </Button>
@@ -445,8 +300,8 @@ export default function App() {
                     size="md"
                     color="dark"
                     onClick={() => {
-                      // nextStep();
-                      navigate(routes.viewPayments);
+                      nextStep();
+                      //   navigate(routes.viewPayments);
                     }}
                   >
                     All Payments
@@ -459,4 +314,6 @@ export default function App() {
       </Center>
     </Paper>
   );
-}
+};
+
+export default Test;

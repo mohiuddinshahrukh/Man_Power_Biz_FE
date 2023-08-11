@@ -1,4 +1,3 @@
-import { IconEdit } from "@tabler/icons-react";
 import { routes } from "../../helpers/routesHelper";
 import TableComponent from "../tableComponenet/TableComponent";
 import { IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
@@ -106,7 +105,6 @@ let headCells = [
   {
     id: "actions",
     view: { icon: <IconEye /> },
-    edit: { icon: <IconEdit />, editRoute: `${routes.addBooking}/` },
     delete: { icon: <IconTrash />, deleteURI: "admin/deleteBooking" },
     numeric: false,
     label: "Actions",

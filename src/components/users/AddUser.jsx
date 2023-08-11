@@ -176,7 +176,7 @@ const AddUser = () => {
           <CancelScreenModal
             opened={opened}
             setOpened={setOpened}
-            path={"/viewuser"}
+            path={"/admindashboard/viewusers"}
           />
           <Title order={1} p="md" align="center">
             {location.pathname.includes("edit") ? "Edit User" : "Add User"}

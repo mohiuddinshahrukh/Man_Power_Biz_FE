@@ -36,6 +36,7 @@ import CustomerHome from "./components/customer-components/CustomerHome";
 import CustomerBookingsView from "./components/customer-components/CustomerBookingsView";
 import { CustomerDashboard } from "./components/customer-components/CustomerDashboard";
 import AllCategories from "./components/categories/AllCategories";
+import Test from "./components/payment/Test";
 
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
@@ -86,8 +87,9 @@ function App() {
               <Route path={routes.addPackageWithId} element={<AddPackages />} />
               <Route path={routes.viewPackages} element={<ViewPackages />} />
               <Route path={routes.addBooking} element={<AddBooking />} />
+              <Route path={routes.updateBooking} element={<AddBooking />} />
               <Route path={routes.viewBookings} element={<ViewBooking />} />
-              <Route path={routes.addPayment} element={<AddPayment />} />
+              <Route path={routes.addPayment} element={<Test />} />
               <Route path={routes.viewPayments} element={<ViewPayment />} />
               <Route path={routes.chats} element={<ChatScreen />} />
               <Route path={routes.addComplaint} element={<AddComplaint />} />

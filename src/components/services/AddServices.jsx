@@ -123,7 +123,7 @@ const AddService = () => {
       serviceCity: (value) =>
         /^[A-Za-z\s.-]{2,100}$/.test(value.trim()) ? null : "Select a city",
       serviceZipCode: (value) =>
-        /^700\d{2}$/.test(value.trim()) ? null : "Select a pin",
+        /^700\d{2}$/.test(value) ? null : "Select a pin",
       serviceDescription: (value) =>
         /^[\s\S]{1,500}$/.test(value.trim())
           ? null
@@ -331,7 +331,6 @@ const AddService = () => {
 
     setImageUpload(apiResponse?.data?.serviceImages);
 
-    console.log("NAWA DATA:", apiResponse?.data);
     setLoading(false);
     return apiResponse?.data;
   };

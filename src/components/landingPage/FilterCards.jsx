@@ -15,6 +15,7 @@ import {
 import dry_cleaning from "../../assets/map_dry_cleaning.svg";
 import electrician from "../../assets/map_electrician.svg";
 import plumber from "../../assets/map_plumber.svg";
+import gardening from "../../assets/gardening.svg";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { getCallWithOutHeaders } from "../../helpers/apiCallHelpers";
@@ -96,6 +97,8 @@ const FilterCards = () => {
               ? plumber
               : item.categoryTitle.toLowerCase() === "electricity"
               ? electrician
+              : item.categoryTitle.toLowerCase() === "gardening"
+              ? gardening
               : null
           }
           alt={"ICON"}
