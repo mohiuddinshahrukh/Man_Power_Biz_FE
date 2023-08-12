@@ -78,6 +78,7 @@ const AddService = () => {
   const [modalData, setModalData] = useState({});
 
   const [generalDetails, setGeneralDetails] = useState({});
+  console.log("GEN DETAILS", generalDetails);
   const [contactInformation, setContactInformation] = useState({});
 
   const [serviceCategories, setServiceCategories] = useState([]);
@@ -118,18 +119,18 @@ const AddService = () => {
     },
     validate: {
       serviceTitle: (value) =>
-        /^[\w\s.,!?'-]{1,100}$/.test(value.trim()) ? null : "Invalid title",
+        /^[\w\s.,!?'-]{1,100}$/.test(value?.trim()) ? null : "Invalid title",
       serviceCategory: (value) =>
-        /^\S+$/.test(value.trim()) ? null : "Select a category",
+        /^\S+$/.test(value?.trim()) ? null : "Select a category",
       serviceCity: (value) =>
-        /^[A-Za-z\s.-]{2,100}$/.test(value.trim()) ? null : "Select a city",
+        /^[A-Za-z\s.-]{2,100}$/.test(value?.trim()) ? null : "Select a city",
       serviceZipCode: (value) =>
         /^700\d{2}$/.test(value) ? null : "Select a pin",
       serviceDescription: (value) =>
-        /^[\s\S]{1,500}$/.test(value.trim())
+        /^[\s\S]{1,500}$/.test(value?.trim())
           ? null
           : "Description can't exceed 500 characters",
-      // serviceAddress: (value) => (/^[\w\s.,#-]{1,100}$/.test(value.trim()) ? null : "Address can only contain alphabets and #"),
+      // serviceAddress: (value) => (/^[\w\s.,#-]{1,100}$/.test(value?.trim()) ? null : "Address can only contain alphabets and #"),
     },
   });
 
@@ -147,16 +148,16 @@ const AddService = () => {
     validate: {
       serviceInfoEmail: (value) =>
         /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
-          value.trim()
+          value?.trim()
         )
-          ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
+          ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value?.trim())
             null
           : "Invalid Email",
       serviceFeedbackEmail: (value) =>
         /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
-          value.trim()
+          value?.trim()
         )
-          ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value.trim())
+          ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value?.trim())
             null
           : "Invalid Email",
       serviceContactPhone: (value) =>
@@ -164,26 +165,26 @@ const AddService = () => {
       serviceWhatsAppPhone: (value) =>
         /^[1-9]\d{9}$/.test(value) ? null : "10 digit WhatsApp Number",
       serviceWebsiteLink: (value) =>
-        value.length == 0
+        value?.length == 0
           ? null
           : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(
-              value.trim()
+              value?.trim()
             )
           ? null
           : "Invalid Website link",
       serviceFacebookLink: (value) =>
-        value.length == 0
+        value?.length == 0
           ? null
           : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(
-              value.trim()
+              value?.trim()
             )
           ? null
           : "Invalid Facebook link",
       serviceInstagramLink: (value) =>
-        value.length == 0
+        value?.length == 0
           ? null
           : /^(https?:\/\/)?(www\.)?[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*\.[A-Za-z]{2,}(?::\d{2,5})?(?:\/[^\s]*)?$/.test(
-              value.trim()
+              value?.trim()
             )
           ? null
           : "Invalid Instagram link",
@@ -319,15 +320,26 @@ const AddService = () => {
     );
 
     const zipCode = apiResponse?.data.serviceZipCode[0] || "";
+    let form1Values = {
+      serviceTitle: apiResponse.data.serviceTitle,
+      serviceCategory: apiResponse.data.serviceCategory,
+      serviceCity: apiResponse.data.serviceCity,
+      serviceZipCode: apiResponse.data.serviceZipCode[0],
+      serviceDescription: apiResponse.data.serviceDescription,
+    };
 
-    addServiceStep1Form.setValues({
-      ...apiResponse?.data,
-      serviceZipCode: zipCode,
-    });
+    addServiceStep1Form.setValues(form1Values);
 
-    addServiceStep3Form.setValues({
-      ...apiResponse?.data,
-    });
+    const form3Values = {
+      serviceContactPhone: apiResponse.data.serviceContactPhone,
+      serviceWhatsAppPhone: apiResponse.data.serviceWhatsAppPhone,
+      serviceInfoEmail: apiResponse.data.serviceInfoEmail,
+      serviceFeedbackEmail: apiResponse.data.serviceFeedbackEmail,
+      serviceWebsiteLink: apiResponse.data.serviceWebsiteLink,
+      serviceFacebookLink: apiResponse.data.serviceFacebookLink,
+      serviceInstagramLink: apiResponse.data.serviceInstagramLink,
+    };
+    addServiceStep3Form.setValues(form3Values);
 
     setImageUpload(apiResponse?.data?.serviceImages);
 
