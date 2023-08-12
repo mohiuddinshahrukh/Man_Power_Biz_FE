@@ -13,6 +13,8 @@ import ReactToPrint from "react-to-print";
 
 const InvoiceViewCard = ({ data }) => {
   const componentRef = useRef();
+
+  console.log("INVAISE", data);
   return (
     <Paper>
       <ReactToPrint
@@ -41,7 +43,7 @@ const InvoiceViewCard = ({ data }) => {
         <Group position="center" spacing={3}>
           <IconMail />
           <Text align="center" size={"md"} transform="none">
-            {data.bookingServices?.map((booking) => {
+            {data.bookingService?.map((booking) => {
               return booking.serviceInfoEmail;
             })}
           </Text>
@@ -50,7 +52,7 @@ const InvoiceViewCard = ({ data }) => {
           <Group spacing={3}>
             <IconPhone />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingServices?.map((booking) => {
+              {data.bookingService?.map((booking) => {
                 return booking.serviceContactPhone;
               })}
             </Text>
@@ -58,7 +60,7 @@ const InvoiceViewCard = ({ data }) => {
           <Group spacing={3}>
             <IconBrandWhatsapp />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingServices?.map((booking) => {
+              {data.bookingService?.map((booking) => {
                 return booking.serviceWhatsAppPhone;
               })}
             </Text>
@@ -132,7 +134,6 @@ const InvoiceViewCard = ({ data }) => {
           </thead>
           <tbody>
             {data.bookingPackage?.map((pkg, index) => {
-              console.log("This si the pakacge: ", pkg);
               return (
                 <tr key={index}>
                   <td>{pkg?.package?.packageTitle}</td>{" "}
@@ -213,6 +214,128 @@ const InvoiceViewCard = ({ data }) => {
             </tr>
           </tbody>
         </Table>
+
+        {location.pathname.includes("viewBookings") && (
+          <>
+            <Title
+              my={"sm"}
+              bg={"teal"}
+              color="white"
+              p={5}
+              order={3}
+              align="center"
+            >
+              Service Details
+            </Title>
+
+            <Table withColumnBorders withBorder striped>
+              <tbody>
+                <tr>
+                  <td>Service</td>
+                  {data.bookingService?.map((srvc, index) => {
+                    return (
+                      <td key={index} align="right">
+                        {srvc.serviceTitle}
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr>
+                  <td>Service Email Address</td>
+                  {data.bookingService?.map((srvc, index) => {
+                    return (
+                      <td key={index} align="right">
+                        {srvc.serviceInfoEmail}
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr>
+                  <td>Service Contact Number</td>
+                  {data.bookingService?.map((srvc, index) => {
+                    return (
+                      <td key={index} align="right">
+                        {srvc.serviceContactPhone}
+                      </td>
+                    );
+                  })}
+                </tr>
+              </tbody>
+            </Table>
+          </>
+        )}
+
+        {location.pathname.includes("viewBookings") && (
+          <>
+            <Title
+              my={"sm"}
+              bg={"teal"}
+              color="white"
+              p={5}
+              order={3}
+              align="center"
+            >
+              Package Details
+            </Title>
+
+            <Table withColumnBorders withBorder striped>
+              <tbody>
+                <tr>
+                  <td>Package</td>
+                  {data.bookingPackage?.map((pkg, index) => {
+                    return (
+                      <td key={index} align="right">
+                        {pkg?.package?.packageTitle}
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr>
+                  <td>Price</td>
+                  {data.bookingPackage?.map((pkg, index) => {
+                    return (
+                      <td key={index} align="right">
+                        {pkg?.package?.packagePrice}
+                      </td>
+                    );
+                  })}
+                </tr>
+              </tbody>
+            </Table>
+          </>
+        )}
+
+        {location.pathname.includes("viewBookings") && (
+          <>
+            <Title
+              my={"sm"}
+              bg={"teal"}
+              color="white"
+              p={5}
+              order={3}
+              align="center"
+            >
+              Customer Details
+            </Title>
+
+            <Table withColumnBorders withBorder striped>
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td align="right">{data?.bookingCustomer?.fullName}</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td align="right">{data?.bookingCustomer?.email}</td>
+                </tr>
+                <tr>
+                  <td>Contact</td>
+                  <td align="right">{data?.bookingCustomer?.contactNumber}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </>
+        )}
       </Paper>
     </Paper>
   );

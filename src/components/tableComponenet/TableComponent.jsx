@@ -97,8 +97,6 @@ const TableComponent = ({
     setSearchPhrase(event.target.value);
   };
 
-  console.log("ROWS");
-
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Paper pos={"relative"}>

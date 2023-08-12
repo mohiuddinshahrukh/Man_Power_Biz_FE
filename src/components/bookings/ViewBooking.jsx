@@ -17,10 +17,10 @@ let headCells = [
     label: "ZIP",
   },
   {
-    id: "fullName",
+    id: "bookingId",
     numeric: false,
     disablePadding: true,
-    label: "Customer",
+    label: "Booking ID",
   },
   {
     id: "bookingEmailAddress",
@@ -34,18 +34,18 @@ let headCells = [
     disablePadding: true,
     label: "Contact",
   },
-  {
-    id: "packageTitle",
-    numeric: false,
-    disablePadding: true,
-    label: "Package",
-  },
-  {
-    id: "serviceTitle",
-    numeric: false,
-    disablePadding: true,
-    label: "Service",
-  },
+  // {
+  //   id: "packageTitle",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Package",
+  // },
+  // {
+  //   id: "serviceTitle",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Service",
+  // },
   {
     id: "bookingDescription",
     numeric: false,
