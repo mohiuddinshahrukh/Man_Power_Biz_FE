@@ -11,7 +11,7 @@ import AddPackages from "./components/packages/AddPackages";
 import ViewPackages from "./components/packages/ViewPackages";
 import AddBooking from "./components/bookings/AddBooking";
 import ViewBooking from "./components/bookings/ViewBooking";
-import AddPayment from "./components/payment/AddPayment";
+import CustomerPayments from "./components/customer-components/CustomerPayments";
 import ViewPayment from "./components/payment/ViewPayment";
 import AddComplaint from "./components/complaint/AddComplaint";
 import ViewComplaint from "./components/complaint/ViewComplaint";
@@ -135,7 +135,7 @@ function App() {
               />
               <Route
                 path={customerRoutes.customerPayments}
-                element={<h1>Payments</h1>}
+                element={<CustomerPayments />}
               />
             </Route>
           </Route>
