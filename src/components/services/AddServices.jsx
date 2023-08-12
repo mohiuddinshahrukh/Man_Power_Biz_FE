@@ -34,6 +34,7 @@ import { X } from "tabler-icons-react";
 import { Carousel } from "@mantine/carousel";
 import CancelScreenModal from "../modals/CancelScreenModal";
 import {
+  editCallWithHeaders,
   getCallSpecificWithHeaders,
   getCallWithHeaders,
   postCallWithHeaders,
@@ -199,6 +200,14 @@ const AddService = () => {
     nextStep();
   };
 
+  const editForm = (values) => {
+    console.log("in  edit form:::", values);
+    setGeneralDetails({});
+    setGeneralDetails(values);
+    console.log("GEN DETAILS", generalDetails);
+    nextStep();
+  };
+
   const addServiceFunction = async () => {
     setLoading(true);
     let values = { ...generalDetails, ...contactInformation };
@@ -250,20 +259,22 @@ const AddService = () => {
         // const res = await postCallWithHeaders("admin/addService", values);
         if (location.pathname.includes("edit")) {
           // values.id = params.id;
-          const res = await postCallWithHeaders(
-            `admin/updateService/${params.id}`,
-            values
-          );
-          if (!res.error) {
-            setLoading(false);
-            successNotification(res.msg);
-            setApiResponseObj(res.data.id);
-            setProceedToPkgModal(true);
-            navigate("/adminDashboard/viewServices");
-          } else {
-            failureNotification(res.msg);
-            setLoading(false);
-          }
+          // const res = await editCallWithHeaders(
+          //   `admin/updateService`,
+          //   params.id,
+          //   values
+          // );
+          // if (!res.error) {
+          //   setLoading(false);
+          //   successNotification(res.msg);
+          //   setApiResponseObj(res.data._id);
+          //   setProceedToPkgModal(true);
+          //   navigate(`${routes.viewServices}`);
+          // } else {
+          //   failureNotification(res.msg);
+          //   setLoading(false);
+          // }
+          console.log("edit service", values);
         }
         if (location.pathname.includes("add")) {
           const res = await postCallWithHeaders("admin/addService", values);
@@ -277,17 +288,6 @@ const AddService = () => {
             failureNotification(res.msg);
             setLoading(false);
           }
-        }
-
-        if (!res.error) {
-          setLoading(false);
-          successNotification(res.msg);
-          setApiResponseObj(res.data.id);
-          setProceedToPkgModal(true);
-          navigate("/adminDashboard/viewServices");
-        } else {
-          failureNotification(res.msg);
-          setLoading(false);
         }
       } else {
         console.log("No files selected (images, videos, or PDFs)");
@@ -333,6 +333,11 @@ const AddService = () => {
 
     setLoading(false);
     return apiResponse?.data;
+  };
+
+  const editService = async () => {
+    let values = { ...generalDetails, ...contactInformation };
+    console.log("in niga service", values);
   };
 
   return (
@@ -399,7 +404,9 @@ const AddService = () => {
 
               <form
                 onSubmit={addServiceStep1Form.onSubmit((values) => {
-                  addServiceStep1Function(values);
+                  location.pathname.includes("edit")
+                    ? editForm(values)
+                    : addServiceStep1Function(values);
                 })}
                 style={{ padding: "0px", margin: "auto" }}
               >
@@ -951,7 +958,10 @@ const AddService = () => {
                     color="green"
                     uppercase
                     onClick={() => {
-                      addServiceFunction();
+                      // addServiceFunction();
+                      location.pathname.includes("edit")
+                        ? editService()
+                        : addServiceFunction();
                     }}
                   >
                     Confirm

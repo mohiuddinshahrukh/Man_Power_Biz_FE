@@ -101,7 +101,6 @@ export const postCallWithoutHeaders = async (endpoint, data) => {
   }
 };
 export const editCallWithHeaders = async (endpoint, id, data) => {
-  console.log(data);
   try {
     let apiResponse = await axios({
       headers: {
@@ -111,6 +110,7 @@ export const editCallWithHeaders = async (endpoint, id, data) => {
       url: `${baseURI}/${endpoint}/${id}`,
       data: data,
     });
+    console.log(apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
