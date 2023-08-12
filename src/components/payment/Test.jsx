@@ -67,6 +67,7 @@ const Test = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
   const [dataToSend, setDataToSend] = useState({});
+  const [newBookingId, setNewBookingId] = useState("");
 
   const appearance = {
     theme: "stripe",
@@ -125,6 +126,7 @@ const Test = () => {
         setBookedServices(selectedBooking.bookingService);
         setBookingPrice(selectedBooking.bookingPrice);
         setPaymentID(selectedBooking._id);
+        setNewBookingId(selectedBooking.bookingId);
       }
     }
   }, [selectedBookingID, customers]);
@@ -152,6 +154,8 @@ const Test = () => {
       setDataToSend({
         bookingId: paymentID,
         amount: bookingPrice,
+        customerId: selectedCustomer._id,
+        paymentMethod: "FULL",
       });
       nextStep();
       paymentIntentCreator();
