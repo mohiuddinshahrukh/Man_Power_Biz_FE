@@ -164,8 +164,9 @@ const BookingModal = ({ opened, setOpened }) => {
       bookingData.bookingPaidAmount = 0;
       bookingData.bookingPrice = totalAmountWithTaxes;
       bookingData.bookingCity = "kolkata";
-      bookingData.bookingService = shoppingCartItems
+      bookingData.bookingServices = shoppingCartItems
         .map((pkg) => pkg.packageService) // Get an array of packageService IDs
+        .flat() // Flatten the array of arrays into a single array
         .filter((value, index, self) => self.indexOf(value) === index) // Filter out duplicate IDs
         .map((serviceId) =>
           categoriesData.categoryServices.find(
@@ -204,7 +205,6 @@ const BookingModal = ({ opened, setOpened }) => {
       failureNotification(`Booking unsuccessful`);
     }
   };
-  // };
   const [dataToSend, setDataToSend] = useState({});
 
   useEffect(() => {
@@ -222,6 +222,7 @@ const BookingModal = ({ opened, setOpened }) => {
       bookingPrice: dataBeforeBooking?.bookingPrice,
       bookingPaymentStatus: dataBeforeBooking?.bookingPaymentStatus,
       bookingPaidAmount: dataBeforeBooking?.bookingPaidAmount,
+      bookingService: dataBeforeBooking?.bookingService,
     });
   }, [dataBeforeBooking]);
 

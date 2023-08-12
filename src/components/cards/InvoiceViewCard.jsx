@@ -41,7 +41,7 @@ const InvoiceViewCard = ({ data }) => {
         <Group position="center" spacing={3}>
           <IconMail />
           <Text align="center" size={"md"} transform="none">
-            {data.bookingService?.map((booking) => {
+            {data.bookingServices?.map((booking) => {
               return booking.serviceInfoEmail;
             })}
           </Text>
@@ -50,7 +50,7 @@ const InvoiceViewCard = ({ data }) => {
           <Group spacing={3}>
             <IconPhone />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingService?.map((booking) => {
+              {data.bookingServices?.map((booking) => {
                 return booking.serviceContactPhone;
               })}
             </Text>
@@ -58,7 +58,7 @@ const InvoiceViewCard = ({ data }) => {
           <Group spacing={3}>
             <IconBrandWhatsapp />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingService?.map((booking) => {
+              {data.bookingServices?.map((booking) => {
                 return booking.serviceWhatsAppPhone;
               })}
             </Text>

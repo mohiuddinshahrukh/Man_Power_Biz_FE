@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
-import CheckoutForm from "./CheckoutForm";
 import {
+  Badge,
   Button,
   Center,
   Grid,
+  Group,
   LoadingOverlay,
   Paper,
   Select,
@@ -24,7 +25,14 @@ import PaymentPolicy from "./PaymentPolicy";
 import InvoiceViewCard from "../cards/InvoiceViewCard";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../helpers/routesHelper";
-import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
+import {
+  getCallWithHeaders,
+  postCallWithHeaders,
+} from "../../helpers/apiCallHelpers";
+import CheckoutFormCustomer from "../customer-components/CheckoutForm-Customer";
+import PaymentForm from "./PaymentForm";
+import { failureNotification } from "../../helpers/notificationHelper";
+import { useForm } from "@mantine/form";
 
 const stripePromise = loadStripe(
   "pk_test_51LZZvfE15s0GgNMhr1G5APbmPXyGbm10KdljXh7FWBA9QvUtisLvRVN6SAswoq2M1D6v5f0hTi484tqZDs50P8Rq00pU0tq3QQ"
@@ -36,13 +44,18 @@ const Test = () => {
 
   // User
   const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState({});
 
   // Payment
   const [paymentValue, setPaymentValue] = useState(0);
+  const [paymentDetails, setPaymentDetails] = useState("");
 
   // Bookings
-  const [bookings, setBookings] = useState([]);
   const [paidBooking, setPaidBooking] = useState({});
+  const [bookingDates, setBookingDates] = useState([]);
+  const [selectedBookingID, setSelectedBookingID] = useState("");
+  const [bookedServices, setBookedServices] = useState([]);
+  const [bookedPackages, setBookedPackages] = useState([]);
 
   // External Stripe
   const [clientSecret, setClientSecret] = useState("");
@@ -50,6 +63,15 @@ const Test = () => {
   const [externalElements, setExternalElements] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [invoiceData, setInvoiceData] = useState({});
+
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
 
   // Stepper
   const [active, setActive] = useState(0);
@@ -60,18 +82,83 @@ const Test = () => {
     setActive((current) => (current > 0 ? current - 1 : current));
 
   const getData = async () => {
-    const [customers, bookings] = await Promise.all([
-      getCallWithHeaders("admin/getAllUsers"),
-      getCallWithHeaders("admin/getAllBookings"),
-    ]);
-
-    setCustomers(customers);
-    setBookings(bookings);
+    const customersWithBookings = await getCallWithHeaders(
+      "admin/get-customers-with-pending-payments"
+    );
+    setCustomers(customersWithBookings);
   };
 
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    if (selectedCustomer._id) {
+      const selectedCustomerBookings = customers.find(
+        (customer) => customer._id === selectedCustomer._id
+      )?.bookings;
+
+      if (selectedCustomerBookings) {
+        const filteredDates = selectedCustomerBookings
+          .filter((booking) => booking.bookingPaymentStatus !== "FULL")
+          .map((booking) => ({
+            value: booking._id,
+            label: new Date(booking.bookingDate).toLocaleString(),
+          }));
+
+        setBookingDates(filteredDates);
+      }
+    }
+  }, [selectedCustomer, customers]);
+
+  console.log("slectedID", customers);
+
+  useEffect(() => {
+    if (selectedBookingID) {
+      const selectedBooking = customers
+        .flatMap((customer) => customer.bookings)
+        .find((booking) => booking._id === selectedBookingID);
+
+      if (selectedBooking) {
+        setBookedPackages(selectedBooking.bookingPackage);
+        setBookedServices(selectedBooking.bookingService);
+      }
+    }
+  }, [selectedBookingID, customers]);
+
+  const paymentIntentCreator = async () => {
+    const apiResponse = await postCallWithHeaders(
+      "customer/customer-payment-intent",
+      {
+        amount: paymentValue,
+      }
+    );
+    if (apiResponse.error) {
+      failureNotification(`${apiResponse.msg}`);
+    } else {
+      setClientSecret(apiResponse.data);
+      nextStep();
+    }
+  };
+
+  const paymentDetailsForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {},
+    validate: {
+      bookingEmailAddress: (value) =>
+        /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
+          value.trim()
+        )
+          ? null
+          : "Invalid Email",
+      bookingContactNumber: (value) =>
+        /^[1-9]\d{9}$/.test(value) ? null : "10 digit Phone Number",
+      bookingDescription: (value) =>
+        /^[\s\S]{1,500}$/.test(value.trim())
+          ? null
+          : "Description can't exceed 500 characters",
+    },
+  });
 
   return (
     <Paper
@@ -115,103 +202,109 @@ const Test = () => {
                 General Details
               </Text>
 
-              <Grid>
-                <Grid.Col sm={12} lg={6}>
-                  <Select
-                    required
-                    size="md"
-                    label={"Select Customer"}
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
-                    placeholder="Select Customer"
-                  />
-                </Grid.Col>
-                <Grid.Col sm={12} lg={6}>
-                  <Select
-                    required
-                    size="md"
-                    placeholder="Select Booking"
-                    label={"Select Booking"}
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
-                  />
-                </Grid.Col>
+              <form
+                onSubmit={paymentDetailsForm.onSubmit((values) => {
+                  step1FormHandleSubmit(values);
+                })}
+              >
+                <Grid>
+                  <Grid.Col sm={12} lg={6}>
+                    <Select
+                      required
+                      size="md"
+                      label={"Select Customer"}
+                      data={customers?.map((customer) => ({
+                        value: customer,
+                        label: customer.fullName,
+                      }))}
+                      placeholder="Select Customer"
+                      onChange={(event) => {
+                        setSelectedCustomer(event);
+                      }}
+                      searchable
+                    />
+                  </Grid.Col>
+                  <Grid.Col sm={12} lg={6}>
+                    <Select
+                      required
+                      size="md"
+                      placeholder="Select id"
+                      label={"Select Booking ID"}
+                      data={bookingDates}
+                      onChange={(event) => {
+                        setSelectedBookingID(event);
+                      }}
+                    />
+                  </Grid.Col>
 
-                <Grid.Col lg={6}>
-                  <Select
-                    placeholder="Select Booking"
-                    required
-                    size="md"
-                    label={"Booked Service"}
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
-                  />
-                </Grid.Col>
-                <Grid.Col lg={6}>
-                  <Select
-                    placeholder="Select Booking"
-                    required
-                    size="md"
-                    label={"Booked Package"}
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
-                  />
-                </Grid.Col>
-                <Grid.Col lg={12}>
-                  <TextInput required size="md" label={"Payment Amount"} />
-                </Grid.Col>
-                <Grid.Col lg={12}>
-                  <Textarea
-                    size="md"
-                    label={"Payment Details"}
-                    maxLength={200}
-                    maxRows={3}
-                    minRows={3}
-                  />
-                </Grid.Col>
-              </Grid>
+                  <Grid.Col lg={6}>
+                    <Text size="md" fw="bold">
+                      Booked Services
+                    </Text>
+                    <Group noWrap mt={"xs"}>
+                      <Badge>Service Name</Badge>
+                    </Group>
+                  </Grid.Col>
+                  <Grid.Col lg={6}>
+                    <Text size="md" fw={"bold"}>
+                      Booked Packages
+                    </Text>
+                    <Group noWrap mt={"xs"}>
+                      {customers?.bookingPackage?.map((pckg) => (
+                        <Badge>{pckg.packageTitle}</Badge>
+                      ))}
+                    </Group>
+                  </Grid.Col>
+                  <Grid.Col lg={12}>
+                    <TextInput
+                      size="md"
+                      label={"Payment Amount"}
+                      onChange={(event) => {
+                        setPaymentValue(event.target.value);
+                      }}
+                    />
+                  </Grid.Col>
+                  <Grid.Col lg={12}>
+                    <Textarea
+                      size="md"
+                      label={"Payment Details"}
+                      maxLength={200}
+                      maxRows={3}
+                      minRows={3}
+                      onChange={(event) => {
+                        setPaymentDetails(event.target.value);
+                      }}
+                    />
+                  </Grid.Col>
+                </Grid>
 
-              <Grid justify="flex-end" py="md">
-                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
-                  <Button
-                    fullWidth
-                    leftIcon={<ArrowLeft />}
-                    color="red"
-                    size="md"
-                    onClick={prevStep}
-                  >
-                    BACK
-                  </Button>
-                </Grid.Col>
+                <Grid justify="flex-end" py="md">
+                  <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
+                    <Button
+                      fullWidth
+                      leftIcon={<ArrowLeft />}
+                      color="red"
+                      size="md"
+                      onClick={prevStep}
+                    >
+                      BACK
+                    </Button>
+                  </Grid.Col>
 
-                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
-                  <Button
-                    fullWidth
-                    rightIcon={<ArrowRight />}
-                    size="md"
-                    color="dark"
-                    onClick={nextStep}
-                  >
-                    NEXT
-                  </Button>
-                </Grid.Col>
-              </Grid>
+                  <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
+                    <Button
+                      fullWidth
+                      rightIcon={<ArrowRight />}
+                      size="md"
+                      color="dark"
+                      onClick={paymentIntentCreator}
+                      type="submit"
+                    >
+                      NEXT
+                    </Button>
+                  </Grid.Col>
+                </Grid>
+              </form>
             </Stepper.Step>
 
             <Stepper.Step
@@ -220,69 +313,25 @@ const Test = () => {
               description="Payment Details"
               allowStepSelect={active > 0}
             >
-              <Text weight="bold" size="xl" py="md">
-                Payment Details
-              </Text>
-
               <Grid align="start">
-                <Grid.Col sm={12} md={6} lg={6}>
-                  <PaymentPolicy />
-                </Grid.Col>
-                <Grid.Col sm={12} md={6} lg={6}>
+                <Grid.Col sm={12} md={12} lg={12}>
                   {clientSecret.length > 0 && (
                     <Elements options={options} stripe={stripePromise}>
-                      <CheckoutForm
+                      <PaymentForm
                         clientSecret={clientSecret}
                         paymentValue={paymentValue}
-                        selectedBooking={selectedBooking}
-                        setMessage={setMessage}
-                        message={message}
                         setExternalElements={setExternalElements}
                         externalElements={externalElements}
                         externalStripe={externalStripe}
                         setExternalStripe={setExternalStripe}
+                        // dataToSend={dataToSend} // data to send is booking id and amount
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        invoiceData={invoiceData}
+                        setInvoiceData={setInvoiceData}
                       />
                     </Elements>
                   )}
-                </Grid.Col>
-              </Grid>
-              <Grid justify="flex-end" py="md">
-                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
-                  <Button
-                    fullWidth
-                    leftIcon={<ArrowLeft />}
-                    color="red"
-                    size="md"
-                    onClick={prevStep}
-                  >
-                    BACK
-                  </Button>
-                </Grid.Col>
-
-                <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
-                  <Button
-                    fullWidth
-                    rightIcon={<ArrowRight />}
-                    size="md"
-                    color="dark"
-                    onClick={() => {
-                      stripeHandlePayment(
-                        externalStripe,
-                        externalElements,
-                        setIsLoading,
-                        selectedBooking,
-                        paymentValue,
-                        setMessage,
-                        nextStep,
-                        setDisabledStepper,
-                        setPaidBooking,
-                        setLoading
-                      );
-                    }}
-                    uppercase
-                  >
-                    pay {paymentValue.toLocaleString()} now
-                  </Button>
                 </Grid.Col>
               </Grid>
             </Stepper.Step>
@@ -301,7 +350,7 @@ const Test = () => {
                     color="dark"
                     onClick={() => {
                       nextStep();
-                      //   navigate(routes.viewPayments);
+                      navigate(routes.viewPayments);
                     }}
                   >
                     All Payments
