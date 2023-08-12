@@ -32,7 +32,6 @@ export const getCallWithHeaders = async (endpoint) => {
       method: "get",
       url: `${baseURI}/${endpoint}`,
     });
-    console.log("apiResponseXXXX", apiResponse.data);
     if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }
@@ -42,6 +41,26 @@ export const getCallWithHeaders = async (endpoint) => {
     failureNotification(`${error}`);
   }
 };
+
+export const adminDashboardCall = async (endpoint) => {
+  try {
+    let apiResponse = await axios({
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminDataToken")}`,
+      },
+      method: "get",
+      url: `${baseURI}/${endpoint}`,
+    });
+    if (apiResponse.data.error) {
+      failureNotification(`${apiResponse.data.msg}`);
+    }
+    return apiResponse.data;
+  } catch (error) {
+    console.log(error);
+    failureNotification(`${error}`);
+  }
+};
+
 export const getCallSpecificWithoutHeaders = async (endpoint, id) => {
   try {
     let apiResponse = await axios({
