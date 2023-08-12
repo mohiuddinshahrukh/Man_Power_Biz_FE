@@ -201,11 +201,8 @@ const AddService = () => {
     nextStep();
   };
 
-  const editForm = (values) => {
-    console.log("in  edit form:::", values);
-    setGeneralDetails({});
+  const editForm = async (values) => {
     setGeneralDetails(values);
-    console.log("GEN DETAILS", generalDetails);
     nextStep();
   };
 
@@ -259,22 +256,21 @@ const AddService = () => {
         values.servicePDF = pdfUploadResult;
         // const res = await postCallWithHeaders("admin/addService", values);
         if (location.pathname.includes("edit")) {
-          // values.id = params.id;
-          // const res = await editCallWithHeaders(
-          //   `admin/updateService`,
-          //   params.id,
-          //   values
-          // );
-          // if (!res.error) {
-          //   setLoading(false);
-          //   successNotification(res.msg);
-          //   setApiResponseObj(res.data._id);
-          //   setProceedToPkgModal(true);
-          //   navigate(`${routes.viewServices}`);
-          // } else {
-          //   failureNotification(res.msg);
-          //   setLoading(false);
-          // }
+          const res = await editCallWithHeaders(
+            `admin/updateService`,
+            params.id,
+            values
+          );
+          if (!res.error) {
+            setLoading(false);
+            successNotification(res.msg);
+            setApiResponseObj(res.data._id);
+            setProceedToPkgModal(true);
+            navigate(`${routes.viewServices}`);
+          } else {
+            failureNotification(res.msg);
+            setLoading(false);
+          }
           console.log("edit service", values);
         }
         if (location.pathname.includes("add")) {
@@ -970,10 +966,7 @@ const AddService = () => {
                     color="green"
                     uppercase
                     onClick={() => {
-                      // addServiceFunction();
-                      location.pathname.includes("edit")
-                        ? editService()
-                        : addServiceFunction();
+                      addServiceFunction();
                     }}
                   >
                     Confirm
