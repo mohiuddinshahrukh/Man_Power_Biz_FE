@@ -142,7 +142,7 @@ const BookingModal = ({ opened, setOpened }) => {
     try {
       const invoicePackages = shoppingCartItems.map((pkg) => ({
         package: pkg,
-        bookingDate: step1FormValues.bookingDate,
+        bookingDate: step1FormValues.bookingDate.toLocaleString(),
         quantity: pkg.quantity,
       }));
       let bookingData = {
@@ -151,16 +151,18 @@ const BookingModal = ({ opened, setOpened }) => {
         ...{ bookingPackage: invoicePackages },
         ...{ bookingCustomer: loggedInUserDetails },
       };
-      bookingData.bookingId =
-        "kolkata" +
-        "_" +
-        step1FormValues.bookingZip +
-        "_" +
-        loggedInUserDetails?.fullName[0] +
-        "_" +
-        new Date().toISOString().toLocaleString().split("T")[0] +
-        "_" +
-        v4().split("-")[0];
+
+      (bookingData.bookingDate = step1FormValues.bookingDate.toLocaleString()),
+        (bookingData.bookingId =
+          "kolkata" +
+          "_" +
+          step1FormValues.bookingZip +
+          "_" +
+          loggedInUserDetails?.fullName[0] +
+          "_" +
+          new Date().toISOString().toLocaleString().split("T")[0] +
+          "_" +
+          v4().split("-")[0]);
       bookingData.bookingStatus = "IN PROGRESS";
       bookingData.bookingPaidAmount = 0;
       bookingData.bookingPrice = totalAmountWithTaxes;
@@ -176,6 +178,7 @@ const BookingModal = ({ opened, setOpened }) => {
         );
 
       setDataBeforeBooking(bookingData);
+
       const apiResponse = await postCallWithHeaders(
         "customer/customer-payment-intent",
         {
@@ -194,17 +197,18 @@ const BookingModal = ({ opened, setOpened }) => {
   };
 
   const createBooking = async () => {
-    const apiResponse = await postCallWithoutHeaders(
-      "customer/customer-create-payment",
-      dataBeforeBooking
-    );
-    if (!apiResponse.error) {
-      successNotification(`Booking successful`);
-      setShoppingCartItems([]);
-      nextStep();
-    } else {
-      failureNotification(`Booking unsuccessful`);
-    }
+    console.log("This is the final booking data:  ", dataBeforeBooking);
+    // const apiResponse = await postCallWithoutHeaders(
+    //   "customer/customer-create-payment",
+    //   dataBeforeBooking
+    // );
+    // if (!apiResponse.error) {
+    //   successNotification(`Booking successful`);
+    //   setShoppingCartItems([]);
+    //   nextStep();
+    // } else {
+    //   failureNotification(`Booking unsuccessful`);
+    // }
   };
   const [dataToSend, setDataToSend] = useState({});
 
