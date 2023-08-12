@@ -97,6 +97,7 @@ const BookingModal = ({ opened, setOpened }) => {
     setActive((current) => (current > 0 ? current - 2 : current));
 
   const step1FormHandleSubmit = (values) => {
+    console.log(values);
     setStep1FormValues(values);
     nextStep();
   };
@@ -141,7 +142,7 @@ const BookingModal = ({ opened, setOpened }) => {
     try {
       const invoicePackages = shoppingCartItems.map((pkg) => ({
         package: pkg,
-        bookingDate: dayjs(pkg?.bookingDate).format("YYYY-MM-DD"),
+        bookingDate: step1FormValues.bookingDate,
         quantity: pkg.quantity,
       }));
       let bookingData = {

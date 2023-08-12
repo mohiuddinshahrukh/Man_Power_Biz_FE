@@ -116,6 +116,7 @@ const AddBooking = () => {
     },
   });
   const generalBookingDetailsFunction = (values) => {
+    console.log("Values: ", values);
     setGeneralBookingDetails(values);
     nextStep();
   };
