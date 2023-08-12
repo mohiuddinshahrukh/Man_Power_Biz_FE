@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import {
   createStyles,
   Group,
@@ -6,6 +7,7 @@ import {
   Text,
   rem,
   Stack,
+  Loader,
 } from "@mantine/core";
 import {
   IconUserPlus,
@@ -14,6 +16,8 @@ import {
   IconCoin,
 } from "@tabler/icons-react";
 import CustomerDashboardChart from "./CustomerDashboardChart";
+import { useEffect, useState } from "react";
+import { customerDashboardCall } from "../../helpers/apiCallHelpers";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -54,31 +58,54 @@ const icons = {
 
 const data = [
   {
-    title: "Total Spent",
+    title: "Total Payment Amount",
     icon: "receipt",
-    value: "13,456",
+    valueKey: "totalPaymentAmount",
   },
   {
-    title: "Total Bookings",
+    title: "Total Bookings Amount",
     icon: "coin",
-    value: "15",
+    valueKey: "totalBookingsAmount",
   },
   {
     title: "Total Completed Bookings",
     icon: "discount",
-    value: "10",
-  },
-  {
-    title: "Total Cancelled Bookings",
-    icon: "user",
-    value: "5",
+    valueKey: "bookings",
   },
 ];
+
 export function CustomerDashboard() {
   const { classes } = useStyles();
+
+  const [loading, setLoading] = useState(true);
+  const [customerData, setCustomerData] = useState([]);
+  const userId = JSON.parse(localStorage.getItem("customerDetails"))?._id;
+
+  const fetchUsersData = async () => {
+    try {
+      setLoading(true);
+      const apiResponse = await customerDashboardCall(
+        `customer/get-customer-dashboard`,
+        userId
+      );
+      setCustomerData(apiResponse?.data);
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsersData();
+  }, []);
+
+  console.log("customerData", customerData);
+
   const stats = data.map((stat) => {
     const Icon = icons[stat.icon];
-
     return (
       <Paper withBorder p="md" radius="md" key={stat.title}>
         <Group position="apart">
@@ -87,26 +114,43 @@ export function CustomerDashboard() {
           </Text>
           <Icon className={classes.icon} size="1.4rem" stroke={1.5} />
         </Group>
-
         <Group align="flex-end" spacing="xs" mt={15}>
-          <Text className={classes.value}>{stat.value}</Text>
+          <Text className={classes.value}>
+            {stat.valueKey === "totalPaymentAmount" ||
+            stat.valueKey === "totalBookingsAmount"
+              ? `₹${customerData[0]?.[stat.valueKey]?.toLocaleString()}`
+              : customerData[0]?.[stat.valueKey]?.toLocaleString()}
+          </Text>
         </Group>
       </Paper>
     );
   });
+
   return (
     <div className={classes.root}>
       <Stack h={"100%"} w={"100%"} spacing={"xl"}>
-        <SimpleGrid
-          cols={4}
-          breakpoints={[
-            { maxWidth: "md", cols: 2 },
-            { maxWidth: "xs", cols: 1 },
-          ]}
-        >
-          {stats}
-        </SimpleGrid>
-        <CustomerDashboardChart />
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <Loader size={"xl"} />
+          </div>
+        ) : (
+          <SimpleGrid
+            cols={3}
+            breakpoints={[
+              { maxWidth: "md", cols: 2 },
+              { maxWidth: "xs", cols: 1 },
+            ]}
+          >
+            {stats}
+          </SimpleGrid>
+        )}
       </Stack>
     </div>
   );
