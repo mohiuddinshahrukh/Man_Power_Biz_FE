@@ -10,6 +10,8 @@ import {
   Button,
   Loader,
 } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { customerRoutes } from "../../helpers/routesHelper";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -30,6 +32,7 @@ const useStyles = createStyles((theme) => ({
 
 const CategoryInfoCard = ({ categories, loading }) => {
   const { classes } = useStyles();
+  const navigate = useNavigate();
 
   const cards = categories?.map((category) => (
     <Card
@@ -39,6 +42,9 @@ const CategoryInfoCard = ({ categories, loading }) => {
       component="a"
       href="#"
       className={classes.card}
+      onClick={() => {
+        navigate(`${customerRoutes.specificService}/${category._id}`);
+      }}
     >
       <AspectRatio ratio={1920 / 1080}>
         <Image src={category.image} />
@@ -57,6 +63,7 @@ const CategoryInfoCard = ({ categories, loading }) => {
         }}
         position="right-end"
         withArrow
+        trigger="hover"
       >
         <Menu.Target>
           <Button>Services</Button>

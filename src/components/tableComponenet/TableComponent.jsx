@@ -97,7 +97,7 @@ const TableComponent = ({
     setSearchPhrase(event.target.value);
   };
 
-  // console.log("ROWS", rows);
+  console.log("ROWS");
 
   const [opened, { open, close }] = useDisclosure(false);
   return (
