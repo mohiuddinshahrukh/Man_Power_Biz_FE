@@ -49,6 +49,7 @@ const Test = () => {
   // Payment
   const [paymentValue, setPaymentValue] = useState(0);
   const [paymentDetails, setPaymentDetails] = useState("");
+  const [paymentID, setPaymentID] = useState("");
 
   // Bookings
   const [paidBooking, setPaidBooking] = useState({});
@@ -56,6 +57,7 @@ const Test = () => {
   const [selectedBookingID, setSelectedBookingID] = useState("");
   const [bookedServices, setBookedServices] = useState([]);
   const [bookedPackages, setBookedPackages] = useState([]);
+  const [bookingPrice, setBookingPrice] = useState(0);
 
   // External Stripe
   const [clientSecret, setClientSecret] = useState("");
@@ -64,6 +66,7 @@ const Test = () => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
+  const [dataToSend, setDataToSend] = useState({});
 
   const appearance = {
     theme: "stripe",
@@ -93,25 +96,23 @@ const Test = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCustomer._id) {
+    if (selectedCustomer?._id) {
       const selectedCustomerBookings = customers.find(
-        (customer) => customer._id === selectedCustomer._id
+        (customer) => customer?._id === selectedCustomer?._id
       )?.bookings;
 
       if (selectedCustomerBookings) {
         const filteredDates = selectedCustomerBookings
-          .filter((booking) => booking.bookingPaymentStatus !== "FULL")
+          .filter((booking) => booking?.bookingPaymentStatus !== "FULL")
           .map((booking) => ({
-            value: booking._id,
-            label: new Date(booking.bookingDate).toLocaleString(),
+            value: booking?._id,
+            label: booking?.bookingId,
           }));
 
         setBookingDates(filteredDates);
       }
     }
   }, [selectedCustomer, customers]);
-
-  console.log("slectedID", customers);
 
   useEffect(() => {
     if (selectedBookingID) {
@@ -122,6 +123,8 @@ const Test = () => {
       if (selectedBooking) {
         setBookedPackages(selectedBooking.bookingPackage);
         setBookedServices(selectedBooking.bookingService);
+        setBookingPrice(selectedBooking.bookingPrice);
+        setPaymentID(selectedBooking._id);
       }
     }
   }, [selectedBookingID, customers]);
@@ -130,35 +133,30 @@ const Test = () => {
     const apiResponse = await postCallWithHeaders(
       "customer/customer-payment-intent",
       {
-        amount: paymentValue,
+        amount: bookingPrice,
       }
     );
     if (apiResponse.error) {
       failureNotification(`${apiResponse.msg}`);
     } else {
       setClientSecret(apiResponse.data);
-      nextStep();
     }
   };
 
-  const paymentDetailsForm = useForm({
-    validateInputOnChange: true,
-    initialValues: {},
-    validate: {
-      bookingEmailAddress: (value) =>
-        /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
-          value.trim()
-        )
-          ? null
-          : "Invalid Email",
-      bookingContactNumber: (value) =>
-        /^[1-9]\d{9}$/.test(value) ? null : "10 digit Phone Number",
-      bookingDescription: (value) =>
-        /^[\s\S]{1,500}$/.test(value.trim())
-          ? null
-          : "Description can't exceed 500 characters",
-    },
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (bookingPrice === 0) {
+      failureNotification("Please enter a valid amount");
+    } else {
+      setDataToSend({
+        bookingId: paymentID,
+        amount: bookingPrice,
+      });
+      nextStep();
+      paymentIntentCreator();
+    }
+  };
 
   return (
     <Paper
@@ -202,11 +200,7 @@ const Test = () => {
                 General Details
               </Text>
 
-              <form
-                onSubmit={paymentDetailsForm.onSubmit((values) => {
-                  step1FormHandleSubmit(values);
-                })}
-              >
+              <form onSubmit={handleSubmit}>
                 <Grid>
                   <Grid.Col sm={12} lg={6}>
                     <Select
@@ -216,12 +210,14 @@ const Test = () => {
                       data={customers?.map((customer) => ({
                         value: customer,
                         label: customer.fullName,
+                        key: customer._id,
                       }))}
                       placeholder="Select Customer"
                       onChange={(event) => {
                         setSelectedCustomer(event);
                       }}
                       searchable
+                      clearable
                     />
                   </Grid.Col>
                   <Grid.Col sm={12} lg={6}>
@@ -234,34 +230,54 @@ const Test = () => {
                       onChange={(event) => {
                         setSelectedBookingID(event);
                       }}
+                      clearable
                     />
                   </Grid.Col>
 
-                  <Grid.Col lg={6}>
-                    <Text size="md" fw="bold">
-                      Booked Services
-                    </Text>
-                    <Group noWrap mt={"xs"}>
-                      <Badge>Service Name</Badge>
-                    </Group>
-                  </Grid.Col>
-                  <Grid.Col lg={6}>
-                    <Text size="md" fw={"bold"}>
-                      Booked Packages
-                    </Text>
-                    <Group noWrap mt={"xs"}>
-                      {customers?.bookingPackage?.map((pckg) => (
-                        <Badge>{pckg.packageTitle}</Badge>
-                      ))}
-                    </Group>
-                  </Grid.Col>
+                  {bookedServices.length > 0 && (
+                    <Grid.Col lg={6}>
+                      <Text size="md" fw="bold">
+                        Booked Services
+                      </Text>
+                      <Group noWrap mt={"xs"}>
+                        {bookedServices ? (
+                          bookedServices?.map((serviceItem) => (
+                            <Badge key={serviceItem._id}>
+                              {serviceItem?.serviceTitle}
+                            </Badge>
+                          ))
+                        ) : (
+                          <Badge>No Services</Badge>
+                        )}
+                      </Group>
+                    </Grid.Col>
+                  )}
+
+                  {bookedPackages.length > 0 && (
+                    <Grid.Col lg={6}>
+                      <Text size="md" fw={"bold"}>
+                        Booked Packages
+                      </Text>
+                      <Group noWrap mt={"xs"}>
+                        {bookedPackages ? (
+                          bookedPackages?.map((packageItem) => (
+                            <Badge key={packageItem._id}>
+                              {packageItem?.package?.packageTitle}
+                            </Badge>
+                          ))
+                        ) : (
+                          <Badge>No Packages</Badge>
+                        )}
+                      </Group>
+                    </Grid.Col>
+                  )}
+
                   <Grid.Col lg={12}>
                     <TextInput
                       size="md"
                       label={"Payment Amount"}
-                      onChange={(event) => {
-                        setPaymentValue(event.target.value);
-                      }}
+                      value={bookingPrice}
+                      readOnly
                     />
                   </Grid.Col>
                   <Grid.Col lg={12}>
@@ -274,6 +290,7 @@ const Test = () => {
                       onChange={(event) => {
                         setPaymentDetails(event.target.value);
                       }}
+                      required
                     />
                   </Grid.Col>
                 </Grid>
@@ -324,7 +341,7 @@ const Test = () => {
                         externalElements={externalElements}
                         externalStripe={externalStripe}
                         setExternalStripe={setExternalStripe}
-                        // dataToSend={dataToSend} // data to send is booking id and amount
+                        dataToSend={dataToSend}
                         nextStep={nextStep}
                         prevStep={prevStep}
                         invoiceData={invoiceData}
@@ -340,7 +357,7 @@ const Test = () => {
                 Payment Completed
               </Title>
 
-              <InvoiceViewCard data={paidBooking} />
+              {/* <InvoiceViewCard data={paidBooking} /> */}
               <Grid justify="flex-end" py="md">
                 <Grid.Col xs={6} sm={6} md={6} lg={3} xl={3}>
                   <Button
