@@ -99,6 +99,7 @@ export default function PaymentForm({
         failureNotification(apiResponse.msg);
       } else {
         successNotification("Payment successful!");
+        console.log("API RESPONSE", apiResponse);
         nextStep();
         setInvoiceData(apiResponse?.data);
         setShoppingCartItems([]);
