@@ -113,10 +113,7 @@ function App() {
               element={<SpecificServiceCategory />}
             />
             <Route path={customerRoutes.viewCart} element={<ViewCart />} />
-            <Route
-              path={customerRoutes.customerSettings}
-              element={<Settings />}
-            />
+
             <Route
               path={customerRoutes.categories}
               element={<AllCategories />}
@@ -136,6 +133,10 @@ function App() {
               <Route
                 path={customerRoutes.customerPayments}
                 element={<CustomerPayments />}
+              />
+              <Route
+                path={customerRoutes.customerSettings}
+                element={<Settings />}
               />
             </Route>
           </Route>
