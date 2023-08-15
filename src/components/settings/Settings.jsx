@@ -23,11 +23,11 @@ import {
 } from "../../helpers/notificationHelper";
 
 const CustomerSettings = () => {
+  const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
+
   const user = JSON.parse(localStorage.getItem("customerDetails"));
   const admin = JSON.parse(localStorage.getItem("adminData"));
-
-  const [loggedUser, setLoggedUser] = useState(user || admin);
-  const [loading, setLoading] = useState(true);
 
   const updateCustomerProfile = useForm({
     validateInputOnChange: true,
@@ -71,17 +71,37 @@ const CustomerSettings = () => {
     },
   });
 
+  const checkUser = async () => {
+    // const user = await JSON.parse(localStorage.getItem("customerDetails"));
+    // const admin = await JSON.parse(localStorage.getItem("adminData"));
+
+    // if (user) {
+    //   setLoggedUser(user);
+    // } else if (admin) {
+    //   setLoggedUser(admin);
+    // } else {
+    //   setLoggedUser(null);
+    // }
+    if (user) {
+      setLoggedUser(user);
+    }
+    if (admin) {
+      setLoggedUser(admin);
+    }
+  };
+
   const fetchUserData = async () => {
-    const targetUser = user || admin;
-    if (targetUser && targetUser._id) {
+    if (loggedUser && loggedUser?._id) {
       try {
         const apiResponse = await getCallSpecificWithoutHeaders(
           "customer/get-me",
-          targetUser._id
+          loggedUser?._id
         );
         updateCustomerProfile.setValues(apiResponse.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user data:", error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -89,16 +109,21 @@ const CustomerSettings = () => {
   };
 
   useEffect(() => {
-    fetchUserData();
+    checkUser();
   }, []);
 
+  useEffect(() => {
+    if (loggedUser) {
+      fetchUserData();
+    }
+  }, [loggedUser]);
+
   const updateProfile = async (values) => {
-    const targetUser = user || admin;
     setLoading(true);
     try {
       const apiResponse = await editCallWithoutHeaders(
         `customer/edit-profile`,
-        targetUser?._id,
+        loggedUser?._id,
         {
           contactNumber: values.contactNumber,
           whatsappNumber: values.whatsappNumber,
@@ -117,12 +142,11 @@ const CustomerSettings = () => {
   };
 
   const updatePassword = async (values) => {
-    const targetUser = user || admin;
     setLoading(true);
     try {
       const apiResponse = await editCallWithoutHeaders(
         `customer/edit-password`,
-        targetUser?._id,
+        loggedUser?._id,
         {
           currentPassword: values.currentPassword,
           newPassword: values.newPassword,
