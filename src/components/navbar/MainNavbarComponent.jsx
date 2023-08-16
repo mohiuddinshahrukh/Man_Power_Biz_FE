@@ -268,7 +268,7 @@ export function MainNavbarComponent() {
             </a>
 
             <a href="/categories" className={classes.link}>
-              Home
+              Categories
             </a>
 
             <Group position="center" grow pb="xl" px="md">
