@@ -3,23 +3,36 @@ import { failureNotification, successNotification } from "./notificationHelper";
 import { storage } from "../firebase/firebaseConfiguration";
 import { v4 } from "uuid";
 
+// Refactor the function
 export const uploadFile = async (files, setLoading) => {
   try {
     if (files.length <= 0) {
       failureNotification(`No images uploaded yet`);
-    } else {
-      setLoading(true);
-      const uploadedFiles = []; // Initialize an empty array to store uploaded file URLs
-      for (const element of Object.values(files)) {
-        const imageRef = ref(storage, `fileUpload/${element.name + v4()}`);
-        const res = await uploadBytes(imageRef, element);
-        const url = await getDownloadURL(res.ref);
-        successNotification(`Image uploaded successfully`);
-        uploadedFiles.push(url); // Add the uploaded file URL to the array
-      }
-      setLoading(false);
-      return uploadedFiles; // Return the array of uploaded file URLs
+      return []; // Return an empty array if no files
     }
+
+    setLoading(true);
+    const uploadedFiles = [];
+
+    for (const file of files) {
+      const imageRef = ref(storage, `fileUpload/${v4()}_${file.name}`);
+
+      try {
+        const uploadTask = uploadBytes(imageRef, file);
+        const uploadSnapshot = await uploadTask;
+        const downloadURL = await getDownloadURL(uploadSnapshot.ref);
+
+        uploadedFiles.push(downloadURL);
+      } catch (error) {
+        console.log("Error uploading file:", error);
+        failureNotification(`Failed to upload ${file.name}`);
+      }
+    }
+
+    successNotification(`Images uploaded successfully`);
+    setLoading(false);
+
+    return uploadedFiles;
   } catch (error) {
     console.log(error);
     return [];
