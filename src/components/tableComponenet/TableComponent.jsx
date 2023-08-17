@@ -30,6 +30,7 @@ const TableComponent = ({
   headCells,
   getDataApiURI,
 }) => {
+  const [filteredRows, setFilteredRows] = useState([]);
   const [rows, setTableRows] = useState([]);
   const [sorted, setSorted] = useState({ sorted: "", reversed: false });
   const [searchPhrase, setSearchPhrase] = useState("");
@@ -93,7 +94,7 @@ const TableComponent = ({
       }
     });
     setSorted({ sorted: "", reversed: false });
-    setTableRows(matchedData);
+    setFilteredRows(matchedData); // Update the filteredRows state
     setSearchPhrase(event.target.value);
   };
 
@@ -186,7 +187,7 @@ const TableComponent = ({
             </tr>
           </thead>
           <tbody>
-            {rows?.map((row, outerIndex) => {
+            {filteredRows?.map((row, outerIndex) => {
               return (
                 <tr key={outerIndex}>
                   {headCells?.map((head, innerIndex) => {
