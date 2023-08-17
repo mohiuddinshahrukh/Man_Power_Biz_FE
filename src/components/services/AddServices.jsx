@@ -78,7 +78,6 @@ const AddService = () => {
   const [modalData, setModalData] = useState({});
 
   const [generalDetails, setGeneralDetails] = useState({});
-  console.log("GEN DETAILS", generalDetails);
   const [contactInformation, setContactInformation] = useState({});
 
   const [serviceCategories, setServiceCategories] = useState([]);

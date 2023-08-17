@@ -38,11 +38,27 @@ const TableComponent = ({
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // useEffect(() => {
+  //   getCallWithHeaders(`${getDataApiURI}`)
+  //     .then(setTableRows)
+  //     .then(setLoading(false));
+  // }, [refresh]);
   useEffect(() => {
-    getCallWithHeaders(`${getDataApiURI}`)
-      .then(setTableRows)
-      .then(setLoading(false));
+    fetchData();
   }, [refresh]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getCallWithHeaders(`${getDataApiURI}`);
+      setTableRows(response);
+      setFilteredRows(response);
+      setLoading(false);
+    } catch (error) {
+      failureNotification(`${error}`);
+      setLoading(false);
+    }
+  };
 
   const deleteFunction = async (uri, id) => {
     setLoading(true);
