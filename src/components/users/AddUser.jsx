@@ -127,7 +127,7 @@ const AddUser = () => {
       );
       if (!res.error) {
         successNotification(res.msg);
-        navigate("/viewUser");
+        navigate(`${routes.viewUser}`);
       } else {
         failureNotification(res.msg);
       }
@@ -139,6 +139,7 @@ const AddUser = () => {
   };
   // setCurrentLocation("Add User");
   // HOOKS
+  /*eslint-disable*/
   const [errorMessages, setErrorMessages] = useState({});
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
