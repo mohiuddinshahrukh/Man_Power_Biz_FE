@@ -15,17 +15,24 @@ export const uploadFile = async (files, setLoading) => {
     const uploadedFiles = [];
 
     for (const file of files) {
-      const imageRef = ref(storage, `fileUpload/${v4()}_${file.name}`);
+      console.log("This is the file about to be uploaded: ", file);
+      if (typeof file == "string") {
+        console.log("String");
+        uploadedFiles.push(file)
+        continue;
+      } else {
+        const imageRef = ref(storage, `fileUpload/${v4()}_${file.name}`);
 
-      try {
-        const uploadTask = uploadBytes(imageRef, file);
-        const uploadSnapshot = await uploadTask;
-        const downloadURL = await getDownloadURL(uploadSnapshot.ref);
+        try {
+          const uploadTask = uploadBytes(imageRef, file);
+          const uploadSnapshot = await uploadTask;
+          const downloadURL = await getDownloadURL(uploadSnapshot.ref);
 
-        uploadedFiles.push(downloadURL);
-      } catch (error) {
-        console.log("Error uploading file:", error);
-        failureNotification(`Failed to upload ${file.name}`);
+          uploadedFiles.push(downloadURL);
+        } catch (error) {
+          console.log("Error uploading file:", error);
+          failureNotification(`Failed to upload ${file.name}`);
+        }
       }
     }
 
