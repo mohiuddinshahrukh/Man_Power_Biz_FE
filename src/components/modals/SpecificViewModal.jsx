@@ -8,7 +8,7 @@ import InvoiceViewCard from "../cards/InvoiceViewCard";
 
 const SpecificViewModal = ({ opened, close, title, data }) => {
   const location = useLocation();
-  const pathname = location.pathname;
+  const pathname = location.pathname.toLowerCase();
   return (
     <Modal
       closeOnEscape
@@ -25,15 +25,15 @@ const SpecificViewModal = ({ opened, close, title, data }) => {
       withCloseButton
       size={"xl"}
     >
-      {pathname.includes("viewServiceCategories") ? (
+      {pathname.includes("viewservicecategories") ? (
         <ServiceCategoryViewCard data={data} />
-      ) : pathname.includes("viewServices") ? (
+      ) : pathname.includes("viewservices") ? (
         <ServicesViewCard data={data} />
-      ) : pathname.includes("viewPackages") ? (
+      ) : pathname.includes("viewpackages") ? (
         <PackageViewCard data={data} />
-      ) : pathname.includes("viewBookings") ||
-        pathname.includes("viewPayments") ||
-        pathname.includes("viewCustomerBookings") ? (
+      ) : pathname.includes("viewbookings") ||
+        pathname.includes("viewpayments") ||
+        pathname.includes("viewcustomerbookings") ? (
         <InvoiceViewCard data={data} />
       ) : null}
       {/* <UserProfileCard data={data} /> */}
