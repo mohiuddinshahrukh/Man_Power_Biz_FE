@@ -95,15 +95,15 @@ const AddServiceCategory = () => {
       let res;
       if (uploadFileResult) {
         values.image = uploadFileResult;
+
+        res = await editCallWithHeaders(
+          "admin/updateServiceCategory",
+          params.id,
+          values
+        );
       }
 
-      res = await editCallWithHeaders(
-        "admin/updateServiceCategory",
-        params.id,
-        values
-      );
-
-      if (!res.error) {
+      if (!res.error && uploadFileResult) {
         successNotification(res.msg);
         navigate("/adminDashboard/viewServiceCategories");
       } else {

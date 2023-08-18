@@ -127,7 +127,7 @@ const AddUser = () => {
       );
       if (!res.error) {
         successNotification(res.msg);
-        navigate(`${routes.viewUser}`);
+        navigate(routes.viewUser);
       } else {
         failureNotification(res.msg);
       }
