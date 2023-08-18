@@ -11,7 +11,6 @@ import {
   Select,
   Center,
   Textarea,
-  SimpleGrid,
   LoadingOverlay,
 } from "@mantine/core";
 
@@ -21,7 +20,6 @@ import {
   X,
   ChevronDown,
   ArrowLeft,
-  ArrowDown,
   Printer,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
@@ -149,9 +147,9 @@ const AddBooking = () => {
       setContactInfo(values);
       let booking = { ...generalBookingDetails, ...values };
       booking.bookingStatus = "IN PROGRESS";
-      booking.bookingPrice = 5000;
-      booking.bookingPaymentStatus = "ADVANCE";
-      booking.bookingPaidAmount = 500;
+      // booking.bookingPrice = 5000;
+      // booking.bookingPaidAmount = 500;
+      booking.bookingPaymentStatus = "FULL";
 
       const apiResponse = postCallWithHeaders(`admin/addBooking`, booking);
       if (apiResponse.error) {
@@ -401,9 +399,9 @@ const AddBooking = () => {
                     <Text weight="bold" size="xl" py="md">
                       Contact Information
                     </Text>
-                    <Text weight="bold" color="red" size="xl" py="md">
+                    {/* <Text weight="bold" color="red" size="xl" py="md">
                       Total Cost Rs.
-                    </Text>
+                    </Text> */}
                   </Group>
                   <Grid>
                     <Grid.Col md={12} lg={6}>
@@ -478,7 +476,7 @@ const AddBooking = () => {
               </Paper>
             </Stepper.Step>
 
-            <Stepper.Step
+            {/* <Stepper.Step
               label="Review and Pay"
               description="Please review your booking details and proceed To payment"
               allowStepSelect={active > 3}
@@ -540,7 +538,7 @@ const AddBooking = () => {
                   </Grid>
                 </form>
               </Paper>
-            </Stepper.Step>
+            </Stepper.Step> */}
             <Stepper.Completed>
               <Paper
                 py="xl"

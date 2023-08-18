@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { IconMap2, IconMapPin } from "@tabler/icons-react";
 
-const ServicesViewCard = ({ data }) => {
+const ServicesViewCard = ({ data, setEmbla }) => {
   return (
     <Paper>
       <Carousel
@@ -22,6 +22,7 @@ const ServicesViewCard = ({ data }) => {
         mx="auto"
         slidesToScroll={1}
         slideSize="100%"
+        getEmblaApi={setEmbla}
       >
         {data?.serviceImages?.map((image, index) => {
           return (

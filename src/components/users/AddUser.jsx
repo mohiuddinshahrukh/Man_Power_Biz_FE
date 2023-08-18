@@ -212,6 +212,7 @@ const AddUser = () => {
                   required
                   label="Email Address"
                   {...form.getInputProps("email")}
+                  readOnly={location.pathname.includes("edit") ? true : false}
                 />
               </Grid.Col>
               <Grid.Col md={12} lg={6} p="md">
