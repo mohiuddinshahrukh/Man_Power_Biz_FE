@@ -6,7 +6,7 @@ import { routes } from "../../helpers/routesHelper";
 let headCells = [
   { id: "SR", numeric: true, disablePadding: true, label: "ID" },
   {
-    id: "coverImage",
+    id: "serviceCoverImage",
     numeric: false,
     disablePadding: true,
     label: "Image",

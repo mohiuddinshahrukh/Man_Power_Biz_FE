@@ -32,6 +32,7 @@ export const getCallWithHeaders = async (endpoint) => {
       method: "get",
       url: `${baseURI}/${endpoint}`,
     });
+    console.log(apiResponse);
     if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }

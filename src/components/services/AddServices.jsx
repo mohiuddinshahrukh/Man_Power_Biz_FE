@@ -270,7 +270,6 @@ const AddService = () => {
             failureNotification(res.msg);
             setLoading(false);
           }
-          console.log("edit service", values);
         }
         if (location.pathname.includes("add")) {
           const res = await postCallWithHeaders("admin/addService", values);
@@ -344,7 +343,18 @@ const AddService = () => {
 
   const editService = async () => {
     let values = { ...generalDetails, ...contactInformation };
-    console.log("in niga service", values);
+  };
+
+  const checkImages = () => {
+    if (imageUpload.length === 0) {
+      failureNotification("Select at least one image");
+    } else if (videoUpload.length === 0) {
+      failureNotification("Select at least one video");
+    } else if (pdfUpload.length === 0) {
+      failureNotification("Select at least one PDF");
+    } else {
+      nextStep();
+    }
   };
 
   return (
@@ -555,7 +565,12 @@ const AddService = () => {
                 Describe Service With Images
               </Text>
 
-              <Input.Wrapper label={"Upload Images"}>
+              <Input.Wrapper
+                label={"Upload Images"}
+                error={
+                  imageUpload.length === 0 ? "Select at least one image" : null
+                }
+              >
                 <UploadFiles
                   multiple={true}
                   loading={imageLoading}
@@ -565,7 +580,12 @@ const AddService = () => {
                 />
               </Input.Wrapper>
 
-              <Input.Wrapper label={"Upload Videos"}>
+              <Input.Wrapper
+                label={"Upload Videos"}
+                error={
+                  videoUpload.length === 0 ? "Select at least one video" : null
+                }
+              >
                 <UploadFiles
                   multiple={true}
                   loading={videoLoading}
@@ -575,7 +595,12 @@ const AddService = () => {
                 />
               </Input.Wrapper>
 
-              <Input.Wrapper label={"Upload PDF"}>
+              <Input.Wrapper
+                label={"Upload PDF"}
+                error={
+                  pdfUpload.length === 0 ? "Select at least one PDF" : null
+                }
+              >
                 <UploadFiles
                   multiple={false}
                   loading={pdfLoading}
@@ -607,7 +632,8 @@ const AddService = () => {
                     size="md"
                     color="dark"
                     onClick={() => {
-                      nextStep();
+                      checkImages();
+                      // nextStep();
                     }}
                   >
                     NEXT
@@ -807,7 +833,7 @@ const AddService = () => {
                       ]}
                       align="start"
                     >
-                      {/* {imageUpload
+                      {imageUpload
                         .concat(videoUpload)
                         .concat(pdfUpload)
                         ?.map((file, index) => {
@@ -824,21 +850,33 @@ const AddService = () => {
                                 <Image
                                   height={300}
                                   fit="cover"
-                                  src={URL.createObjectURL(file)}
+                                  src={
+                                    typeof file == "string"
+                                      ? file
+                                      : URL.createObjectURL(file)
+                                  }
                                 />
                               ) : file.type?.includes("video") ? (
                                 <video
                                   controls
                                   preload={"metadata"}
                                   height={300}
-                                  src={URL.createObjectURL(file)}
+                                  src={
+                                    typeof file == "string"
+                                      ? file
+                                      : URL.createObjectURL(file)
+                                  }
                                 />
                               ) : (
                                 <div
                                   style={{ overflow: "hidden", height: 300 }}
                                 >
                                   <Document
-                                    file={URL.createObjectURL(file)}
+                                    src={
+                                      typeof file == "string"
+                                        ? file
+                                        : URL.createObjectURL(file)
+                                    }
                                     style={{
                                       overflow: "hidden",
                                       position: "relative",
@@ -857,7 +895,7 @@ const AddService = () => {
                               )}
                             </Carousel.Slide>
                           );
-                        })} */}
+                        })}
                     </Carousel>
                   </Card.Section>
                   <Grid>
