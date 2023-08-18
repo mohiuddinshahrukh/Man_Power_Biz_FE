@@ -25,7 +25,7 @@ const SpecificViewModal = ({ opened, close, title, data }) => {
       withCloseButton
       size={"xl"}
     >
-      {pathname.includes("viewservicecategories") ? (
+      {pathname.includes("viewServiceCategories") ? (
         <ServiceCategoryViewCard data={data} />
       ) : pathname.includes("viewServices") ? (
         <ServicesViewCard data={data} />
