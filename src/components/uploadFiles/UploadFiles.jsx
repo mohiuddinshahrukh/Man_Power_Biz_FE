@@ -38,7 +38,10 @@ const UploadFiles = ({
     files?.length > 0 &&
     files?.map((file, index) => {
       let previewComponent;
-      if (typeof file === "string") {
+      if (
+        (file?.type?.includes("image") || mimeType == "image") &&
+        typeof file === "string"
+      ) {
         previewComponent = (
           <div key={index}>
             <Image
@@ -50,6 +53,41 @@ const UploadFiles = ({
               fit="contain"
               src={file}
             />
+            <Button compact fullWidth onClick={() => handleRemove(index)}>
+              Remove
+            </Button>
+          </div>
+        );
+      } else if (
+        (file?.type?.includes("video") || mimeType == "video") &&
+        typeof file === "string"
+      ) {
+        previewComponent = (
+          <div key={index} style={{ width: 200 }}>
+            <video src={file} controls height={200} width={200} />
+            <Button compact fullWidth onClick={() => handleRemove(index)}>
+              Remove
+            </Button>
+          </div>
+        );
+      } else if (
+        (file?.type?.includes("pdf") || mimeType == "pdf") &&
+        typeof file === "string"
+      ) {
+        previewComponent = (
+          <div key={index} style={{ border: "1px solid #eaeaea" }}>
+            <div style={{ overflow: "hidden", height: 200 }}>
+              <Document
+                file={file}
+                style={{ overflow: "hidden", position: "relative" }}
+              >
+                <Page
+                  pageNumber={1}
+                  width={200}
+                  style={{ position: "static", overflow: "hidden" }}
+                />
+              </Document>
+            </div>
             <Button compact fullWidth onClick={() => handleRemove(index)}>
               Remove
             </Button>

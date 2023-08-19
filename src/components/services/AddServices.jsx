@@ -139,7 +139,7 @@ const AddService = () => {
       serviceContactPhone: "",
       serviceWhatsAppPhone: "",
       serviceInfoEmail: "",
-      serviceFeedbackEmail: "",
+      // serviceFeedbackEmail: "",
       serviceWebsiteLink: "",
       serviceFacebookLink: "",
       serviceInstagramLink: "",
@@ -152,13 +152,13 @@ const AddService = () => {
           ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value?.trim())
             null
           : "Invalid Email",
-      serviceFeedbackEmail: (value) =>
-        /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
-          value?.trim()
-        )
-          ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value?.trim())
-            null
-          : "Invalid Email",
+      // serviceFeedbackEmail: (value) =>
+      //   /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(
+      //     value?.trim()
+      //   )
+      //     ? // /^\S+@[a-zA-Z]+\.[a-zA-Z]+$/.test(value?.trim())
+      //       null
+      //     : "Invalid Email",
       serviceContactPhone: (value) =>
         /^[1-9]\d{9}$/.test(value) ? null : "10 digit Phone Number",
       serviceWhatsAppPhone: (value) =>
@@ -313,6 +313,8 @@ const AddService = () => {
       params.id
     );
 
+    console.log("API RESPONSE HEHE", apiResponse);
+
     const zipCode = apiResponse?.data.serviceZipCode[0] || "";
     let form1Values = {
       serviceTitle: apiResponse.data.serviceTitle,
@@ -328,7 +330,7 @@ const AddService = () => {
       serviceContactPhone: apiResponse.data.serviceContactPhone,
       serviceWhatsAppPhone: apiResponse.data.serviceWhatsAppPhone,
       serviceInfoEmail: apiResponse.data.serviceInfoEmail,
-      serviceFeedbackEmail: apiResponse.data.serviceFeedbackEmail,
+      // serviceFeedbackEmail: apiResponse.data.serviceFeedbackEmail,
       serviceWebsiteLink: apiResponse.data.serviceWebsiteLink,
       serviceFacebookLink: apiResponse.data.serviceFacebookLink,
       serviceInstagramLink: apiResponse.data.serviceInstagramLink,
@@ -336,6 +338,8 @@ const AddService = () => {
     addServiceStep3Form.setValues(form3Values);
 
     setImageUpload(apiResponse?.data?.serviceImages);
+    setVideoUpload(apiResponse?.data?.serviceVideos);
+    setPdfUpload(apiResponse?.data?.servicePDF);
 
     setLoading(false);
     return apiResponse?.data;
@@ -671,7 +675,7 @@ const AddService = () => {
                       {...addServiceStep3Form.getInputProps("serviceInfoEmail")}
                     />
                   </Grid.Col>
-                  <Grid.Col lg={6}>
+                  {/* <Grid.Col lg={6}>
                     <TextInput
                       style={{
                         wordBreak: "break-word",
@@ -699,7 +703,7 @@ const AddService = () => {
                         "serviceFeedbackEmail"
                       )}
                     />
-                  </Grid.Col>
+                  </Grid.Col> */}
                   <Grid.Col lg={6}>
                     <TextInput
                       type="number"
@@ -740,6 +744,7 @@ const AddService = () => {
                       {...addServiceStep3Form.getInputProps(
                         "serviceWebsiteLink"
                       )}
+                      required
                     />
                   </Grid.Col>
                   <Grid.Col lg={6}>
@@ -756,6 +761,7 @@ const AddService = () => {
                       {...addServiceStep3Form.getInputProps(
                         "serviceFacebookLink"
                       )}
+                      required
                     />
                   </Grid.Col>
                   <Grid.Col lg={6}>
@@ -772,6 +778,7 @@ const AddService = () => {
                       {...addServiceStep3Form.getInputProps(
                         "serviceInstagramLink"
                       )}
+                      required
                     />
                   </Grid.Col>
                 </Grid>
@@ -837,6 +844,7 @@ const AddService = () => {
                         .concat(videoUpload)
                         .concat(pdfUpload)
                         ?.map((file, index) => {
+                          console.log("NIGS", file);
                           return (
                             <Carousel.Slide
                               key={index}
@@ -847,36 +855,24 @@ const AddService = () => {
                               }}
                             >
                               {file.type?.includes("image") ? (
-                                <Image
-                                  height={300}
-                                  fit="cover"
-                                  src={
-                                    typeof file == "string"
-                                      ? file
-                                      : URL.createObjectURL(file)
-                                  }
-                                />
-                              ) : file.type?.includes("video") ? (
+                                <Image height={300} fit="cover" src={file} />
+                              ) : file.type?.includes("video") ||
+                                (typeof file == "string" &&
+                                  file.includes(".mp4")) ? (
                                 <video
                                   controls
                                   preload={"metadata"}
                                   height={300}
-                                  src={
-                                    typeof file == "string"
-                                      ? file
-                                      : URL.createObjectURL(file)
-                                  }
+                                  src={file}
                                 />
-                              ) : (
+                              ) : file.type?.includes("pdf") ||
+                                (typeof file == "string" &&
+                                  file.includes("pdf")) ? (
                                 <div
                                   style={{ overflow: "hidden", height: 300 }}
                                 >
                                   <Document
-                                    src={
-                                      typeof file == "string"
-                                        ? file
-                                        : URL.createObjectURL(file)
-                                    }
+                                    src={file}
                                     style={{
                                       overflow: "hidden",
                                       position: "relative",
@@ -892,6 +888,8 @@ const AddService = () => {
                                     />
                                   </Document>
                                 </div>
+                              ) : (
+                                <Image height={300} fit="cover" src={file} />
                               )}
                             </Carousel.Slide>
                           );
@@ -955,10 +953,10 @@ const AddService = () => {
                         </Group>
                       )}
 
-                      <Group>
+                      {/* <Group>
                         <Mail size={20} />
                         {contactInformation.serviceFeedbackEmail}
-                      </Group>
+                      </Group> */}
                       {contactInformation.serviceWebsiteLink !== "" && (
                         <Group>
                           <Globe size={20} />
