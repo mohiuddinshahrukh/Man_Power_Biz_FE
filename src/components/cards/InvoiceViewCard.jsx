@@ -43,26 +43,38 @@ const InvoiceViewCard = ({ data }) => {
         <Group position="center" spacing={3}>
           <IconMail />
           <Text align="center" size={"md"} transform="none">
-            {data.bookingService?.map((booking) => {
-              return booking?.serviceInfoEmail;
-            })}
+            {data.bookingServices
+              ? data.bookingServices?.map((booking) => {
+                  return booking?.serviceInfoEmail;
+                })
+              : data.bookingService?.map((booking) => {
+                  return booking?.serviceInfoEmail;
+                })}
           </Text>
         </Group>
         <Group position="center" spacing={3}>
           <Group spacing={3}>
             <IconPhone />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingService?.map((booking) => {
-                return booking.serviceContactPhone;
-              })}
+              {data.bookingServices
+                ? data.bookingServices?.map((booking) => {
+                    return booking?.serviceContactPhone;
+                  })
+                : data.bookingService?.map((booking) => {
+                    return booking?.serviceContactPhone;
+                  })}
             </Text>
           </Group>
           <Group spacing={3}>
             <IconBrandWhatsapp />
             <Text align="center" size={"md"} transform="none">
-              {data.bookingService?.map((booking) => {
-                return booking.serviceWhatsAppPhone;
-              })}
+              {data.bookingServices
+                ? data.bookingServices?.map((booking) => {
+                    return booking?.serviceWhatsAppPhone;
+                  })
+                : data.bookingService?.map((booking) => {
+                    return booking?.serviceWhatsAppPhone;
+                  })}
             </Text>
           </Group>
         </Group>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import appendSerialNumber from "./apiCallAppenders";
-import { failureNotification, successNotification } from "./notificationHelper";
+import { failureNotification } from "./notificationHelper";
 import { backendURL } from "./config";
 
 const baseURI = backendURL();
@@ -11,9 +11,7 @@ export const getCallWithOutHeaders = async (endpoint) => {
       method: "get",
       url: `${baseURI}/${endpoint}`,
     });
-    if (!apiResponse.data.error) {
-      successNotification(`${apiResponse.data.msg}`);
-    } else {
+    if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }
     console.log(apiResponse);
@@ -68,9 +66,7 @@ export const customerDashboardCall = async (endpoint, id) => {
       method: "get",
       url: `${baseURI}/${endpoint}/${id}`,
     });
-    if (!apiResponse.data.error) {
-      successNotification(`${apiResponse.data.msg}`);
-    } else {
+    if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }
     return apiResponse.data;
@@ -85,9 +81,7 @@ export const getCallSpecificWithoutHeaders = async (endpoint, id) => {
       method: "get",
       url: `${baseURI}/${endpoint}/${id}`,
     });
-    if (!apiResponse.data.error) {
-      successNotification(`${apiResponse.data.msg}`);
-    } else {
+    if (apiResponse.data.error) {
       failureNotification(`${apiResponse.data.msg}`);
     }
     return apiResponse.data;
@@ -183,7 +177,6 @@ export const deleteCallWithHeaders = async (
       url: `${baseURI}/${endpoint}/${id}`,
     });
     if (!apiResponse.data.error) {
-      successNotification(apiResponse.data.msg);
       setLoading(false);
       setRefresh(!refresh);
     } else {
