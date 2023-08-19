@@ -36,6 +36,7 @@ import { routes } from "../../helpers/routesHelper";
 const AddPackages = () => {
   const navigate = useNavigate();
   const params = useParams();
+  /*eslint-disable*/
   const [value, setValue] = useState([]);
   const [imageLoading, setImageLoading] = useState(
     location.pathname.includes("edit") ? true : false
@@ -73,6 +74,12 @@ const AddPackages = () => {
 
   const addPackageFunction = async (values) => {
     setLoading(true);
+
+    if (imageUpload.length === 0 && videoUpload.length === 0) {
+      failureNotification("Please upload images and videos");
+      setLoading(false);
+      return;
+    }
 
     try {
       let imageUploadResult = [];
@@ -145,6 +152,12 @@ const AddPackages = () => {
 
   const editPackageFunction = async (values) => {
     setLoading(true);
+
+    if (imageUpload.length === 0 && videoUpload.length === 0) {
+      failureNotification("Please upload images and videos");
+      setLoading(false);
+      return;
+    }
 
     try {
       let imageUploadResult = [];
