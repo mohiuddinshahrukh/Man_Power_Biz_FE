@@ -38,6 +38,7 @@ let headCells = [
     numeric: false,
     disablePadding: true,
     label: "Created At",
+    date: true,
   },
 ];
 const ViewPayment = () => {
