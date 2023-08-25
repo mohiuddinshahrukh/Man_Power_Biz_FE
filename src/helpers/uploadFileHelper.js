@@ -18,7 +18,7 @@ export const uploadFile = async (files, setLoading) => {
       console.log("This is the file about to be uploaded: ", file);
       if (typeof file == "string") {
         console.log("String");
-        uploadedFiles.push(file)
+        uploadedFiles.push(file);
         continue;
       } else {
         const imageRef = ref(storage, `fileUpload/${v4()}_${file.name}`);
