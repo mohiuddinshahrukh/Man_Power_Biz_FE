@@ -171,11 +171,12 @@ const BookingModal = ({ opened, setOpened }) => {
         .map((pkg) => pkg.packageService) // Get an array of packageService IDs
         .flat() // Flatten the array of arrays into a single array
         .filter((value, index, self) => self.indexOf(value) === index) // Filter out duplicate IDs
-        .map((serviceId) =>
-          categoriesData.categoryServices.find(
+        .map((serviceId) => {
+          console.log("SID", serviceId);
+          return categoriesData.categoryServices.find(
             (category) => category._id === serviceId
-          )
-        );
+          );
+        });
 
       setDataBeforeBooking(bookingData);
 
@@ -198,17 +199,17 @@ const BookingModal = ({ opened, setOpened }) => {
 
   const createBooking = async () => {
     console.log("This is the final booking data:  ", dataBeforeBooking);
-    // const apiResponse = await postCallWithoutHeaders(
-    //   "customer/customer-create-payment",
-    //   dataBeforeBooking
-    // );
-    // if (!apiResponse.error) {
-    //   successNotification(`Booking successful`);
-    //   setShoppingCartItems([]);
-    //   nextStep();
-    // } else {
-    //   failureNotification(`Booking unsuccessful`);
-    // }
+    const apiResponse = await postCallWithoutHeaders(
+      "customer/customer-create-payment",
+      dataBeforeBooking
+    );
+    if (!apiResponse.error) {
+      successNotification(`Booking successful`);
+      setShoppingCartItems([]);
+      nextStep();
+    } else {
+      failureNotification(`Booking unsuccessful`);
+    }
   };
   const [dataToSend, setDataToSend] = useState({});
 
@@ -227,9 +228,11 @@ const BookingModal = ({ opened, setOpened }) => {
       bookingPrice: dataBeforeBooking?.bookingPrice,
       bookingPaymentStatus: dataBeforeBooking?.bookingPaymentStatus,
       bookingPaidAmount: dataBeforeBooking?.bookingPaidAmount,
-      bookingService: dataBeforeBooking?.bookingService,
+      bookingServices: dataBeforeBooking?.bookingServices,
     });
   }, [dataBeforeBooking]);
+
+  console.log("ADATA", dataBeforeBooking);
 
   return (
     <Modal
@@ -253,6 +256,7 @@ const BookingModal = ({ opened, setOpened }) => {
         breakpoint="sm"
         p={"md"}
         m={"md"}
+        allowNextStepsSelect={false}
       >
         <Stepper.Step
           label="Selected Packages"
