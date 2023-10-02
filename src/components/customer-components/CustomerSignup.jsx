@@ -12,12 +12,15 @@ import {
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { postCallWithoutHeaders } from "../../helpers/apiCallHelpers";
+import { useMediaQuery } from "@mantine/hooks";
+
 import {
   failureNotification,
   successNotification,
 } from "../../helpers/notificationHelper";
 
 const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
+  const match600 = useMediaQuery("(max-width: 600px)");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setPassword] = useState("");
   const signUpForm = useForm({
@@ -105,24 +108,36 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
             placeholder="you@mantine.dev"
             required
             {...signUpForm.getInputProps("email")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
           <TextInput
             label="Full Name"
             placeholder="John Doe"
             required
             {...signUpForm.getInputProps("fullName")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
           <TextInput
             label="Contact Number"
             placeholder="1234567891"
             required
             {...signUpForm.getInputProps("contactNumber")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
           <TextInput
             label="WhatsApp Number"
             placeholder="1234567891"
             required
             {...signUpForm.getInputProps("whatsappNumber")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
           <PasswordInput
             label="Password"
@@ -142,6 +157,9 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
             }}
             onChange={(e) => setPassword(e.target.value)}
             {...signUpForm.getInputProps("password")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
           <PasswordInput
             label="Confirm Password"
@@ -154,8 +172,17 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
             }}
             onChange={(e) => setConfirmPassword(e.target.value)}
             {...signUpForm.getInputProps("confirmPassword")}
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
           />
-          <Button type="submit" fullWidth mt="xl">
+          <Button
+            type="submit"
+            mt="xl"
+            style={{
+              width: !match600 ? "100%" : "75%",
+            }}
+          >
             Sign Up
           </Button>
         </form>

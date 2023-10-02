@@ -19,7 +19,9 @@ import {
 import { UserProfileContext } from "../../contexts/userProfileContext";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { useMediaQuery } from "@mantine/hooks";
 const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
+  const match600 = useMediaQuery("(max-width: 600px)");
   /*eslint-disable*/
   const { loggedInUserDetails, setLoggedInUserDetails } =
     useContext(UserProfileContext);
@@ -67,7 +69,7 @@ const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
     loginForm.reset();
   }, [customerSwitch]);
   return (
-    <Container size={420} my={40}>
+    <Container size={420} my={30}>
       <Title
         align="center"
         sx={(theme) => ({
@@ -97,10 +99,13 @@ const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
           })}
         >
           <TextInput
-            label="Email"
-            placeholder="you@mantine.dev"
+            label="Email or Phone number"
+            placeholder="email/phone"
             required
             {...loginForm.getInputProps("email")}
+            style={{
+              width: !match600 ? "100%" : "74%",
+            }}
           />
           <PasswordInput
             label="Password"
@@ -108,13 +113,22 @@ const CustomerLogin = ({ setOpened, setCustomerSwitch, customerSwitch }) => {
             required
             mt="md"
             {...loginForm.getInputProps("password")}
+            style={{
+              width: !match600 ? "100%" : "74%",
+            }}
           />
-          <Group position="right" mt="lg">
+          <Group mt="lg">
             <Anchor component="button" size="sm">
               Forgot password?
             </Anchor>
           </Group>
-          <Button type="submit" fullWidth mt="xl">
+          <Button
+            type="submit"
+            style={{
+              width: !match600 ? "100%" : "70%",
+            }}
+            mt="xl"
+          >
             Sign In
           </Button>
         </form>
