@@ -15,19 +15,20 @@ import {
   Title,
   Paper,
   ScrollArea,
+  Image,
 } from "@mantine/core";
 import { Outlet, useNavigate } from "react-router-dom";
 import SidebarComponent from "../sidebar/SidebarComponent";
 import { ToggleTheme } from "./theme/ToggleTheme";
 import { IconLogout } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
-
+import website_logo from "../../assets/website_logo.png";
 const Appshell = () => {
   const navigate = useNavigate();
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
-  const match700 = useMediaQuery("(max-width: 700px)");
-  const match350 = useMediaQuery("(max-width: 350px)");
+  const match391 = useMediaQuery("(max-width: 391px)");
+  const match768 = useMediaQuery("(max-width: 768px)");
 
   return (
     <AppShell
@@ -53,7 +54,7 @@ const Appshell = () => {
           p="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
-          width={{ lg: 320 }}
+          width={{ base: opened ? 250 : 0, sm: 250, md: 250, lg: 250, xl: 250 }}
         >
           <SidebarComponent />
         </Navbar>
@@ -64,23 +65,24 @@ const Appshell = () => {
         </Footer>
       }
       header={
-        <Header height={{ base: 50, md: 70 }} p="md">
+        <Header height={{ base: 70 }} p="md">
           <div
             style={{ display: "flex", alignItems: "center", height: "100%" }}
           >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery>
-
             <Group position="apart" w={"100%"}>
-              {!match350 && <Text>Neha Services Logo</Text>}
-              {!match700 && <Title>Admin Panel</Title>}
+              {match768 && (
+                <Burger
+                  opened={opened}
+                  onClick={() => setOpened((o) => !o)}
+                  size="sm"
+                  color={theme.colors.gray[6]}
+                  mr="xl"
+                />
+              )}
+              {!match768 && (
+                <Image style={{ width: "50px" }} src={website_logo} />
+              )}
+              {<Title order={!match391 ? 1 : 4}>Admin Panel</Title>}
               <Group>
                 <Menu shadow="md" withArrow>
                   <Menu.Target>
