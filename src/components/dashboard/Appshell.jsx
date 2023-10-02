@@ -4,8 +4,6 @@ import {
   Navbar,
   Header,
   Footer,
-  Text,
-  MediaQuery,
   Burger,
   useMantineTheme,
   Group,
@@ -54,7 +52,7 @@ const Appshell = () => {
           p="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
-          width={{ base: opened ? 250 : 0, sm: 250, md: 250, lg: 250, xl: 250 }}
+          width={{ base: opened ? 275 : 0, sm: 275, md: 275, lg: 275, xl: 275 }}
         >
           <SidebarComponent />
         </Navbar>

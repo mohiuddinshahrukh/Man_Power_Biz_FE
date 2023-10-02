@@ -211,12 +211,12 @@ const SidebarComponent = () => {
 
   return (
     <Paper
-      style={{ width: "", height: "80vh" }}
+      style={{ width: "100%", height: "80vh" }}
       component={ScrollArea}
       type="never"
       styles={{}}
     >
-      <Box sx={{ width: "300px", height: "100%" }}>{items}</Box>
+      <Box sx={{ width: "100%", height: "100%" }}>{items}</Box>
     </Paper>
   );
 };
