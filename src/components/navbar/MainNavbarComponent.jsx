@@ -14,6 +14,7 @@ import {
   Avatar,
   Menu,
   ActionIcon,
+  Image,
 } from "@mantine/core";
 // import { MantineLogo } from '@mantine/ds';
 import { useDisclosure } from "@mantine/hooks";
@@ -33,7 +34,7 @@ import { ToggleTheme } from "../dashboard/theme/ToggleTheme";
 import { customerRoutes } from "../../helpers/routesHelper";
 import LoginSignupModal from "../customer-components/LoginSignupModal";
 import { useState } from "react";
-
+import website_logo from "../../assets/website_logo.png";
 const useStyles = createStyles((theme) => ({
   link: {
     display: "flex",
@@ -128,7 +129,7 @@ export function MainNavbarComponent() {
               color="black"
               fs={10}
             >
-              Logo
+              <Image src={website_logo} width={50}></Image>
             </Anchor>
             <Group
               sx={{ height: "100%" }}
@@ -141,7 +142,7 @@ export function MainNavbarComponent() {
                 to={"/categories"}
                 className={classes.link}
               >
-                Categories
+                Services
               </Anchor>
               <a href="#" className={classes.link}>
                 Help

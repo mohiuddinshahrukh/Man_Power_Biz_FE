@@ -1,5 +1,6 @@
 /*eslint-disable*/
 import {
+  ActionIcon,
   BackgroundImage,
   Box,
   Button,
@@ -104,9 +105,9 @@ const MainSearchArea = () => {
                       gap: 5,
                     }}
                   >
-                    <Button rightIcon={<IconSearch />} onClick={handleSearch}>
-                      {"Search"}
-                    </Button>
+                    <ActionIcon onClick={handleSearch}>
+                      <IconSearch />
+                    </ActionIcon>
                   </div>
                 }
                 styles={{

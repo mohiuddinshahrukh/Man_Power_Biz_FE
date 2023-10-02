@@ -31,7 +31,7 @@ const InvoiceViewCard = ({ data }) => {
       />
       <Paper ref={componentRef} withBorder p={"xs"}>
         <Title order={2} p={5} bg={"dark"} color="white" align="center">
-          Neha Services
+          ManpowerBiz
         </Title>
         <Title align="center">{data.serviceTitle}</Title>
         <Group position="center" spacing={3}>

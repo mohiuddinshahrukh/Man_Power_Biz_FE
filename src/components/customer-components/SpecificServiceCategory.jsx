@@ -262,7 +262,7 @@ const SpecificServiceCategory = () => {
                                           );
                                         }}
                                       >
-                                        Add
+                                        Book
                                       </Button>
                                       <Button
                                         color="red"

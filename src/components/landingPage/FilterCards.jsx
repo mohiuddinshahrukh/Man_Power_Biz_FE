@@ -10,6 +10,7 @@ import {
   rem,
   Image,
   Loader,
+  Title,
 } from "@mantine/core";
 
 import dry_cleaning from "../../assets/map_dry_cleaning.svg";
@@ -20,7 +21,7 @@ import cleaner from "../../assets/cleaner.svg";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { getCallWithOutHeaders } from "../../helpers/apiCallHelpers";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { customerRoutes } from "../../helpers/routesHelper";
 
 const useStyles = createStyles((theme) => ({
@@ -117,6 +118,9 @@ const FilterCards = () => {
 
   return (
     <>
+      <Title my={"xl"} align="center">
+        Some of our services
+      </Title>
       {loading ? (
         <div
           style={{
@@ -141,8 +145,15 @@ const FilterCards = () => {
           <Card withBorder radius="md" className={classes.card} p={"xl"}>
             <Group position="apart">
               <Text className={classes.title}>Services</Text>
-              <Anchor size="xs" color="dimmed" sx={{ lineHeight: 1 }}>
-                + 21 other services
+              <Anchor
+                size="xs"
+                color="black"
+                fw={500}
+                sx={{ lineHeight: 1 }}
+                component={Link}
+                to={customerRoutes.categories}
+              >
+                View all services
               </Anchor>
             </Group>
             <SimpleGrid

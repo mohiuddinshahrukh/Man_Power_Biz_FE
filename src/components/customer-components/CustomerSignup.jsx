@@ -80,7 +80,7 @@ const CustomerSignup = ({ customerSwitch, setCustomerSwitch }) => {
           fontWeight: 900,
         })}
       >
-        Welcome to Neha Services!
+        Welcome to ManpowerBiz!
       </Title>
       <Text color="dimmed" size="sm" align="center" mt={5}>
         Already have an account?{" "}

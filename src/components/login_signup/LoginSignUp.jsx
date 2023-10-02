@@ -157,7 +157,7 @@ export default function LoginSignUp() {
         />
         <Stack miw={"30vw"} maw={"50vw"}>
           <Title order={2} align="center">
-            Welcome to Neha Services, {type}
+            Welcome to ManpowerBiz, {type}
           </Title>
           {type === "login" ? (
             <form

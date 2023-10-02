@@ -59,7 +59,7 @@ const Appshell = () => {
       }
       footer={
         <Footer height={60} p="md">
-          Neha Services &copy; 2023
+          ManpowerBiz &copy; 2023
         </Footer>
       }
       header={

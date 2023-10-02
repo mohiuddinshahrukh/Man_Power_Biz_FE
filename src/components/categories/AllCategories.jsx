@@ -71,7 +71,7 @@ const AllCategories = () => {
           mb={"xl"}
         >
           <Text size={"1.4rem"} fw={"bold"}>
-            {search ? `Search results for "${search}"` : "All Categories"}
+            {search ? `Search results for "${search}"` : "All Services"}
           </Text>
           <Group>
             <Select

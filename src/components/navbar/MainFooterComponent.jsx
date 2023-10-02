@@ -7,12 +7,14 @@ import {
   Group,
   rem,
   Stack,
+  Image,
 } from "@mantine/core";
 import {
   IconBrandTwitter,
   IconBrandYoutube,
   IconBrandInstagram,
 } from "@tabler/icons-react";
+import website_logo from "../../assets/website_logo.png";
 const data = [
   {
     title: "About",
@@ -202,7 +204,7 @@ export function MainFooterComponent() {
     <footer className={classes.footer}>
       <Container className={classes.inner}>
         <Stack align="self-start">
-          <Text color="white">Logo</Text>
+          <Image src={website_logo} width={75}></Image>
           <div className={classes.logo}>
             <Text size="xs" color="dimmed" className={classes.description}>
               Build fully functional accessible web applications faster than
@@ -225,7 +227,7 @@ export function MainFooterComponent() {
       </Container>
       <Container className={classes.afterFooter}>
         <Text color="dimmed" size="sm">
-          © 2023 Neha Services All rights reserved.
+          © 2023 ManpowerBiz All rights reserved.
         </Text>
       </Container>
     </footer>
