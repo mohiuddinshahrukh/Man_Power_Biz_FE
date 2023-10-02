@@ -15,6 +15,7 @@ import {
   Menu,
   ActionIcon,
   Image,
+  Paper,
 } from "@mantine/core";
 // import { MantineLogo } from '@mantine/ds';
 import { useDisclosure } from "@mantine/hooks";
@@ -204,7 +205,11 @@ export function MainNavbarComponent() {
 
                       <Menu.Divider></Menu.Divider>
                       <Menu.Label>Settings</Menu.Label>
-                      <Menu.Item>
+                      <Menu.Item
+                        onClick={() => {
+                          navigate(customerRoutes.customerSettings);
+                        }}
+                      >
                         <Group spacing={3}>
                           <IconEdit />
                           <Text>Edit Profile</Text>
@@ -254,35 +259,119 @@ export function MainNavbarComponent() {
           onClose={closeDrawer}
           size="100%"
           padding="md"
-          title="Navigation"
+          title={
+            <Group
+              justify="space-between"
+              onClick={() => {
+                closeDrawer();
+              }}
+            >
+              <Anchor
+                component={Link}
+                to={"/"}
+                underline={false}
+                color="black"
+                fs={10}
+              >
+                <Image src={website_logo} width={60}></Image>
+              </Anchor>
+              <ToggleTheme />
+            </Group>
+          }
           className={classes.hiddenDesktop}
           zIndex={1000000}
         >
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
             <Divider
-              my="sm"
+              mt="sm"
               color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
             />
 
-            <a href="/" className={classes.link}>
-              Home
-            </a>
-
-            <a href="/categories" className={classes.link}>
-              Categories
-            </a>
-
-            <Group position="center" grow pb="xl" px="md">
-              <Button
-                variant="default"
-                onClick={() => {
-                  setLoginSignupModalOpened(true);
+            {loggedInUserDetails &&
+            JSON.stringify(loggedInUserDetails) != "{}" ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 14,
+                  padding: 20,
                 }}
               >
-                Log in
-              </Button>
-              <Button>Sign up</Button>
-            </Group>
+                <Group
+                  spacing={"md"}
+                  onClick={() => {
+                    navigate(customerRoutes.customerHome);
+                    closeDrawer();
+                  }}
+                >
+                  <IconLayoutGrid />
+                  <Text>Dashboard</Text>
+                </Group>
+
+                <Group spacing={"md"}>
+                  <IconUser />
+                  <Text>{loggedInUserDetails.fullName} </Text>{" "}
+                </Group>
+
+                <Group spacing={"md"}>
+                  <IconMail />
+                  <Text>{loggedInUserDetails.email}</Text>
+                </Group>
+
+                <Group spacing={"md"}>
+                  <IconDeviceMobile />
+                  <Text>{loggedInUserDetails.contactNumber}</Text>
+                </Group>
+                <Group spacing={"md"}>
+                  <IconBrandWhatsapp />
+                  <Text>{loggedInUserDetails.whatsappNumber}</Text>
+                </Group>
+
+                <Group>
+                  <Button
+                    variant="default"
+                    fullWidth
+                    onClick={() => {
+                      navigate(customerRoutes.customerSettings);
+                      closeDrawer();
+                    }}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Button
+                    fullWidth
+                    onClick={() => {
+                      localStorage.removeItem("customerDetails");
+                      setLoggedInUserDetails({});
+                      navigate("/");
+                      closeDrawer();
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </Group>
+              </div>
+            ) : (
+              <Group position="center" grow pb="xl" px="md">
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setLoginSignupModalOpened(true);
+                    closeDrawer();
+                  }}
+                >
+                  Log in
+                </Button>
+                <Button
+                  onClick={() => {
+                    setLoginSignupModalOpened(true);
+                    closeDrawer();
+                  }}
+                >
+                  Sign up
+                </Button>
+              </Group>
+            )}
           </ScrollArea>
         </Drawer>
       </Box>
