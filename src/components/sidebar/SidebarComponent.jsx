@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-import { Box, NavLink, Paper, ScrollArea } from "@mantine/core";
+import {
+  Box,
+  NavLink,
+  Paper,
+  ScrollArea,
+  useMantineTheme,
+} from "@mantine/core";
 import { Link } from "react-router-dom";
 import {
   IconCards,
@@ -166,18 +172,18 @@ const data = [
 const SidebarComponent = () => {
   const [active, setActive] = useState(0);
   const [subActive, setSubActive] = useState(0);
-
+  const theme = useMantineTheme();
   const items = data?.map((item, index) => (
     <NavLink
       styles={{ label: { fontSize: "1rem" } }}
-      color={"red"}
+      color={"blue"}
       // className={active === index ? "fgColorF" : ""}
       key={index}
       active={!item.subNav && active === index}
       label={index + 1 + " - " + item.label}
       description={item.description}
       rightSection={item.rightSection}
-      icon={<item.icon className="fgColorF" size={25} stroke={1.5} />}
+      icon={<item.icon color={theme.colors.blue[5]} size={25} stroke={1.5} />}
       component={Link}
       to={item.path}
       onClick={() => {
@@ -191,12 +197,19 @@ const SidebarComponent = () => {
       {item.subNav &&
         item?.subNav?.map((subItem, i) => (
           <NavLink
-            color={"red"}
+            color={"blue"}
             styles={{ label: { fontSize: "1rem" } }}
             active={active === index && subActive === i}
             key={i}
             label={index + 1 + "." + (i + 1) + " - " + subItem.label}
-            icon={<subItem.icon className="fgColorF" size={25} stroke={1.5} />}
+            icon={
+              <subItem.icon
+                color={theme.colors.blue[5]}
+                className="fgColorF"
+                size={25}
+                stroke={1.5}
+              />
+            }
             component={Link}
             to={subItem.path}
             onClick={() => {
