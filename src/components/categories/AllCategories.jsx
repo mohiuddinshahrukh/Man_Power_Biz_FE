@@ -107,7 +107,7 @@ const AllCategories = () => {
               }}
             />
             <Button
-              color="gray"
+              color="blue"
               onClick={() => {
                 setSearch("");
                 setZip("");

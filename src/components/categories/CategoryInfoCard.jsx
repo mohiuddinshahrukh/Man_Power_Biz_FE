@@ -102,7 +102,7 @@ const CategoryInfoCard = ({ categories, loading }) => {
             width: "100%",
           }}
         >
-          No categories found
+          No Services found
         </div>
       )}
       <SimpleGrid
