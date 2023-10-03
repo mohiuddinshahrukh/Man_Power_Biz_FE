@@ -15,7 +15,6 @@ import {
   Menu,
   ActionIcon,
   Image,
-  Paper,
 } from "@mantine/core";
 // import { MantineLogo } from '@mantine/ds';
 import { useDisclosure } from "@mantine/hooks";
