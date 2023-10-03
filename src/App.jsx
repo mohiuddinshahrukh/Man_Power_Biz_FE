@@ -37,6 +37,7 @@ import CustomerBookingsView from "./components/customer-components/CustomerBooki
 import { CustomerDashboard } from "./components/customer-components/CustomerDashboard";
 import AllCategories from "./components/categories/AllCategories";
 import Test from "./components/payment/Test";
+import Messenger from "./components/chat";
 
 function App() {
   const [colorScheme, setColorScheme] = useState("light");
@@ -105,6 +106,8 @@ function App() {
             </Route>
           </Route>
           {/* Customer side */}
+
+          <Route path={customerRoutes.chat} element={<Messenger />} />
 
           <Route path="/" element={<CustomerOutlet />}>
             <Route path="/" element={<LandingPage />} />

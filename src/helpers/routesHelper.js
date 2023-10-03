@@ -36,4 +36,5 @@ export const customerRoutes = {
   customerPayments: "/customerHome/viewCustomerPayments",
   customerSettings: "/customerHome/viewCustomerSettings",
   categories: "/categories",
+  chat: "/chat",
 };

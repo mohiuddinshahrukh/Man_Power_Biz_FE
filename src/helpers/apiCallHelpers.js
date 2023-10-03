@@ -115,6 +115,7 @@ export const postCallWithHeaders = async (endpoint, data) => {
       url: `${baseURI}/${endpoint}`,
       data: data,
     });
+    console.log("aoi reponse", apiResponse);
     return apiResponse.data;
   } catch (error) {
     console.log(error);
