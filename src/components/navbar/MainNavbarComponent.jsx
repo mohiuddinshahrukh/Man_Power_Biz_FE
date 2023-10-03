@@ -30,12 +30,13 @@ import {
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserProfileContext } from "../../contexts/userProfileContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ToggleTheme } from "../dashboard/theme/ToggleTheme";
 import { customerRoutes } from "../../helpers/routesHelper";
 import LoginSignupModal from "../customer-components/LoginSignupModal";
 import { useState } from "react";
 import website_logo from "../../assets/website_logo.png";
+import { getCallWithHeaders } from "../../helpers/apiCallHelpers";
 const useStyles = createStyles((theme) => ({
   link: {
     display: "flex",
@@ -114,6 +115,19 @@ export function MainNavbarComponent() {
   const { classes, theme } = useStyles();
   const navigate = useNavigate();
 
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    const apiResponse = await getCallWithHeaders(
+      "customer/get-all-service-categories"
+    );
+    setCategories(apiResponse);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <LoginSignupModal
@@ -144,6 +158,20 @@ export function MainNavbarComponent() {
                 className={classes.link}
               >
                 Services
+                <span
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "50%",
+                    paddingRight: 5,
+                    paddingLeft: 5,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    marginLeft: "5px",
+                    fontSize: "10px",
+                  }}
+                >
+                  +{categories.length}
+                </span>
               </Anchor>
               <a href="#" className={classes.link}>
                 Help
