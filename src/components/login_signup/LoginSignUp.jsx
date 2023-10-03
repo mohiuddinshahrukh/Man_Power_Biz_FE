@@ -165,32 +165,47 @@ export default function LoginSignUp() {
                 loginFunction(values);
               })}
             >
-              <TextInput
-                label="Email address"
-                placeholder="hello@gmail.com"
-                size="md"
-                {...form.getInputProps("email")}
-              />
-              <PasswordInput
-                label="Password"
-                placeholder="Your password"
-                mt="md"
-                size="md"
-                {...form.getInputProps("password")}
-              />
-              <Checkbox label="Keep me logged in" mt="xl" size="md" />
-              <Button
-                type="submit"
-                fullWidth
-                mt="xl"
-                size="md"
-                loading={loading}
-                // component={Link}
-                // to={"/"}
-                rightIcon={<IconLogin />}
+              <Grid
+                p={0}
+                m={0}
+                justify="space-around"
+                miw={"25vh"}
+                maw={"50vw"}
               >
-                Login
-              </Button>
+                <Grid.Col p={0} m={0} xs={12} sm={12} lg={12}>
+                  <TextInput
+                    label="Email address"
+                    placeholder="hello@gmail.com"
+                    size="md"
+                    {...form.getInputProps("email")}
+                  />
+                </Grid.Col>
+                <Grid.Col p={0} m={0}>
+                  {" "}
+                  <PasswordInput
+                    label="Password"
+                    placeholder="Your password"
+                    mt="md"
+                    size="md"
+                    {...form.getInputProps("password")}
+                  />
+                </Grid.Col>
+                <Grid.Col p={0} m={0}>
+                  {" "}
+                  <Button
+                    type="submit"
+                    fullWidth
+                    mt="xl"
+                    size="md"
+                    loading={loading}
+                    // component={Link}
+                    // to={"/"}
+                    rightIcon={<IconLogin />}
+                  >
+                    Login
+                  </Button>
+                </Grid.Col>
+              </Grid>
             </form>
           ) : (
             <form
