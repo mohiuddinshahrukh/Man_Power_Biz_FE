@@ -44,6 +44,8 @@ const AddBooking = () => {
   const [loading, setLoading] = useState(true);
   const [customersList, setCustomersList] = useState([]);
   const [packagesList, setPackagesList] = useState([]);
+  const [bookingPackagePrice, setBookingPackagePrice] = useState(0);
+  const [packagesToList, setPackagesToList] = useState([]);
   const [servicesList, setServicesList] = useState([]);
   const [generalBookingDetails, setGeneralBookingDetails] = useState({});
   /*eslint-disable*/
@@ -66,11 +68,15 @@ const AddBooking = () => {
       });
       apiResponsePackages?.forEach((element) => {
         element.value = element._id;
-        element.label = element.packageTitle;
+        element.label =
+          element.packageTitle +
+          ` (${element.packagePrice?.toLocaleString()} ₹)`;
       });
       apiResponseServices?.forEach((element) => {
         element.value = element._id;
-        element.label = element.serviceTitle;
+        element.label =
+          element.serviceTitle +
+          `, (${element.servicePackages?.length} Packages)`;
       });
       setCustomersList(filteredUsers);
       setPackagesList(apiResponsePackages);
@@ -83,6 +89,7 @@ const AddBooking = () => {
   useEffect(() => {
     getBookingList();
   }, []);
+
   const nextStep = () =>
     setActive((current) => (current < 3 ? current + 1 : current));
   const prevStep = () =>
@@ -95,26 +102,25 @@ const AddBooking = () => {
     initialValues: {
       bookingCity: "",
       bookingZip: "",
-      bookingCustomer: "",
+      customer: "",
       bookingService: "",
-      bookingPackage: "",
-      bookingDate: "",
+      pkg: "",
+      date: "",
     },
     validate: {
       bookingCity: (value) =>
         value.trim().length > 0 ? null : "Select A City",
       bookingZip: (value) => (value.trim().length > 0 ? null : "Select A ZIP"),
-      bookingCustomer: (value) =>
+      customer: (value) =>
         value.trim().length > 0 ? null : "Select A Customer",
       bookingService: (value) =>
         value.trim().length > 0 ? null : "Select A Service",
-      bookingPackage: (value) =>
-        value.trim().length > 0 ? null : "Select A Package",
+      pkg: (value) => (value.trim().length > 0 ? null : "Select A Package"),
       // bookingDate: (value) => (value).length > 0 ? null : "Select A Booking Date",
     },
   });
   const generalBookingDetailsFunction = (values) => {
-    console.log("Values: ", values);
+    console.log("generalBookingDetailsFunction Values: ", values);
     setGeneralBookingDetails(values);
     nextStep();
   };
@@ -146,25 +152,79 @@ const AddBooking = () => {
       setLoading(true);
       setContactInfo(values);
       let booking = { ...generalBookingDetails, ...values };
+      booking.bookingServices = [];
+      booking.bookingCustomer = { _id: "" };
+      booking.bookingPackage = [
+        {
+          package: {
+            _id: "",
+          },
+          quantity: 1,
+        },
+      ];
+      booking.bookingDate = booking.date.toLocaleString();
       booking.bookingStatus = "IN PROGRESS";
-      // booking.bookingPrice = 5000;
-      // booking.bookingPaidAmount = 500;
+      booking.bookingPrice = bookingPackagePrice;
+      booking.bookingPaidAmount = 0;
       booking.bookingPaymentStatus = "FULL";
-
+      booking.bookingServices.push(booking.bookingService);
+      booking.bookingCustomer._id = booking.customer;
+      booking.bookingPackage[0].package._id = booking.pkg;
       const apiResponse = postCallWithHeaders(`admin/addBooking`, booking);
+      console.log("This is the api response 123@: ", apiResponse);
       if (apiResponse.error) {
         failureNotification(`Failed to add booking`);
       } else {
         successNotification(`Booking created successfully`);
-        navigate(routes.viewBookings);
+        nextStep();
+        // navigate(routes.viewBookings);
       }
-      // nextStep()
+
+      console.log("Final booking object", booking);
     } catch (error) {
       failureNotification(`${error}`);
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    generalBookingDetailsForm.setFieldValue("pkg", "");
+    setBookingPackagePrice(0);
+    let packagesToShow = [];
+    packagesToShow = packagesList.filter((pkg) => {
+      if (
+        pkg.packageService._id ===
+        generalBookingDetailsForm.values.bookingService
+      ) {
+        return pkg.packageService.serviceTitle;
+      } else {
+        console.log("Didnt match any");
+      }
+    });
+    setPackagesToList(packagesToShow);
+  }, [generalBookingDetailsForm.values.bookingService]);
+
+  useEffect(() => {
+    setBookingPackagePrice(0);
+
+    if (packagesToList.length > 0) {
+      packagesToList.filter((pkg) => {
+        console.log("inside filter");
+        if (pkg._id === generalBookingDetailsForm.values.pkg) {
+          console.log(pkg);
+          setBookingPackagePrice(pkg.packagePrice);
+
+          console.log("inside set state");
+        } else {
+          return;
+        }
+        return;
+      });
+    } else {
+      console.log("here");
+    }
+    console.count("Running");
+  }, [generalBookingDetailsForm.values.pkg]);
   return (
     <Paper
       style={{
@@ -193,6 +253,13 @@ const AddBooking = () => {
             Add Booking
           </Title>
 
+          <Title weight={500} order={3} align="right">
+            Your total cost:{" "}
+            <b style={{ color: "red" }}>
+              {bookingPackagePrice?.toLocaleString()}
+            </b>{" "}
+            ₹
+          </Title>
           <Stepper
             active={active}
             onStepClick={setActive}
@@ -297,9 +364,7 @@ const AddBooking = () => {
                         data={customersList}
                         rightSection={<ChevronDown size={14} />}
                         rightSectionWidth={40}
-                        {...generalBookingDetailsForm.getInputProps(
-                          "bookingCustomer"
-                        )}
+                        {...generalBookingDetailsForm.getInputProps("customer")}
                       />
                     </Grid.Col>
                     <Grid.Col lg={6}>
@@ -320,15 +385,14 @@ const AddBooking = () => {
 
                     <Grid.Col lg={6}>
                       <Select
+                        disabled={packagesToList.length > 0 ? false : true}
                         size="md"
                         required
                         label="Package"
                         placeholder="Select A Package"
                         searchable
-                        data={packagesList}
-                        {...generalBookingDetailsForm.getInputProps(
-                          "bookingPackage"
-                        )}
+                        data={packagesToList}
+                        {...generalBookingDetailsForm.getInputProps("pkg")}
                       />
                     </Grid.Col>
                     <Grid.Col lg={6}>
@@ -343,9 +407,7 @@ const AddBooking = () => {
                           .add(new Date().getDate() - 1, "days")
                           .toDate()}
                         inputFormat="YYYY-MM-DD"
-                        {...generalBookingDetailsForm.getInputProps(
-                          "bookingDate"
-                        )}
+                        {...generalBookingDetailsForm.getInputProps("date")}
                       />
                     </Grid.Col>
                   </Grid>
@@ -561,7 +623,7 @@ const AddBooking = () => {
                       color="red"
                       // disabled={loading}
                       onClick={() => {
-                        navigate("/vendorBookings");
+                        navigate(routes.viewBookings);
                       }}
                     >
                       View All Bookings
