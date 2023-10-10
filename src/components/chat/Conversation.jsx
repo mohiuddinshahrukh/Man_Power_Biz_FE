@@ -35,11 +35,12 @@ const Conversation = ({
                   style={{
                     backgroundColor:
                       message.senderId === 1 ? "#3675e3" : "#5fe038",
-                    display: "inline-block", // Make the container inline-block to limit its width
+                    display: "inline-block",
                     padding: "8px",
                     borderRadius: "8px",
                     maxWidth: "70%",
                     color: "#fff",
+                    marginTop: message.senderId === 1 ? "8px" : "14px",
                   }}
                 >
                   {message.text}
