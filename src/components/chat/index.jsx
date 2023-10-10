@@ -5,6 +5,7 @@ import {
   Container,
   Grid,
   Group,
+  Loader,
   Paper,
   Text,
   TextInput,
@@ -20,7 +21,10 @@ import { io } from "socket.io-client";
 const Message = () => {
   const match768 = useMediaQuery("(max-width: 768px)");
   const user = JSON.parse(localStorage.getItem("customerDetails"));
+  // console.log("userID", user._id);
+
   //gojo: 6523d95670fb3087655dc5e9
+  //sukuna: 652556d8b793c4d6765e1849
   //hashaam: 64d0b902c107a697e2579a68
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -32,6 +36,7 @@ const Message = () => {
   const [messages, setMessages] = useState([]);
   const socket = useRef();
   const scrollRef = useRef();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -46,6 +51,8 @@ const Message = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     getConversations();
@@ -62,53 +69,41 @@ const Message = () => {
     });
   }, []);
 
-  const users = [
-    { id: 1, name: "User 1", userImage: "https://i.pravatar.cc/300?img=1" },
-    { id: 2, name: "User 2", userImage: "https://i.pravatar.cc/300?img=2" },
-    { id: 3, name: "User 3", userImage: "https://i.pravatar.cc/300?img=3" },
-    { id: 4, name: "User 4", userImage: "https://i.pravatar.cc/300?img=4" },
-    { id: 5, name: "User 5", userImage: "https://i.pravatar.cc/300?img=5" },
-    { id: 6, name: "User 6", userImage: "https://i.pravatar.cc/300?img=6" },
-  ];
-
-  // Function to send a new message
-  const sendMessage = () => {
-    if (newMessage.trim() === "") return; // Don't send empty messages
-
-    const newMessageObj = {
-      id: messages.length + 1, // Generate a unique ID for the new message
-      senderId: 1, // Assuming you are User 1
-      text: newMessage,
-    };
-
-    // Update the messages state with the new message
-    setMessages([...messages, newMessageObj]);
-    setNewMessage("");
-  };
-
   return (
     <Box p={"sm"}>
-      <Grid gutter={0}>
-        <Grid.Col span={match768 ? 4 : 3}>
-          <Contacts
-            selectedUser={selectedUser}
-            setSelectedUser={setSelectedUser}
-            searchUser={searchUser}
-            setSearchUser={setSearchUser}
-            conversations={conversations}
-          />
-        </Grid.Col>
-        <Grid.Col span={match768 ? 8 : 9}>
-          <Conversation
-            selectedUser={selectedUser}
-            messages={messages}
-            setMessages={setMessages}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            sendMessage={sendMessage}
-          />
-        </Grid.Col>
-      </Grid>
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "90vh",
+          }}
+        >
+          <Loader size={"lg"} color="blue" variant="oval" />
+        </div>
+      ) : (
+        <Grid gutter={0}>
+          <Grid.Col span={match768 ? 4 : 3}>
+            <Contacts
+              searchUser={searchUser}
+              setSelectedUser={setSelectedUser}
+              selectedUser={selectedUser}
+              setSearchUser={setSearchUser}
+              conversations={conversations}
+            />
+          </Grid.Col>
+          <Grid.Col span={match768 ? 8 : 9}>
+            <Conversation
+              selectedUser={selectedUser}
+              messages={messages}
+              setMessages={setMessages}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+            />
+          </Grid.Col>
+        </Grid>
+      )}
     </Box>
   );
 };

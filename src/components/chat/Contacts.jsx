@@ -3,11 +3,11 @@ import { Group, Paper, Text, TextInput } from "@mantine/core";
 import React from "react";
 
 const Contacts = ({
-  selectedUser,
-  setSelectedUser,
   searchUser,
   setSearchUser,
   conversations,
+  selectedUser,
+  setSelectedUser,
 }) => {
   return (
     <div>
@@ -24,14 +24,11 @@ const Contacts = ({
           <div
             style={{
               marginBottom: "8px",
-              backgroundColor:
-                selectedUser.id === user._id ? "#e7e7e7" : "#eee",
               padding: "16px",
-              border: selectedUser.id === user._id ? "1px solid #3675e3" : "",
               borderRadius: "8px",
+              border: "1px solid #2073f7",
               cursor: "pointer",
-              color: "#000",
-              fontWeight: selectedUser.id === user._id ? 500 : 400,
+              backgroundColor: selectedUser?._id === user._id ? "#9fb9e0" : "",
             }}
             onClick={() => setSelectedUser(user)}
           >

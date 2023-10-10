@@ -14,7 +14,7 @@ const Conversation = ({
     <>
       <Paper p="md" bg={"#e5e5e5"}>
         <div>
-          <h2>Chat with {selectedUser.name}</h2>
+          <h2>Chat with {selectedUser._id}</h2>
           <div
             style={{
               height: "300px",

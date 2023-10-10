@@ -107,10 +107,9 @@ function App() {
           </Route>
           {/* Customer side */}
 
-          <Route path={customerRoutes.chat} element={<Messenger />} />
-
           <Route path="/" element={<CustomerOutlet />}>
             <Route path="/" element={<LandingPage />} />
+            <Route path={customerRoutes.chat} element={<Messenger />} />
             <Route
               path={`${customerRoutes.specificService}/:id`}
               element={<SpecificServiceCategory />}
